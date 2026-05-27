@@ -13,6 +13,7 @@
 </p>
 </div>
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 <h1 align="center">🚀 Code. Commit. Conquer. 💻 🔥 </h1>
 
@@ -25,7 +26,7 @@
 
 </div>
 
----
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 # 📊 Project Insights
 
@@ -81,7 +82,8 @@
   </tbody>
 </table>
 
----
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
 # 🌟 45 Days Python Development Challenge
 
 Welcome to the **45 Days Python Development Challenge** — a complete journey from Python basics to advanced real-world development projects. This repository is built for developers, students, and open-source contributors who want to strengthen their Python skills through practical coding, daily consistency, and project building.
