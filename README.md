@@ -1,6 +1,9 @@
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+<h1 align="center">🚀 Python-Development-Challenge </h1>
+
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
 # 45 Days Python Development Challenge
 
 🚀 A beginner-friendly open-source roadmap designed to take you from Python basics to building real projects.
