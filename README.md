@@ -1,3 +1,6 @@
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 # 45 Days Python Development Challenge
 
 🚀 A beginner-friendly open-source roadmap designed to take you from Python basics to building real projects.
@@ -116,3 +119,19 @@ The best way to learn programming is by writing code consistently.
 Even 30–60 minutes daily can create massive improvement over time.
 
 Good luck and enjoy the challenge.
+
+
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+## 🌐 Connect with Me
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a92d4e36-c38a-4af2-bbfa-aae37e35ccbf" alt="Abhisek Panda_DSC0019" height="200"/>
+</p>
+
+- 👨‍💻 **Website Creator:** [Abhisek Panda](https://abhisekpanda072.vercel.app)
+- 🐙 **GitHub:** [abhisek2004](https://github.com/abhisek2004)
+- 💼 **LinkedIn:** [abhisekpanda2004](https://www.linkedin.com/in/abhisekpanda2004/)
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
