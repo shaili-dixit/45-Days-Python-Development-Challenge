@@ -8,7 +8,7 @@
   <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/6bfc93f3-95fe-4700-acaa-f216e9f220c3" /><br><br>
   <p align="center">
   <b>This project is now OFFICIALLY accepted for: 🥵 NSoC'26 🥵 </b> <br><br>
-  <b> ☀️ Code. Commit. Collaborate. Conquer NSoC'26. ☀️ 🚀🔥💻🌴🎉 </b>  
+  <b> ☀️ Code. Commit. Collaborate. Conquer NSoC'26. ☀️ 🚀🔥💻🌴🎉 </b>  <br><br>
   <b> 🌴 Hack the Heat with Open Source at NSoC'26 🌴 ☀️🚀💻🎉 </b>  
 </p>
 </div>
