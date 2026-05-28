@@ -431,7 +431,7 @@ If you like this project:
 
 ## 🧩 Contributions
 
-![Alt](https://repobeats.axiom.co/api/embed/851ffe555f955e88c86fc35dd49ee685aeb572d9.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/3f34608157d572010a0c7410cebc42725c317e4c.svg "Repobeats analytics image")
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
@@ -469,13 +469,6 @@ If you like this project:
 # 💻 Happy Coding & Open Source Contributing 🚀🔥
 
 </div>
-
-
-
-
-
-
-
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
