@@ -1,27 +1,68 @@
-# 🙋 Need Help? We're Here to Support You!
+# 🙋 Support
 
-Welcome to **DevElevate** – your intelligent education & career advancement platform.
+Welcome to **45-Days-Python-Development-Challenge** 🐍🔥  
+If you’re stuck, confused, or found a bug — you’re in the right place. Let’s solve it together. 🤝
 
-If you encounter any issues while contributing or using the platform, you can seek help in the following ways:
+---
 
-## 🔹 Community Support
+## 🧭 Best Places to Get Help
 
-- Open a new [GitHub Issue](https://github.com/abhisek2004/Dev-Elevate/issues) for bugs, queries, or feature requests.
-- Participate in discussions via GitHub Discussions (coming soon).
-- Join our Discord server (link coming after release) for real-time chat with contributors and maintainers.
+### 1) 🐛 GitHub Issues (best for bugs + tasks)
+
+Use Issues for:
+
+- broken scripts / wrong output
+- missing files or broken links
+- unclear instructions
+- feature requests (new lessons, new mini-projects)
+
+Link: `https://github.com/abhisek2004/45-Days-Python-Development-Challenge/issues`
+
+✅ Please include:
+
+- 🖥️ OS (Windows/macOS/Linux)
+- 🐍 Python version (`python --version`)
+- 📍 The exact file path you ran
+- 📌 The exact command you used
+- 🧾 Full error output (copy-paste)
+- 🔁 Steps to reproduce
+
+### 2) 💬 GitHub Discussions (best for questions + ideas)
+
+If Discussions are enabled, use them for:
+
+- “Which day/week should I start from?” 🗓️
+- learning doubts / concept questions 📚
+- ideas for new exercises or projects 💡
+
+---
 
 ## 🔹 Contact Project Maintainer
 
 You can also email the project lead directly:
 
-📩 **Abhisek Panda** – [officialdevelevate@gmail.com](mailto:officialdevelevate@gmail.com)
+📩 **Abhisek Panda** – [abhisek2004panda@gmail.com](mailto:abhisek2004panda@gmail.com)
 
-## 🔹 First-Time Contributor?
+---
 
-Check out:
+## 🧑‍💻 First-Time Contributor?
 
-- [CONTRIBUTING.md](./CONTRIBUTING.md)
-- [FAQ.md](./FAQ.md)
-- [Code of Conduct](./CODE_OF_CONDUCT.md)
+Start here:
 
-We're happy to help you get started! 🚀
+- ✅ `CONTRIBUTING.md`
+- ❓ `.project-docs/FAQ.md`
+- 🤝 `CODE_OF_CONDUCT.md`
+- 📦 `.project-docs/INSTALL.md`
+
+---
+
+## 🔐 Security Issues
+
+Found a leaked API key, token, or suspicious/malicious code? 🚨  
+Please **do not** create a public issue. Follow `SECURITY.md` for private reporting. 🛡️
+
+---
+
+## 🙏 Thank You
+
+Every question, issue, and PR improves the learning experience for everyone. 🌟

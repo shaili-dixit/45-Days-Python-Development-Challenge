@@ -1,82 +1,85 @@
-# 🔐 Security Policy
+# Security Policy
 
-Thank you for helping us keep **DevElevate** secure for all users! Security is a top priority in our project, which is designed to support developers, learners, and contributors across the globe.
-
----
-
-## 📣 About DevElevate
-
-**DevElevate** is a full-stack open-source platform built with:
-
-* 🌐 Frontend: React, TypeScript, Shadcn UI, Tailwind CSS
-* 🔐 Backend: Node.js, Express, JWT Auth, MongoDB Atlas
-* 🤖 Features: AI Chatbot (OpenAI/Gemini), Resume Analyzer, Learning Tracker, Admin Dashboards, Stripe Payments (upcoming)
+Thank you for helping keep **45-Days-Python-Development-Challenge** safe for learners and contributors. This repository contains learning materials, Python scripts, and small projects; security issues usually involve **malicious code**, **dependency risks**, or **leaked secrets**.
 
 ---
 
-## 🐞 Reporting a Vulnerability
+## Reporting a Vulnerability
 
-If you find a **security issue** in DevElevate, we kindly ask that you follow **responsible disclosure** practices:
+Please follow responsible disclosure. Do **not** open a public GitHub issue for security reports.
 
-### 🚨 Do NOT:
+### Preferred (GitHub)
 
-* Do *not* open a GitHub issue describing the vulnerability publicly.
+- Use **GitHub Security Advisories** (private reporting): go to the repo → **Security** → **Report a vulnerability**
 
-### ✅ Instead:
+### Alternative (Email)
 
-* **Email us directly and privately** at:
-  📧 `officialdevelevate@gmail.com`
+- Email the maintainer privately at `abhisek2004panda@gmail.com`
 
-* Please include:
+### Include in your report
 
-  * Clear description of the vulnerability
-  * Steps to reproduce
-  * Any proof-of-concept (PoC) code or screenshots
-  * Recommendations (optional)
+- What you found and why it’s a security risk
+- Exact file path(s) / folder(s) affected
+- Steps to reproduce (safe PoC if possible)
+- Suggested fix or mitigation (optional)
+- Whether any secrets/credentials were exposed
 
-We aim to respond within **6–12 hours**, and patch critical issues ASAP (usually within 24 hours).
+### Response expectations
 
----
-
-## 🛡️ Supported Versions
-
-| Branch / Version | Status          | Notes                                 |
-| ---------------- | --------------- | ------------------------------------- |
-| `main`           | ✅ Supported     | Actively maintained & deployed        |
-| Other branches   | ❌ Not Supported | Dev/test branches only, no guarantees |
-
-If you're using a forked or older version, we **strongly recommend** syncing with the `main` branch regularly to receive security patches.
+- Initial response: typically **within 48–72 hours**
+- Fix timeline depends on severity and complexity (critical issues prioritized)
 
 ---
 
-## 🔒 Data Protection Practices
+## Supported Versions
 
-* **Authentication**: All user/admin login routes are secured using **JWT + Bcrypt hashing**
-* **Authorization**: Middleware protections (e.g., `authorize("admin")`) are in place for sensitive routes
-* **Input Validation**: APIs are protected using **Zod-based schema validation**
-* **Rate Limiting (upcoming)**: To prevent brute-force or abuse attacks
-* **Environment Secrets**: All credentials and API keys are stored securely via `.env` and Vercel Secrets
-* **Emails & Passwords**: Stored securely using **MongoDB Atlas**, not exposed in logs
+| Version / Branch | Status | Notes |
+| --- | --- | --- |
+| `main` | Supported | Security fixes are applied here |
+| Feature branches / forks | Not supported | Please reproduce against `main` |
 
----
-
-## 🧪 Reporting Flow
-
-1. Vulnerability reported privately
-2. Internal validation & patch implementation
-3. Security hotfix release deployed to `main` and production (Vercel)
-4. Optional public advisory, if required
+If you are using a fork, keep it synced with `main` to receive security updates.
 
 ---
 
-## 🤝 Thanks for Your Contribution
+## Scope (What we consider a security issue)
 
-We value and appreciate all contributors who help us make DevElevate better and more secure. 🛡️
+### In scope
 
-Let’s build safer, smarter, and more inclusive software—together.
+- **Accidental secrets** committed to the repo (API keys, tokens, credentials)
+- **Malicious code** (backdoors, credential stealers, obfuscated payloads)
+- **Unsafe patterns** in runnable examples (e.g., `eval` on untrusted input, insecure deserialization) when presented as recommended practice
+- **Supply-chain issues** in project dependencies (if this repo introduces them)
+- **GitHub Actions / CI** workflow vulnerabilities (if present)
+
+### Out of scope (usually)
+
+- General code style or correctness issues without security impact
+- Vulnerabilities in third-party services not controlled by this repo
+- Issues in forks or downstream copies not maintained here
 
 ---
 
-**Project Maintainer:**
-📧 [Gmail](mailto:officialdevelevate@gmail.com)
-🔗 [Github](https://github.com/abhisek2004/Dev-Elevate)
+## Handling Secrets
+
+- Never commit real secrets to the repository.
+- If you discover a secret in the repo history, report it **privately** (advisory/email) and avoid spreading it further (screenshots, logs, re-posting the value).
+- Maintainers may rotate/revoke secrets and rewrite history if needed.
+
+---
+
+## Coordinated Disclosure
+
+If you report a valid vulnerability, we may:
+
+1. Confirm and triage severity
+2. Prepare a fix on `main`
+3. Publish an advisory / release note (when appropriate)
+4. Credit the reporter (optional, only with permission)
+
+---
+
+## Maintainer Contact
+
+- Email: `abhisek2004panda@gmail.com`
+- Repository: `https://github.com/abhisek2004/45-Days-Python-Development-Challenge`
