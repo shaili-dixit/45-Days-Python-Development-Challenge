@@ -28,6 +28,81 @@
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+
+<div align="center">
+
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=700&size=24&duration=3000&pause=1000&color=00C2FF&center=true&vCenter=true&width=850&lines=Welcome+to+45+Days+Python+Development+Challenge+🐍🚀;Learn+Python+with+Real+Projects+💻;Build+Projects+Daily+🔥;Fork+the+Repository+🍴;Contribute+to+Open+Source+🌟;Push+Your+Code+Like+a+Pro+🚀;Create+Amazing+Pull+Requests+✅;Level+Up+Your+Development+Journey+⚡" alt="Typing SVG" />
+
+</div>
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+# 🎯 Project Status
+
+✅ Frontend Structure Working
+✅ Python Projects Working
+✅ Daily Challenges Added
+✅ Learning Resources Available
+✅ Open Source Contribution Ready
+✅ Community Collaboration Enabled
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+# 🚨 Important Contribution Guidelines
+
+## ⚡ Before You Start Working
+
+🔄 Always pull the latest updates from the repository before starting your work.
+
+✅ Follow these steps carefully:
+
+* 🍴 Fork the repository
+* 🌿 Create your own branch
+* ⬇️ Pull latest updates
+* 💻 Start coding
+* 🚀 Push your changes
+* 🔥 Create Pull Request
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+**_🚧 Important Note: Before you start working, check the GitHub repository branch._**
+**_🔄 First: Sync (pull) to the latest merged code from the main branch._**
+**_✅ Then: Start working on your assigned issue or feature._**
+
+
+**_⚠ Skipping this step can cause merge conflicts and your PR may be rejected._**
+
+**_🚧 Important Note: Project system Everything is working properly._**
+
+**_⚠ Do NOT remove or change any existing code unrelated to your issue! If your PR modifies or deletes any core code without a valid reason, it will not be merged._**
+
+**_🚫 Strict Rule: Do NOT delete any code or  system. If any such activity is found, you will be removed and reported from this project._**
+
+---
+
+> ⚠️ **IMPORTANT WARNING:**  
+> 💡 **Before pushing your changes, make sure to _switch to the correct branch_ first!** 🪄  
+>  
+> 🔴 **Commands to Follow:**  
+> ```bash
+> git checkout <branch-name>    # 🔁 Switch to your assigned branch
+> git pull origin <branch-name> # ⬇️ Pull latest updates
+> git add .                     # ➕ Add your changes
+> git commit -m "your message"  # 💬 Commit with a clear message
+> git push origin <branch-name> # 🚀 Push your code safely
+> ```
+> 🧠 **Tip:** Always double-check the branch before pushing to avoid merge conflicts! ⚡  
+
+---
+
+✅ Write clean and readable code
+✅ Follow proper folder structure
+✅ Use meaningful commit messages
+✅ Respect all contributors and maintainers
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+
 # 📊 Project Insights
 
 <table align="center">
