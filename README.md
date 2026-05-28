@@ -560,8 +560,8 @@ Passionate Full Stack & Open Source Developer focused on:
 
 <div align="center">
 
-💼 **LinkedIn:** [Abhisek Panda](https://www.linkedin.com/in/abhisekpanda2004/)
-📧 Email: abhisek2004panda@gmail.com
+💼 **LinkedIn:** [Abhisek Panda](https://www.linkedin.com/in/abhisekpanda2004/) <br>
+📧 Email: abhisek2004panda@gmail.com <br>
 🚀 Open Source Enthusiast | MERN Developer | Freelancing
 
 </div>
