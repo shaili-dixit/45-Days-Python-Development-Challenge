@@ -1,161 +1,106 @@
-# 📦 INSTALL.md – Setup Guide for DevElevate
+# 📦 INSTALL.md – Setup Guide (45 Days Python Challenge)
 
-Welcome to **DevElevate – Your Smart Learning & Career Hub** 🚀
-This guide walks you through **cloning**, **installing dependencies**, and **running the project locally** using **Vite**, **React (TypeScript)**, **Tailwind CSS**, and **Node.js**.
-Please ensure you follow the proper **folder structure** to avoid bugs or broken references.
+Welcome to **45-Days-Python-Development-Challenge** 🐍🚀  
+This guide helps you **clone**, **set up Python**, and **run scripts/tests** locally on Windows/macOS/Linux.
 
 ---
 
 ## ✅ Prerequisites
 
-Before you begin, make sure you have the following installed:
+Install these tools first:
 
-| Tool          | Version | Download Link                                        |
-| ------------- | ------- | ---------------------------------------------------- |
-| Node.js       | ≥ 18.x  | [Download Node.js](https://nodejs.org/)              |
-| Git           | ≥ 2.x   | [Download Git](https://git-scm.com/)                 |
-| VS Code       | Latest  | [Download VS Code](https://code.visualstudio.com/)   |
-| MongoDB Atlas | –       | [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) |
+- 🐍 **Python**: 3.10+ (recommended: 3.11 / 3.12)
+- 🧰 **Git**: latest stable
+- 🧑‍💻 **Editor**: VS Code / Cursor / PyCharm (any is fine)
+
+Optional but helpful:
+
+- 🧪 **pytest** (for tests)
+- 📦 **pip** (comes with Python) and/or **conda** (if you prefer `environment.yml`)
 
 ---
 
 ## 🔁 Clone the Repository
 
 ```bash
-git clone https://github.com/abhisek2004/Dev-Elevate.git
-cd Dev-Elevate
+git clone https://github.com/abhisek2004/45-Days-Python-Development-Challenge.git
+cd 45-Days-Python-Development-Challenge
 ```
 
 ---
 
-## 📁 Project Structure Overview
+## 🧪 Set up a Virtual Environment (recommended)
 
-Here's the current recommended folder structure:
-
-```
-DevElevate/
-│
-├── .github/               → GitHub metadata and workflows
-├── DevElevate/            → Primary app source folder
-│   ├── Admin/             → Admin dashboard and controls
-│   ├── Auth/              → Login, Register, Auth layout
-│   ├── Chatbot/           → AI chatbot integration (GPT-4)
-│   ├── Dashboard/         → User dashboard & home cards
-│   ├── Layout/            → Header, sidebar, routes
-│   ├── LearningHub/       → Courses, roadmaps, notes
-│   ├── Legal/             → Code of conduct, license, terms
-│   ├── PlacementPrep/     → HR prep, resources, jobs
-│   ├── Profile/           → Profile management, settings
-│   ├── ResumeBuilder/     → Resume, cover letter, GPT-based tips
-│   └── TechFeed/          → News, YouTube, Hackathons
-│
-├── src/                   → App entry point
-│   ├── components/        → Shared UI components
-│   ├── contexts/          → GlobalContext, AuthContext
-│   ├── App.tsx            → Main application shell
-│   ├── index.tsx          → Root renderer
-│   └── main.tsx           → Mounting and routing logic
-│
-├── dist/                  → Production build output (after `npm run build`)
-├── .bolt/                 → Optional: bolt or runtime configs
-├── .gitignore             → Git ignored files
-├── vite.config.ts         → Vite build config
-├── tailwind.config.js     → Tailwind setup
-├── postcss.config.js      → PostCSS setup
-├── tsconfig.json          → TS global config
-├── tsconfig.app.json      → App-specific TS config
-├── package.json           → Project dependencies and scripts
-├── README.md              → Project overview
-├── LICENSE                → Project license
-├── CODE_OF_CONDUCT.md     → Code of conduct
-├── CONTRIBUTING.md        → How to contribute
-├── ROADMAP.md             → Feature roadmap
-├── SECURITY.md            → Security policy
-├── AUTHORS                → Project author info
-```
-
----
-
-## 📦 Install Dependencies
+### 🪟 Windows (PowerShell)
 
 ```bash
-npm install
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 ```
 
-Make sure you are in the **root folder** where the `package.json` file exists.
-
----
-
-## 🚀 Run the Project
-
-Use Vite's dev server to run the project locally:
+### 🐧 macOS / Linux
 
 ```bash
-npm run dev
-```
-
-After the app starts, navigate to:
-
-```
-http://localhost:5173/
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 ---
 
-## 🧪 Initial State & Testing
+## 📦 Install Dependencies (if needed)
 
-### ⚠️ **Note**:
+This repo contains many scripts that use the standard library only ✅.  
+If a folder or lesson requires packages, it should provide instructions or a `requirements.txt`.
 
-- As of the current base UI state, the **login** / **sign-up** page is for demonstration only.
-- There is **no real database connection yet**. Your data is stored in **browser cache/local memory**.
-- After registration (user/admin), you'll be able to see respective dashboard UIs.
-- Once the backend is integrated, we’ll connect this with **MongoDB Atlas** and **JWT-based auth**.
+If you see a `requirements.txt`, install it like this:
 
----
+```bash
+pip install -r requirements.txt
+```
 
-## 🔐 MongoDB Atlas Setup (Planned)
+If you prefer conda and want to use `environment.yml`:
 
-> A complete `.env` template and MongoDB cluster connection URL will be shared once the contribution opens.
-
----
-
-## 💡 Useful NPM Scripts
-
-```json
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "preview": "vite preview",
-  "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
-}
+```bash
+conda env create -f environment.yml
+conda activate <env-name>
 ```
 
 ---
 
-## 🧪 Testing
+## ▶️ Run Python Scripts
 
-Manual testing is being done during this stage. Automated testing framework (e.g., Vitest or Jest) will be integrated soon.
+Example:
 
----
+```bash
+python MAIN_CODE_PROJECT/week-1/fetch_details.py
+```
 
-## 📥 Need Help?
-
-Feel free to reach out:
-
-- 💬 [GitHub Discussions](https://github.com/abhisek2004/Dev-Elevate/discussions)
-- 📧 [officialdevelevate@gmail.com](mailto:officialdevelevate@gmail.com)
-- 🧑‍💻 Project Maintainer: Abhisek Panda
+📌 Tip: Some scripts expect you to run them from a specific folder (relative paths). If you hit path errors, `cd` into the script’s directory and run again.
 
 ---
 
-## ✅ Next Steps After Setup
+## 🧪 Run Tests (if present)
 
-1. Explore the folder structure
-2. Make UI changes or add new sections under `DevElevate/`
-3. Raise issues or create PRs with improvements
-4. Join our Discord/community chat (coming soon)
+If `pytest` is used:
+
+```bash
+pytest
+```
+
+If you don’t have pytest installed:
+
+```bash
+pip install pytest
+pytest
+```
 
 ---
 
-Thank you for installing and setting up **DevElevate** locally! 💻
-Now let’s build the smartest education & career platform together. 🚀
+## 🆘 Need Help?
+
+- 🐛 Issues: `https://github.com/abhisek2004/45-Days-Python-Development-Challenge/issues`
+- 📘 Contribution guide: `CONTRIBUTING.md`
+- ❓ FAQs: `.project-docs/FAQ.md`
+- 🔐 Security: `SECURITY.md`
+
+Happy coding — **Code. Commit. Conquer.** 🔥💻

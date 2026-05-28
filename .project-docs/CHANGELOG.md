@@ -1,25 +1,33 @@
-# 📌 Changelog – DevElevate
+# 📌 Changelog – 45-Days-Python-Development-Challenge
 
-All notable changes to this project will be documented in this file.
-
----
-
-## [Unreleased]
-
-- AI Study Buddy with semantic search
-- ATS Resume Builder (PDF export + GPT suggestions)
-- Personalized dashboards with streaks and progress tracking
-- Role-based login for user/admin
-- Admin dashboard + content management
-- MongoDB connection and real-time backend integration
+All notable changes to this repository will be documented here. 🧾🐍  
+This repo evolves through community contributions (new lessons, fixes, refactors, tests, and documentation improvements).
 
 ---
 
-## [v0.1.0] – 2025-07-08
+## [Unreleased] 🚧
 
-🚀 Initial project scaffold and UI setup:
+### ✨ Added
 
-- Frontend folder structure using TypeScript + Tailwind CSS + Shadcn UI
-- Initial landing page, login/signup UI
-- Separate flows for user/admin (in-memory only)
-- Sample components and routes created
+- More daily lessons and practice scripts (new weeks/days)
+- More mini-projects and real-world exercises
+
+### 🛠️ Changed
+
+- Improvements to lesson clarity and structure
+- Better onboarding docs and setup instructions
+
+### 🐛 Fixed
+
+- Broken links, typos, and incorrect examples
+- Script edge cases and cross-platform issues
+
+---
+
+## [v1.0.0] – 2026-05-28 🎉
+
+### 🚀 Repository ready for contributors
+
+- Organized learning structure under `MAIN_CODE_PROJECT/`
+- Added detailed contributor onboarding docs under `.project-docs/`
+- Standardized security guidance in `SECURITY.md`
