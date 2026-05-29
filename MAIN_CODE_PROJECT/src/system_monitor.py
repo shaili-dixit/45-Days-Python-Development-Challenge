@@ -171,21 +171,33 @@ class SystemMonitorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'timestamp': '10:00', 'cpu_usage': 45.0, 'memory_usage': 60.5},
+            {'timestamp': '10:01', 'cpu_usage': 88.0, 'memory_usage': 62.0},
+            {'timestamp': '10:02', 'cpu_usage': 92.5, 'memory_usage': 85.0},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        cpu_samples = [item.get('cpu_usage', 0.0) for item in items]
+        mem_samples = [item.get('memory_usage', 0.0) for item in items]
+        
+        warnings = []
+        for item in items:
+            ts = item.get('timestamp')
+            cpu = item.get('cpu_usage', 0.0)
+            mem = item.get('memory_usage', 0.0)
+            if cpu > 80.0:
+                warnings.append(f'[{ts}] High CPU usage: {cpu}%')
+            if mem > 80.0:
+                warnings.append(f'[{ts}] High Memory usage: {mem}%')
+                
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_samples': len(items),
+            'cpu_stats': self.summarize_list(cpu_samples),
+            'memory_stats': self.summarize_list(mem_samples),
+            'alerts': warnings
         }
 
     def run(self) -> None:

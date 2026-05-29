@@ -171,21 +171,31 @@ class LogAnalyzerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'line': '[2026-05-29 10:00:00] [INFO] System initialized successfully.'},
+            {'line': '[2026-05-29 10:05:00] [WARNING] Disk space usage above 80%.'},
+            {'line': '[2026-05-29 10:10:00] [ERROR] Failed to connect to user database.'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import re
+        levels = {'INFO': 0, 'WARNING': 0, 'ERROR': 0}
+        errors = []
+        for log in items:
+            line = log.get('line', '')
+            match = re.search(r'\[(INFO|WARNING|ERROR)\]\s+(.*)', line)
+            if match:
+                lvl = match.group(1)
+                msg = match.group(2)
+                levels[lvl] += 1
+                if lvl == 'ERROR':
+                    errors.append(msg)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_logs_analyzed': len(items),
+            'level_counts': levels,
+            'extracted_errors': errors
         }
 
     def run(self) -> None:

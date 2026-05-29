@@ -171,21 +171,32 @@ class EmailValidatorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'email': 'test@example.com'},
+            {'email': 'invalid-email.com'},
+            {'email': 'user.name+tag@domain.co.uk'},
+            {'email': 'user@domain'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import re
+        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        valid = []
+        invalid = []
+        for item in items:
+            email = item.get('email', '')
+            if re.match(pattern, email):
+                valid.append(email)
+            else:
+                invalid.append(email)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_checked': len(items),
+            'valid_count': len(valid),
+            'invalid_count': len(invalid),
+            'valid_emails': valid,
+            'invalid_emails': invalid
         }
 
     def validate_email(self, email: str) -> bool:

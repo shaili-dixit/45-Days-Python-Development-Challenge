@@ -172,21 +172,25 @@ class CredentialStorageApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'username': 'user1', 'plaintext_password': 'SuperSecretPassword123'},
+            {'username': 'admin', 'plaintext_password': 'admin_password_99'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import hashlib
+        db_records = {}
+        for cred in items:
+            user = cred.get('username')
+            pwd = cred.get('plaintext_password', '')
+            if user:
+                hashed = hashlib.sha256(pwd.encode('utf-8')).hexdigest()
+                db_records[user] = hashed
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'records_created': len(db_records),
+            'database_simulation': db_records
         }
 
     def hash_password(self, password: str) -> str:

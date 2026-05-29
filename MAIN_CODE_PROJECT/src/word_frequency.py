@@ -171,21 +171,23 @@ class WordFrequencyApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'text': 'Python is great and Python programming is fun. Challenge python programmers.'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        freq = {}
+        for doc in items:
+            text = doc.get('text', '')
+            words = self.split_words(text)
+            for w in words:
+                freq[w] = freq.get(w, 0) + 1
+        sorted_freq = dict(sorted(freq.items(), key=lambda x: x[1], reverse=True))
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_unique_words': len(freq),
+            'word_frequency_report': sorted_freq
         }
 
     def run(self) -> None:

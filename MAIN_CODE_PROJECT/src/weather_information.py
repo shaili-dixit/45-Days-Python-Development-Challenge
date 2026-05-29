@@ -175,21 +175,27 @@ class WeatherInformationApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'city': 'London', 'temperature': 15.5, 'humidity': 80, 'condition': 'Rainy'},
+            {'city': 'Tokyo', 'temperature': 22.0, 'humidity': 65, 'condition': 'Sunny'},
+            {'city': 'New York', 'temperature': 18.2, 'humidity': 70, 'condition': 'Cloudy'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        temps = [item.get('temperature', 0.0) for item in items]
+        hums = [item.get('humidity', 0.0) for item in items]
+        conditions = {}
+        for item in items:
+            c = item.get('condition', 'Unknown')
+            conditions[c] = conditions.get(c, 0) + 1
+        
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'cities_reported': len(items),
+            'temperature_stats': self.summarize_list(temps),
+            'humidity_stats': self.summarize_list(hums),
+            'weather_conditions_distribution': conditions
         }
 
     def run(self) -> None:

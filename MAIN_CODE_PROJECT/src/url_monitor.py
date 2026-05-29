@@ -174,21 +174,21 @@ class UrlMonitorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'url': 'https://github.com', 'is_up': True},
+            {'url': 'https://example.invalid', 'is_up': False},
+            {'url': 'https://google.com', 'is_up': True},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        uptime_count = sum(1 for url in items if url.get('is_up', False))
+        failing_urls = [url.get('url') for url in items if not url.get('is_up', False)]
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'monitored_count': len(items),
+            'uptime_percentage': round((uptime_count / len(items)) * 100, 2) if items else 0,
+            'failing_urls': failing_urls
         }
 
     def run(self) -> None:

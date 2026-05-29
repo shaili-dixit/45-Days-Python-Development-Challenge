@@ -171,21 +171,38 @@ class RockPaperScissorsApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'player_move': 'rock', 'computer_move': 'scissors'},
+            {'player_move': 'paper', 'computer_move': 'rock'},
+            {'player_move': 'scissors', 'computer_move': 'scissors'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        rounds = []
+        player_wins = 0
+        computer_wins = 0
+        draws = 0
+        for r in items:
+            pm = r.get('player_move')
+            cm = r.get('computer_move')
+            if pm == cm:
+                res = 'draw'
+                draws += 1
+            elif (pm == 'rock' and cm == 'scissors') or (pm == 'paper' and cm == 'rock') or (pm == 'scissors' and cm == 'paper'):
+                res = 'player'
+                player_wins += 1
+            else:
+                res = 'computer'
+                computer_wins += 1
+            rounds.append({'player': pm, 'computer': cm, 'winner': res})
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_rounds': len(items),
+            'player_wins': player_wins,
+            'computer_wins': computer_wins,
+            'draws': draws,
+            'rounds': rounds
         }
 
     def run(self) -> None:

@@ -171,21 +171,37 @@ class UnitConversionApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'value': 100, 'from_unit': 'C', 'to_unit': 'F'},
+            {'value': 10, 'from_unit': 'kg', 'to_unit': 'lb'},
+            {'value': 5, 'from_unit': 'mi', 'to_unit': 'km'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        results = []
+        for conversion in items:
+            val = conversion.get('value', 0.0)
+            f = conversion.get('from_unit')
+            t = conversion.get('to_unit')
+            converted = None
+            if f == 'C' and t == 'F':
+                converted = (val * 9/5) + 32
+            elif f == 'kg' and t == 'lb':
+                converted = val * 2.20462
+            elif f == 'mi' and t == 'km':
+                converted = val * 1.60934
+            
+            results.append({
+                'input_value': val,
+                'from': f,
+                'to': t,
+                'converted_value': round(converted, 4) if converted is not None else 'Unsupported conversion'
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'conversions_run': len(items),
+            'results': results
         }
 
     def c_to_f(self, c: float) -> float:

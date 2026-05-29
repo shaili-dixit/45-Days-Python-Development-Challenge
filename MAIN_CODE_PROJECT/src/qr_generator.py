@@ -171,21 +171,28 @@ class QrGeneratorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'payload': 'https://github.com/rishabhextra365-lang'},
+            {'payload': 'WiFi-Credentials-Mock'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import base64
+        qrs = []
+        for item in items:
+            payload = item.get('payload', '')
+            mock_qr_grid = f'[QR CODE FOR: {payload}]'
+            base64_encoded = base64.b64encode(payload.encode()).decode()
+            qrs.append({
+                'original_payload': payload,
+                'simulated_qr_grid': mock_qr_grid,
+                'payload_base64': base64_encoded
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'qrs_generated': len(items),
+            'qr_codes': qrs
         }
 
     def run(self) -> None:

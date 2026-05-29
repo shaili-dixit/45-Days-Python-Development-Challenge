@@ -24,13 +24,22 @@ import requests
 # Used to measure response time
 import time
 
+# Import os for environment variables
+import os
+
+# Import load_dotenv from python-dotenv
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 
 # ==========================================================
 # API URL
 # ==========================================================
 
-# Store API URL in a variable
-url = "https://jsonplaceholder.typicode.com/users/1"
+# Store API URL in a variable (loaded from env, with fallback to default)
+url = os.getenv("FETCH_DETAILS_URL", "https://jsonplaceholder.typicode.com/users/1")
 
 
 # ==========================================================
@@ -60,11 +69,17 @@ start = time.time()
 
 try:
 
+    # Get timeout from environment with a fallback default
+    try:
+        timeout = float(os.getenv("FETCH_DETAILS_TIMEOUT", "5"))
+    except ValueError:
+        timeout = 5.0
+
     # Send GET request to server
     response = requests.get(
         url,
         headers=headers,
-        timeout=5
+        timeout=timeout
     )
 
 

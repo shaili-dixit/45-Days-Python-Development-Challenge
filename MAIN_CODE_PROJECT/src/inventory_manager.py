@@ -171,21 +171,28 @@ class InventoryManagerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'name': 'Laptop', 'sku': 'LAP-001', 'price': 999.99, 'quantity': 15, 'reorder_level': 5},
+            {'name': 'Mouse', 'sku': 'MOU-002', 'price': 25.50, 'quantity': 3, 'reorder_level': 10},
+            {'name': 'Keyboard', 'sku': 'KEY-003', 'price': 45.00, 'quantity': 25, 'reorder_level': 8},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        total_value = 0.0
+        reorder_list = []
+        for prod in items:
+            price = prod.get('price', 0.0)
+            qty = prod.get('quantity', 0)
+            reorder = prod.get('reorder_level', 0)
+            total_value += price * qty
+            if qty <= reorder:
+                reorder_list.append(prod.get('name'))
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_products': len(items),
+            'total_inventory_value': round(total_value, 2),
+            'needs_reorder': reorder_list
         }
 
     def run(self) -> None:

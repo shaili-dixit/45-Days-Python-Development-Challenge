@@ -171,21 +171,31 @@ class OtpGenerationApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'phone': '+1234567890', 'length': 6, 'user_input': '123456', 'generated': '123456', 'expired': False},
+            {'phone': '+1987654321', 'length': 4, 'user_input': '9999', 'generated': '1111', 'expired': False},
+            {'phone': '+1555555555', 'length': 6, 'user_input': '444444', 'generated': '444444', 'expired': True},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        results = []
+        for attempt in items:
+            phone = attempt.get('phone', '')
+            generated = attempt.get('generated', '')
+            user_input = attempt.get('user_input', '')
+            expired = attempt.get('expired', False)
+            
+            verified = (generated == user_input) and not expired
+            results.append({
+                'phone': phone,
+                'verified': verified,
+                'reason': 'Success' if verified else ('Expired' if expired else 'Incorrect Code')
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_verification_attempts': len(items),
+            'verification_results': results
         }
 
     def generate_otp(self, digits: int = 6) -> str:

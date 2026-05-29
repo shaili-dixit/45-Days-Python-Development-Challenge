@@ -171,21 +171,35 @@ class QuizPlatformApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'question': 'Who created Python?', 'choices': ['Guido van Rossum', 'Dennis Ritchie', 'Bjarne Stroustrup'], 'correct_index': 0, 'user_choice': 0},
+            {'question': 'Which keyword starts a function definition?', 'choices': ['func', 'def', 'define'], 'correct_index': 1, 'user_choice': 0},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        score = 0
+        feedback = []
+        for q in items:
+            quest = q.get('question', '')
+            choices = q.get('choices', [])
+            correct = q.get('correct_index', 0)
+            user = q.get('user_choice', 0)
+            is_correct = user == correct
+            if is_correct:
+                score += 1
+            feedback.append({
+                'question': quest,
+                'is_correct': is_correct,
+                'correct_answer': choices[correct] if correct < len(choices) else 'N/A',
+                'user_answer': choices[user] if user < len(choices) else 'N/A'
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_questions': len(items),
+            'score': score,
+            'percentage': round((score / len(items)) * 100, 2) if items else 0,
+            'question_feedback': feedback
         }
 
     def run(self) -> None:

@@ -171,21 +171,38 @@ class TicTacToeApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'board': ['X', 'O', 'X', 'O', 'X', 'O', 'X', '', '']},
+            {'board': ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', '']},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        def check_winner(b: List[str]) -> Optional[str]:
+            win_indices = [
+                (0,1,2), (3,4,5), (6,7,8),
+                (0,3,6), (1,4,7), (2,5,8),
+                (0,4,8), (2,4,6)
+            ]
+            for x, y, z in win_indices:
+                if b[x] and b[x] == b[y] == b[z]:
+                    return b[x]
+            if all(cell for cell in b):
+                return 'Draw'
+            return None
+        
+        results = []
+        for game in items:
+            board = game.get('board', [''] * 9)
+            winner = check_winner(board)
+            results.append({
+                'board_state': board,
+                'winner_status': winner if winner else 'In Progress'
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'games_analyzed': len(items),
+            'results': results
         }
 
     def print_board(self, board: List[List[str]]) -> None:

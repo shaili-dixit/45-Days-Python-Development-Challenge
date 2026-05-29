@@ -171,21 +171,38 @@ class ContactManagerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'name': 'Alice Smith', 'phone': '123-456-7890', 'email': 'alice@example.com', 'category': 'Work'},
+            {'name': 'Bob Jones', 'phone': '987-654-321', 'email': 'bob-at-example.com', 'category': 'Personal'},
+            {'name': 'Charlie Brown', 'phone': '555-0199', 'email': 'charlie@gmail.com', 'category': 'Work'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import re
+        valid_contacts = []
+        invalid_contacts = []
+        categories = {}
+        for contact in items:
+            email = contact.get('email', '')
+            phone = contact.get('phone', '')
+            name = contact.get('name', '')
+            category = contact.get('category', 'Uncategorized')
+            
+            email_valid = bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
+            phone_valid = len(re.sub(r"\D", "", phone)) >= 7
+            
+            if email_valid and phone_valid:
+                valid_contacts.append(name)
+                categories[category] = categories.get(category, 0) + 1
+            else:
+                invalid_contacts.append(name)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_contacts': len(items),
+            'valid_contacts': valid_contacts,
+            'invalid_contacts': invalid_contacts,
+            'category_counts': categories
         }
 
     def run(self) -> None:

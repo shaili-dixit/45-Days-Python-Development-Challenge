@@ -171,21 +171,34 @@ class ProgressDashboardApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'goal': 'Complete Python Challenge', 'total_milestones': 45, 'completed_milestones': 10},
+            {'goal': 'Learn SQL', 'total_milestones': 10, 'completed_milestones': 10},
+            {'goal': 'Build Web App', 'total_milestones': 5, 'completed_milestones': 1},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        goals_progress = []
+        total_completed = 0
+        total_milestones = 0
+        for item in items:
+            goal = item.get('goal', '')
+            tot = item.get('total_milestones', 1)
+            comp = item.get('completed_milestones', 0)
+            pct = round((comp / tot) * 100, 2)
+            total_completed += comp
+            total_milestones += tot
+            goals_progress.append({
+                'goal': goal,
+                'percentage': pct,
+                'status': 'Completed' if pct == 100 else 'In Progress'
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_goals_tracked': len(items),
+            'overall_progress_percentage': round((total_completed / total_milestones) * 100, 2) if total_milestones > 0 else 0,
+            'goals_progress': goals_progress
         }
 
     def run(self) -> None:

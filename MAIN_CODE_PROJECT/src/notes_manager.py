@@ -171,21 +171,29 @@ class NotesManagerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'title': 'Groceries', 'content': 'Buy milk, eggs, and bread', 'tags': ['personal', 'shopping']},
+            {'title': 'Meeting Notes', 'content': 'Discuss challenge architecture and deliverables', 'tags': ['work', 'python']},
+            {'title': 'Gym schedule', 'content': 'Cardio on Monday, weights on Wednesday', 'tags': ['personal', 'health']},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        tags_count = {}
+        keyword_matches = []
+        for note in items:
+            title = note.get('title', '')
+            content = note.get('content', '')
+            tags = note.get('tags', [])
+            for t in tags:
+                tags_count[t] = tags_count.get(t, 0) + 1
+            if 'challenge' in content.lower() or 'challenge' in title.lower():
+                keyword_matches.append(title)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_notes': len(items),
+            'tag_frequencies': tags_count,
+            'search_results_for_challenge': keyword_matches
         }
 
     def run(self) -> None:

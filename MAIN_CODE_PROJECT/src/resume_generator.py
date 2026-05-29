@@ -171,21 +171,40 @@ class ResumeGeneratorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {
+                'name': 'Rishabh Dev',
+                'email': 'rishabh@example.com',
+                'skills': ['Python', 'SQL', 'Git', 'Pytest'],
+                'experience': '2 years of backend engineering'
+            }
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        profiles = []
+        for prof in items:
+            name = prof.get('name', 'Anonymous')
+            email = prof.get('email', '')
+            skills_str = ", ".join(prof.get('skills', []))
+            exp = prof.get('experience', '')
+            
+            markdown_resume = (
+                f'# {name}\n'
+                f'Email: {email}\n\n'
+                f'## Experience\n'
+                f'{exp}\n\n'
+                f'## Skills\n'
+                f'{skills_str}\n'
+            )
+            profiles.append({
+                'name': name,
+                'formatted_resume': markdown_resume
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'resumes_generated': len(items),
+            'resumes': profiles
         }
 
     def run(self) -> None:

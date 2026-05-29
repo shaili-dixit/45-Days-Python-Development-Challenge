@@ -171,21 +171,34 @@ class BankingSimulationApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'type': 'deposit', 'amount': 1500.0, 'timestamp': '2026-05-29T10:00:00'},
+            {'type': 'withdrawal', 'amount': 200.0, 'timestamp': '2026-05-29T10:15:00'},
+            {'type': 'deposit', 'amount': 350.0, 'timestamp': '2026-05-29T10:30:00'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        balance = 0.0
+        deposits = 0
+        withdrawals = 0
+        amounts = []
+        for tx in items:
+            amount = tx.get('amount', 0.0)
+            amounts.append(amount)
+            if tx.get('type') == 'deposit':
+                balance += amount
+                deposits += 1
+            elif tx.get('type') == 'withdrawal':
+                balance -= amount
+                withdrawals += 1
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'transaction_count': len(items),
+            'final_balance': round(balance, 2),
+            'deposits': deposits,
+            'withdrawals': withdrawals,
+            'statistics': self.summarize_list(amounts)
         }
 
     def deposit(self, account: Dict[str, Any], amount: float) -> Dict[str, Any]:

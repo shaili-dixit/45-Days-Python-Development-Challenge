@@ -171,21 +171,32 @@ class StudentInformationSystemApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'name': 'John Doe', 'grades': {'math': 85, 'science': 90}},
+            {'name': 'Jane Smith', 'grades': {'math': 95, 'science': 88}},
+            {'name': 'Bob Davis', 'grades': {'math': 70, 'science': 65}},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        students_avg = []
+        overall_sum = 0.0
+        overall_count = 0
+        for student in items:
+            name = student.get('name')
+            grades = student.get('grades', {})
+            if grades:
+                avg = sum(grades.values()) / len(grades)
+                students_avg.append({'name': name, 'average_grade': round(avg, 2)})
+                overall_sum += sum(grades.values())
+                overall_count += len(grades)
+        
+        students_avg.sort(key=lambda x: x['average_grade'], reverse=True)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_students': len(items),
+            'overall_class_average': round(overall_sum / overall_count, 2) if overall_count > 0 else 0,
+            'student_rankings': students_avg
         }
 
     def run(self) -> None:

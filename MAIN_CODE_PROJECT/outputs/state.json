@@ -1,44 +1,24 @@
 {
-  "created_at": "2026-05-29 15:50:52.955731",
+  "created_at": "2026-05-29 10:17:45.752929",
   "runs": 1,
   "errors": 0,
   "records": {
-    "employees": [
-      {
-        "name": "Alice",
-        "age": 30,
-        "salary": 55000
-      },
-      {
-        "name": "Bob",
-        "age": 25,
-        "salary": 48000
-      },
-      {
-        "name": "Charlie",
-        "age": 35,
-        "salary": 72000
-      },
-      {
-        "name": "Diana",
-        "age": 28,
-        "salary": 51000
-      },
-      {
-        "name": "Eve",
-        "age": 32,
-        "salary": 65000
+    "result": {
+      "total_unique_words": 8,
+      "word_frequency_report": {
+        "python": 3,
+        "is": 2,
+        "great": 1,
+        "and": 1,
+        "programming": 1,
+        "fun": 1,
+        "challenge": 1,
+        "programmers": 1
       }
-    ],
-    "avg_age": 30.0,
-    "top_earner": {
-      "name": "Charlie",
-      "age": 35,
-      "salary": 72000
     }
   },
   "flags": {},
   "history": [
-    "[21:20:52] Exported to outputs\\state.json"
+    "[15:47:45] Exported to outputs\\state.json"
   ]
 }

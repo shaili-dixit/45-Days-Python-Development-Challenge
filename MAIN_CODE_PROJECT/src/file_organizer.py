@@ -171,21 +171,41 @@ class FileOrganizerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'path': '/downloads/report.pdf'},
+            {'path': '/downloads/avatar.png'},
+            {'path': '/downloads/script.py'},
+            {'path': '/downloads/song.mp3'},
+            {'path': '/downloads/archive.zip'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        categories = {
+            'Documents': ['.pdf', '.docx', '.txt', '.csv'],
+            'Images': ['.png', '.jpg', '.jpeg', '.gif'],
+            'Code': ['.py', '.js', '.html', '.css'],
+            'Audio': ['.mp3', '.wav', '.flac'],
+        }
+        organized = {cat: [] for cat in categories}
+        organized['Others'] = []
+        
+        for item in items:
+            path = item.get('path', '')
+            ext = Path(path).suffix.lower()
+            matched = False
+            for cat, extensions in categories.items():
+                if ext in extensions:
+                    organized[cat].append(path)
+                    matched = True
+                    break
+            if not matched:
+                organized['Others'].append(path)
+                
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_files_analyzed': len(items),
+            'organized_files': organized
         }
 
     def run(self) -> None:

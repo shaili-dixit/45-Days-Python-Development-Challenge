@@ -171,21 +171,28 @@ class DuplicateDetectorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'id': 'apple'}, {'id': 'banana'}, {'id': 'apple'},
+            {'id': 'cherry'}, {'id': 'banana'}, {'id': 'date'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        freq = {}
+        for item in items:
+            val = str(item.get('id', ''))
+            freq[val] = freq.get(val, 0) + 1
+        
+        duplicates = {k: v for k, v in freq.items() if v > 1}
+        unique_items = [k for k, v in freq.items() if v == 1]
         return {
             'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'unique_count': len(freq),
+            'duplicate_count': len(duplicates),
+            'frequencies': freq,
+            'duplicates_detected': duplicates,
+            'strictly_unique': unique_items
         }
 
     def run(self) -> None:

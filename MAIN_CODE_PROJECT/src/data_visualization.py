@@ -171,21 +171,27 @@ class DataVisualizationApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'label': 'A', 'value': 5.0},
+            {'label': 'B', 'value': 12.0},
+            {'label': 'C', 'value': 8.0},
+            {'label': 'D', 'value': 3.0},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        max_val = max([item.get('value', 0.0) for item in items] or [1.0])
+        chart_lines = []
+        for item in items:
+            label = item.get('label', '')
+            val = item.get('value', 0.0)
+            bar_len = int((val / max_val) * 20)
+            bar = '#' * bar_len
+            chart_lines.append(f'{label:<5} | {bar} ({val})')
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'data_points': len(items),
+            'ascii_chart': '\n'.join(chart_lines)
         }
 
     def run(self) -> None:

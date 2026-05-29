@@ -171,21 +171,30 @@ class ExpenseTrackerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'category': 'Food', 'amount': 15.5},
+            {'category': 'Travel', 'amount': 45.0},
+            {'category': 'Food', 'amount': 22.1},
+            {'category': 'Entertainment', 'amount': 30.0},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        totals = {}
+        overall_total = 0.0
+        for exp in items:
+            cat = exp.get('category', 'Other')
+            amt = exp.get('amount', 0.0)
+            totals[cat] = totals.get(cat, 0.0) + amt
+            overall_total += amt
+        
+        percentages = {k: round((v / overall_total) * 100, 2) if overall_total > 0 else 0 for k, v in totals.items()}
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_expenses_logged': len(items),
+            'overall_total_spent': round(overall_total, 2),
+            'category_totals': {k: round(v, 2) for k, v in totals.items()},
+            'spending_percentages': percentages
         }
 
     def run(self) -> None:

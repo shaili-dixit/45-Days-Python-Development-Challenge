@@ -171,21 +171,22 @@ class StatisticsProcessorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'dataset_name': 'A', 'values': [10.5, 20.0, 15.5, 10.5, 30.0]},
+            {'dataset_name': 'B', 'values': [5.0, 5.0, 5.0, 5.0]},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        processed = {}
+        for ds in items:
+            name = ds.get('dataset_name', 'Unknown')
+            vals = ds.get('values', [])
+            processed[name] = self.stats_from_numbers(vals)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'datasets_processed': len(items),
+            'statistics_report': processed
         }
 
     def run(self) -> None:

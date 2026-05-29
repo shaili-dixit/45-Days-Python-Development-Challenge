@@ -171,21 +171,24 @@ class TodoSchedulerApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'task': 'Deploy updates', 'hours_to_deadline': 2, 'importance': 'high'},
+            {'task': 'Clean workspace', 'hours_to_deadline': 24, 'importance': 'low'},
+            {'task': 'Respond to emails', 'hours_to_deadline': 4, 'importance': 'medium'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        priority_map = {'high': 1, 'medium': 2, 'low': 3}
+        sorted_tasks = sorted(
+            items,
+            key=lambda x: (x.get('hours_to_deadline', 99), priority_map.get(x.get('importance', 'low'), 3))
+        )
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'tasks_scheduled_count': len(items),
+            'scheduled_todo_list': [t.get('task') for t in sorted_tasks],
+            'ordered_details': sorted_tasks
         }
 
     def run(self) -> None:

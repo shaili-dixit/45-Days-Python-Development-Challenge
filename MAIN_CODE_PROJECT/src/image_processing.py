@@ -171,21 +171,28 @@ class ImageProcessingApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'name': 'banner.png', 'width': 1920, 'height': 1080, 'format': 'png'},
+            {'name': 'thumbnail.jpg', 'width': 300, 'height': 200, 'format': 'jpg'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        processed = []
+        for img in items:
+            w = img.get('width', 0)
+            h = img.get('height', 0)
+            fmt = img.get('format', 'png')
+            processed.append({
+                'name': img.get('name'),
+                'aspect_ratio': round(w / h, 2) if h > 0 else 0,
+                'megapixels': round((w * h) / 1_000_000, 2),
+                'thumbnail_dimensions': f'{w // 4}x{h // 4}'
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_images_processed': len(items),
+            'image_metrics': processed
         }
 
     def run(self) -> None:

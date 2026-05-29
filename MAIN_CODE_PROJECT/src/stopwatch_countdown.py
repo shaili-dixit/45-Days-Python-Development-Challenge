@@ -171,21 +171,27 @@ class StopwatchCountdownApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'action': 'stopwatch', 'laps': [1.2, 2.5, 3.1]},
+            {'action': 'countdown', 'duration': 60, 'elapsed': 15},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        logs = []
+        for item in items:
+            act = item.get('action')
+            if act == 'stopwatch':
+                laps = item.get('laps', [])
+                logs.append(f'Stopwatch: {len(laps)} laps, Total time: {round(sum(laps), 2)}s')
+            elif act == 'countdown':
+                dur = item.get('duration', 0)
+                elap = item.get('elapsed', 0)
+                logs.append(f'Countdown: {elap}/{dur}s completed, {dur - elap}s remaining')
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'simulations': len(items),
+            'logs': logs
         }
 
     def simulate_countdown(self) -> List[Dict[str, Any]]:

@@ -175,21 +175,20 @@ class RandomQuoteApiApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'text': 'Talk is cheap. Show me the code.', 'author': 'Linus Torvalds'},
+            {'text': 'Programs must be written for people to read, and only incidentally for machines to execute.', 'author': 'Harold Abelson'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        quote = items[0] if items else {'text': 'No quotes available', 'author': 'System'}
+        word_count = len(quote.get('text', '').split())
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'retrieved_quote': quote,
+            'quote_word_count': word_count,
+            'all_quotes_count': len(items)
         }
 
     def run(self) -> None:

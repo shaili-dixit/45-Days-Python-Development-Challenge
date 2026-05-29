@@ -171,21 +171,33 @@ class FileReadWriteApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'filename': 'test1.txt', 'content': 'Hello from simulation!', 'mode': 'write'},
+            {'filename': 'test1.txt', 'mode': 'read'},
+            {'filename': 'missing.txt', 'mode': 'read'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        virtual_fs = {}
+        logs = []
+        for op in items:
+            fname = op.get('filename', '')
+            mode = op.get('mode', 'read')
+            content = op.get('content', '')
+            if mode == 'write':
+                virtual_fs[fname] = content
+                logs.append(f'Wrote {len(content)} chars to {fname}')
+            elif mode == 'read':
+                if fname in virtual_fs:
+                    logs.append(f'Read from {fname}: "{virtual_fs[fname]}"')
+                else:
+                    logs.append(f'Error reading {fname}: File not found')
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'operations_count': len(items),
+            'virtual_file_system_state': virtual_fs,
+            'execution_logs': logs
         }
 
     def run(self) -> None:

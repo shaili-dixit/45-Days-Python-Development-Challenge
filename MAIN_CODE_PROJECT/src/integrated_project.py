@@ -171,21 +171,29 @@ class IntegratedProjectApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'api_url': 'https://api.github.com', 'user_email': 'test@domain.com', 'plaintext': 'password123'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import re
+        import hashlib
+        reports = []
+        for item in items:
+            email = item.get('user_email', '')
+            pwd = item.get('plaintext', '')
+            email_valid = bool(re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email))
+            hashed_pwd = hashlib.sha256(pwd.encode()).hexdigest()
+            reports.append({
+                'email': email,
+                'email_valid': email_valid,
+                'hashed_password': hashed_pwd
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'integrated_runs': len(items),
+            'workflow_report': reports
         }
 
     def run(self) -> None:

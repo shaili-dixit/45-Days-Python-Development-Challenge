@@ -171,21 +171,29 @@ class PdfExtractorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'pdf_path': '/docs/course_syllabus.pdf', 'metadata': {'title': 'Syllabus', 'pages': 5}, 'raw_text': 'This is the Python course syllabus. In week 1 we cover basics. In week 2 we cover OOP.'},
+            {'pdf_path': '/docs/empty.pdf', 'metadata': {'title': 'Empty Document', 'pages': 1}, 'raw_text': ''},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        extracted = []
+        for doc in items:
+            path = doc.get('pdf_path', '')
+            text = doc.get('raw_text', '')
+            meta = doc.get('metadata', {})
+            extracted.append({
+                'path': path,
+                'title': meta.get('title', 'Unknown'),
+                'page_count': meta.get('pages', 0),
+                'word_count': len(text.split()),
+                'contains_python': 'python' in text.lower()
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'pdfs_extracted': len(items),
+            'extracted_metadata': extracted
         }
 
     def run(self) -> None:

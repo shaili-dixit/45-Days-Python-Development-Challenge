@@ -171,21 +171,33 @@ class FlashcardsApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'question': 'What is the capital of France?', 'answer': 'Paris', 'user_attempt': 'Paris'},
+            {'question': 'What is 7 * 8?', 'answer': '56', 'user_attempt': '54'},
+            {'question': 'What is the speed of light?', 'answer': '299792458 m/s', 'user_attempt': '299792458 m/s'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        correct = 0
+        incorrect = 0
+        needs_review = []
+        for card in items:
+            q = card.get('question', '')
+            ans = str(card.get('answer', '')).strip().lower()
+            attempt = str(card.get('user_attempt', '')).strip().lower()
+            if ans == attempt:
+                correct += 1
+            else:
+                incorrect += 1
+                needs_review.append(q)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_cards': len(items),
+            'correct_answers': correct,
+            'incorrect_answers': incorrect,
+            'accuracy_percentage': round((correct / len(items)) * 100, 2) if items else 0,
+            'needs_review': needs_review
         }
 
     def run(self) -> None:

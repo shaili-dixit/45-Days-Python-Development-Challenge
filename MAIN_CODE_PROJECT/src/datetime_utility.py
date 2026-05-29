@@ -171,21 +171,31 @@ class DatetimeUtilityApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'date_str': '2026-05-29 12:00:00', 'format': '%Y-%m-%d %H:%M:%S'},
+            {'date_str': '2026-12-25 00:00:00', 'format': '%Y-%m-%d %H:%M:%S'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        results = []
+        for item in items:
+            date_str = item.get('date_str', '')
+            fmt = item.get('format', '%Y-%m-%d %H:%M:%S')
+            try:
+                dt = datetime.strptime(date_str, fmt)
+                results.append({
+                    'parsed': dt.isoformat(),
+                    'rfc2822': dt.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+                    'epoch': int(time.mktime(dt.timetuple())),
+                    'day_of_week': dt.strftime('%A')
+                })
+            except Exception as e:
+                results.append({'error': str(e)})
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_parsed': len(items),
+            'formatted_datetimes': results
         }
 
     def run(self) -> None:

@@ -171,21 +171,35 @@ class CountdownReminderApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'title': 'Python Challenge End', 'target_date': '2026-07-15T00:00:00'},
+            {'title': 'Code Review Meeting', 'target_date': '2026-05-30T10:00:00'},
+            {'title': 'Past Project Deadline', 'target_date': '2026-05-01T12:00:00'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        now = datetime.utcnow()
+        events = []
+        for item in items:
+            title = item.get('title', 'Event')
+            try:
+                target = datetime.fromisoformat(item.get('target_date', ''))
+                diff = target - now
+                total_seconds = diff.total_seconds()
+                events.append({
+                    'title': title,
+                    'seconds_remaining': round(total_seconds, 2),
+                    'days_remaining': diff.days,
+                    'status': 'upcoming' if total_seconds > 0 else 'past'
+                })
+            except Exception as e:
+                events.append({'title': title, 'error': str(e)})
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'current_time': now.isoformat(),
+            'total_events': len(items),
+            'events_status': events
         }
 
     def run(self) -> None:

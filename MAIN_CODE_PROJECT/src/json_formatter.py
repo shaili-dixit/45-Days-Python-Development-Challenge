@@ -171,21 +171,26 @@ class JsonFormatterApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'json_str': '{"name":"Alice","age":30}'},
+            {'json_str': 'invalid-json'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        results = []
+        for item in items:
+            raw = item.get('json_str', '')
+            try:
+                parsed = json.loads(raw)
+                formatted = json.dumps(parsed, indent=4)
+                results.append({'raw': raw, 'status': 'valid', 'formatted': formatted})
+            except Exception as e:
+                results.append({'raw': raw, 'status': 'invalid', 'error': str(e)})
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_strings_checked': len(items),
+            'json_formatting_results': results
         }
 
     def run(self) -> None:

@@ -171,21 +171,29 @@ class CsvAnalysisApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'id': '101', 'category': 'Electronics', 'score': 95.5},
+            {'id': '102', 'category': 'Clothing', 'score': 78.2},
+            {'id': '103', 'category': 'Electronics', 'score': 88.0},
+            {'id': '104', 'category': 'Clothing', 'score': 92.1},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        scores = [item.get('score', 0.0) for item in items]
+        cats = {}
+        for item in items:
+            cat = item.get('category', 'Other')
+            cats[cat] = cats.get(cat, []) + [item.get('score', 0.0)]
+        
+        category_summaries = {}
+        for cat, val_list in cats.items():
+            category_summaries[cat] = self.stats_from_numbers(val_list)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_records': len(items),
+            'overall_statistics': self.stats_from_numbers(scores),
+            'category_breakdown': category_summaries
         }
 
     def run(self) -> None:

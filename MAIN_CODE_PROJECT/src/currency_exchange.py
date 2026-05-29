@@ -175,21 +175,33 @@ class CurrencyExchangeApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'amount': 100.0, 'from_currency': 'USD', 'to_currency': 'EUR'},
+            {'amount': 250.0, 'from_currency': 'GBP', 'to_currency': 'USD'},
+            {'amount': 50.0, 'from_currency': 'EUR', 'to_currency': 'GBP'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        rates = {'USD': 1.0, 'EUR': 0.92, 'GBP': 0.79}
+        results = []
+        for req in items:
+            amount = req.get('amount', 0.0)
+            from_cur = req.get('from_currency')
+            to_cur = req.get('to_currency')
+            if from_cur in rates and to_cur in rates:
+                usd_amount = amount / rates[from_cur]
+                converted = usd_amount * rates[to_cur]
+                results.append({
+                    'amount': amount,
+                    'from': from_cur,
+                    'to': to_cur,
+                    'converted_amount': round(converted, 4)
+                })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'requests_processed': len(items),
+            'conversions': results
         }
 
     def run(self) -> None:

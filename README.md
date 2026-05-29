@@ -28,6 +28,81 @@
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+
+<div align="center">
+
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=700&size=24&duration=3000&pause=1000&color=00C2FF&center=true&vCenter=true&width=850&lines=Welcome+to+45+Days+Python+Development+Challenge+🐍🚀;Learn+Python+with+Real+Projects+💻;Build+Projects+Daily+🔥;Fork+the+Repository+🍴;Contribute+to+Open+Source+🌟;Push+Your+Code+Like+a+Pro+🚀;Create+Amazing+Pull+Requests+✅;Level+Up+Your+Development+Journey+⚡" alt="Typing SVG" />
+
+</div>
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+# 🎯 Project Status
+
+✅ Frontend Structure Working
+✅ Python Projects Working
+✅ Daily Challenges Added
+✅ Learning Resources Available
+✅ Open Source Contribution Ready
+✅ Community Collaboration Enabled
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+# 🚨 Important Contribution Guidelines
+
+## ⚡ Before You Start Working
+
+🔄 Always pull the latest updates from the repository before starting your work.
+
+✅ Follow these steps carefully:
+
+* 🍴 Fork the repository
+* 🌿 Create your own branch
+* ⬇️ Pull latest updates
+* 💻 Start coding
+* 🚀 Push your changes
+* 🔥 Create Pull Request
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+**_🚧 Important Note: Before you start working, check the GitHub repository branch._**
+**_🔄 First: Sync (pull) to the latest merged code from the main branch._**
+**_✅ Then: Start working on your assigned issue or feature._**
+
+
+**_⚠ Skipping this step can cause merge conflicts and your PR may be rejected._**
+
+**_🚧 Important Note: Project system Everything is working properly._**
+
+**_⚠ Do NOT remove or change any existing code unrelated to your issue! If your PR modifies or deletes any core code without a valid reason, it will not be merged._**
+
+**_🚫 Strict Rule: Do NOT delete any code or  system. If any such activity is found, you will be removed and reported from this project._**
+
+---
+
+> ⚠️ **IMPORTANT WARNING:**  
+> 💡 **Before pushing your changes, make sure to _switch to the correct branch_ first!** 🪄  
+>  
+> 🔴 **Commands to Follow:**  
+> ```bash
+> git checkout <branch-name>    # 🔁 Switch to your assigned branch
+> git pull origin <branch-name> # ⬇️ Pull latest updates
+> git add .                     # ➕ Add your changes
+> git commit -m "your message"  # 💬 Commit with a clear message
+> git push origin <branch-name> # 🚀 Push your code safely
+> ```
+> 🧠 **Tip:** Always double-check the branch before pushing to avoid merge conflicts! ⚡  
+
+---
+
+✅ Write clean and readable code
+✅ Follow proper folder structure
+✅ Use meaningful commit messages
+✅ Respect all contributors and maintainers
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+
 # 📊 Project Insights
 
 <table align="center">
@@ -115,9 +190,6 @@ A journey where passionate developers come together to learn, build, contribute,
 🔥 Let’s code, collaborate, and conquer Python together — one project, one challenge, and one smart commit at a time. 👨‍💻👩‍💻🚀🌟
 
 
-
-
-
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 # 🌟 45 Days Python Development Challenge
@@ -129,7 +201,7 @@ Welcome to the **45 Days Python Development Challenge** — a complete journey f
 > 🚀 Contribute to Open Source.
 > 🏆 Grow Your Developer Portfolio.
 
----
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
 
 # 🔗 Repository Link
 
@@ -156,8 +228,59 @@ Now is the perfect time to:
 * ✅ Build your GitHub profile
 * ✅ Network with developers
 
----
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
 
+<details>
+  <summary>📘 Click to Read More </summary>
+  
+ ## 📂 Project Folder Structure
+
+```bash
+45-DAYS-PYTHON-DEVELOPMENT-CHALLENGE
+│
+├── .github
+│
+├── MAIN_CODE_PROJECT
+│   │
+│   ├── src
+│   │
+│   ├── week-1
+│   │   │
+│   │   ├── day-1
+│   │   ├── day-2
+│   │   ├── day-3
+│   │   ├── day-4
+│   │   ├── day-5
+│   │   ├── day-6
+│   │   ├── day-7
+│   │   │
+│   │   ├── week-1-challenge.md
+│   │   ├── fetch_details.py
+│   │   └── get_request.py
+│
+├── STUDY_MATERIALS_RESOURCES
+│   │
+│   ├── DAILY_TASKS
+│   ├── FLASK_GUIDES
+│   ├── PDF_NOTES
+│   ├── PROJECT_DOCUMENTATION
+│   ├── PYTHON_BASICS
+│   │   └── hello.py
+│   │
+│   └── RESOURCES
+│
+├── tests
+│
+├── .gitignore
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── environment.yml
+├── LICENSE
+├── pytest.ini
+└── README.md
+``` 
+</details>
+  
 # 🚀 What To Expect
 
 ## 01️⃣ Real Projects Drop 💻
@@ -191,9 +314,9 @@ Browse issues based on:
 
 Choose issues according to your skill level:
 
-* 🟢 Beginner Friendly
-* 🟡 Intermediate
-* 🔴 Advanced
+* 🟢 Beginner Friendly | (LEVEL 1 )
+* 🟡 Intermediate      | (LEVEL 2 ) 
+* 🔴 Advanced          | (LEVEL 3 )
 
 Contributors can:
 
@@ -312,6 +435,69 @@ Collaborate, learn, and grow together through:
 
 ---
 
+# 🗺️ 45-Day Progress Tracker
+
+Track your journey! You can check off each day as you complete it by editing your fork's `README.md` or tracking it locally.
+
+### 📅 Week 1: Python Fundamentals
+- [ ] **Day 1:** Variables & Data Types
+- [ ] **Day 2:** Loops & Conditions
+- [ ] **Day 3:** Basic Functions
+- [ ] **Day 4:** Object-Oriented Programming (OOP) Concepts
+- [ ] **Day 5:** File Handling & Operations
+- [ ] **Day 6:** Exception & Error Handling
+- [ ] **Day 7:** Week 1 Review & Mini-Challenge
+
+### 📅 Week 2: Intermediate Python & Scripting
+- [ ] **Day 8:** Working with Modules & Packages
+- [ ] **Day 9:** JSON Data Handling
+- [ ] **Day 10:** Understanding and Consuming APIs
+- [ ] **Day 11:** Managing Virtual Environments
+- [ ] **Day 12:** Advanced Functions & Decorators
+- [ ] **Day 13:** Lambda Functions & Map/Filter
+- [ ] **Day 14:** Building a Calculator App Project
+
+### 📅 Week 3: Advanced Concepts & API Building
+- [ ] **Day 15:** Introduction to Web Frameworks
+- [ ] **Day 16:** Flask Framework Basics
+- [ ] **Day 17:** Designing REST APIs
+- [ ] **Day 18:** Advanced Flask Routing & Request Handling
+- [ ] **Day 19:** Building a Password Generator CLI/Web Tool
+- [ ] **Day 20:** Integrating External APIs (Weather App Project)
+- [ ] **Day 21:** Week 3 Review & Portfolio Setup
+
+### 📅 Week 4: Databases & Persistence
+- [ ] **Day 22:** Database Integration Basics (SQLite/PostgreSQL)
+- [ ] **Day 23:** Object-Relational Mapping (ORM) with SQLAlchemy
+- [ ] **Day 24:** Implementing User Authentication
+- [ ] **Day 25:** Secure Password Hashing & Sessions
+- [ ] **Day 26:** Building a Task Manager API Backend
+- [ ] **Day 27:** Testing Python Applications
+- [ ] **Day 28:** Debugging and Logging Workflows
+
+### 📅 Week 5: Practical Automation & Real-World Tools
+- [ ] **Day 29:** Writing Automation Scripts (File Organization)
+- [ ] **Day 30:** Web Scraping Basics with BeautifulSoup
+- [ ] **Day 31:** Automating Browser Tasks with Selenium
+- [ ] **Day 32:** Working with CSV, Excel, and PDF files
+- [ ] **Day 33:** Building a Real-time Chat Application Backend
+- [ ] **Day 34:** Deploying Python/Flask Apps to Production (Render/Heroku)
+- [ ] **Day 35:** Week 5 Capstone Planning
+
+### 📅 Week 6: Final Capstone Project & Open Source
+- [ ] **Day 36:** Capstone Project: Architecture & Database Design
+- [ ] **Day 37:** Capstone Project: Implementing Core Logic
+- [ ] **Day 38:** Capstone Project: API Development
+- [ ] **Day 39:** Capstone Project: Frontend Integration/UI
+- [ ] **Day 40:** Capstone Project: Testing & Bug Fixing
+- [ ] **Day 41:** Optimizing Python Code Performance
+- [ ] **Day 42:** Documenting Repositories and Writing Clean Code
+- [ ] **Day 43:** Mastering Git Workflows for Advanced Collaboration
+- [ ] **Day 44:** Reviewing Peer Pull Requests
+- [ ] **Day 45:** 🚀 Graduation Day! Final Commit Submission
+
+---
+
 # 🛠️ Tech Stack
 
 <div align="center">
@@ -367,19 +553,44 @@ If you like this project:
 📢 Share with friends
 💻 Start contributing
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+### 🙌 **Thank You, Contributors!**
+
+> Thank you once again to all our contributors! Your efforts are truly appreciated. 💖👏
+
+<p align="center">
+  <a href="https://github.com/abhisek2004/Dev-Elevate/graphs/contributors">
+    <img src="https://api.vaunt.dev/v1/github/entities/abhisek2004/repositories/45-Days-Python-Development-Challenge/contributors?format=svg&limit=54" width="700" height="250" />
+  </a>
+</p>
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+## 🧩 Contributions
+
+![Alt](https://repobeats.axiom.co/api/embed/3f34608157d572010a0c7410cebc42725c317e4c.svg "Repobeats analytics image")
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+### ⭐ Stargazers
+
+<div align="center">
+  <a href="https://github.com/abhisek2004/45-Days-Python-Development-Challenge/stargazers">
+    <img src="https://reporoster.com/stars/abhisek2004/45-Days-Python-Development-Challenge?type=svg&limit=100&names=false" alt="Stargazers" />
+  </a>
+</div>
+
 ---
 
-# 👨‍💻 Maintainer
+### 🍴 Forkers
 
-## 👤 Abhisek Panda
-
-Passionate Full Stack & Open Source Developer focused on:
-
-* MERN Stack
-* Open Source Contributions
-* Real-World Projects
-
----
+<div align="center">
+  <a href="https://github.com/abhisek2004/45-Days-Python-Development-Challenge/network/members">
+    <img src="https://reporoster.com/forks/abhisek2004/45-Days-Python-Development-Challenge?type=svg&limit=100&names=false" alt="Forkers" />
+  </a>
+</div>
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 # 📢 Final Words
 
@@ -397,13 +608,6 @@ Passionate Full Stack & Open Source Developer focused on:
 
 </div>
 
-
-
-
-
-
-
-
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 ## 🌐 Connect with Project Admin
@@ -415,5 +619,123 @@ Passionate Full Stack & Open Source Developer focused on:
 - 👨‍💻 **Website Creator:** [Abhisek Panda](https://abhisekpanda072.vercel.app)
 - 🐙 **GitHub:** [abhisek2004](https://github.com/abhisek2004)
 - 💼 **LinkedIn:** [abhisekpanda2004](https://www.linkedin.com/in/abhisekpanda2004/)
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+# 👨‍💻 About Admin
+
+<img align="right" alt="Coding" width="320" src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif">
+
+🚀 Hi, I'm **Abhisek Panda** — a passionate **Frontend Enthusiast, MERN Stack Developer, Python Developer, and Open Source Contributor** from Odisha, India 🇮🇳.  
+
+🎓 I have completed my **Bachelor of Technology (B.Tech) in Computer Science Engineering** from **GIET University Gunupur, Odisha, India**.  
+
+💻 I am passionate about **MERN Stack Development, Python Programming, Open Source Contribution, and building impactful real-world projects** that solve practical problems and enhance user experiences.  
+
+🌟 I love exploring modern technologies, contributing to collaborative developer communities, and continuously improving my skills through hands-on development, innovation, and open-source contributions. 🚀
+
+💡 My journey revolves around:
+- 🌐 Full Stack Web Development
+- 🐍 Python Development
+- ⚛️ MERN Stack Applications
+- 🤖 AI-Powered Platforms
+- 🚀 Open Source Contributions
+- 💻 Real-World Project Building
+- 📚 Continuous Learning & Mentorship
+
+✨ I believe in:
+> “Learning by Building, Growing by Contributing, and Succeeding through Consistency.” 🔥
+
+---
+
+# 🌟 My Best Projects & Deployments 🚀
+
+<div align="center">
+
+| 🚀 Project | 🌐 Live Demo | 💻 Tech Stack |
+|------------|-------------|---------------|
+| 🌟 Personal Portfolio | [Visit Now](https://abhisekpanda072.vercel.app/) | HTML, CSS, JavaScript |
+| 🤖 DevElevate AI Platform | [Visit Now](https://develevate-ai.vercel.app/) | MERN, AI, Open Source |
+| 📚 StudyNotion Learning Platform | [Visit Now](https://studynotion-nextskill.vercel.app/) | React, Node.js, MongoDB |
+| 🧠 DSA Mastery Hub | [Visit Now](https://dsamasteryhub.vercel.app/) | DSA, React, JavaScript |
+| 🏏 IPL Indian Premier League Website | [Visit Now](https://ipl-indianpremierleague.vercel.app/) | Frontend Development |
+| 💰 Financial Empire Platform | [Visit Now](https://financial-empire.vercel.app/) | Finance & Web Development |
+
+</div>
+
+---
+
+# 🔥 Top GitHub Repositories
+
+<div align="center">
+
+| ⭐ Repository | 🚀 Description |
+|--------------|----------------|
+| 🔗 [Coding Resources Full Stack](https://github.com/abhisek2004/Coding-resources_Full-stack.git) | Complete Full Stack Development Learning Resources |
+| 🌐 [HTML CSS JavaScript Projects](https://github.com/abhisek2004/Html-Css-Javascript-Project.git) | Collection of Frontend Projects & UI Designs |
+| 🤖 [Dev-Elevate](https://github.com/abhisek2004/Dev-Elevate.git) | AI-Powered Smart Learning & Open Source Platform |
+
+</div>
+
+---
+
+# 🏆 Achievements & Experience
+
+✨ Selected as:
+- 🚀 Project Admin – GirlScript Summer of Code (GSSoC)
+- 🌟 Project Admin – Code Social
+- 💻 Open Source Contributor
+- 🏆 State Lead – ECWoC Odisha
+- 👨‍🏫 Open Source Mentor & Community Builder
+
+✨ Completed:
+- 💼 Multiple Internships in Web Development & Data Science
+- 🌐 Full Stack Development Projects
+- 🧠 AI & Machine Learning Programs
+- 🚀 Open Source Contribution Programs
+- 🏅 Hacktoberfest Contributions
+
+---
+
+# ⚡ Tech Stack
+
+<div align="center">
+
+![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+
+</div>
+
+---
+
+# 🌍 Connect With Me
+
+<div align="center">
+
+💼 **LinkedIn:** [Abhisek Panda](https://www.linkedin.com/in/abhisekpanda2004/) <br>
+📧 Email: abhisek2004panda@gmail.com <br>
+🚀 Open Source Enthusiast | MERN Developer | Freelancing
+
+</div>
+
+---
+
+# ❤️ Final Words
+
+🔥 Passionate about creating impactful digital experiences, solving real-world problems, and contributing to the open-source ecosystem.
+
+🚀 Always learning.  
+💻 Always building.  
+🌟 Always growing.
+
+<div align="center">
+
+# ⭐ Thanks For Visiting My Profile 🚀💻🔥
+
+</div>
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">

@@ -171,21 +171,33 @@ class SearchUtilityApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'title': 'Intro to Python', 'content': 'Python is an interpreted, high-level, general-purpose programming language.'},
+            {'title': 'Advanced SQL', 'content': 'Structured Query Language SQL is database management.'},
+            {'title': 'Python and databases', 'content': 'You can query SQL databases in Python using libraries.'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        keyword = 'python'
+        matches = []
+        for doc in items:
+            title = doc.get('title', '')
+            content = doc.get('content', '')
+            combined = (title + ' ' + content).lower()
+            count = combined.count(keyword)
+            if count > 0:
+                matches.append({
+                    'title': title,
+                    'term_frequency': count
+                })
+        matches.sort(key=lambda x: x['term_frequency'], reverse=True)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'search_term': keyword,
+            'documents_searched': len(items),
+            'matches_found': len(matches),
+            'results': matches
         }
 
     def run(self) -> None:

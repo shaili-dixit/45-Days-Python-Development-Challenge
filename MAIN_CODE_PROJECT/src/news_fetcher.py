@@ -175,21 +175,22 @@ class NewsFetcherApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'title': 'Python 3.14 Released', 'category': 'Tech', 'published_at': '2026-05-29'},
+            {'title': 'Global Market Update', 'category': 'Business', 'published_at': '2026-05-28'},
+            {'title': 'New Framework Takes Over Web Development', 'category': 'Tech', 'published_at': '2026-05-27'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        categorized = {}
+        for article in items:
+            cat = article.get('category', 'General')
+            categorized[cat] = categorized.get(cat, []) + [article.get('title')]
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_news_items': len(items),
+            'news_by_category': categorized
         }
 
     def run(self) -> None:

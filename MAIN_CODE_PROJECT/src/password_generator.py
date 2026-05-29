@@ -172,21 +172,34 @@ class PasswordGeneratorApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'length': 12, 'use_uppercase': True, 'use_digits': True, 'use_special': True},
+            {'length': 8, 'use_uppercase': False, 'use_digits': True, 'use_special': False},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import string
+        generated = []
+        for spec in items:
+            length = spec.get('length', 8)
+            chars = string.ascii_lowercase
+            if spec.get('use_uppercase', False):
+                chars += string.ascii_uppercase
+            if spec.get('use_digits', False):
+                chars += string.digits
+            if spec.get('use_special', False):
+                chars += '!@#$%^&*()'
+            
+            pwd = "".join(chars[(i * 7 + 13) % len(chars)] for i in range(length))
+            generated.append({
+                'requested_length': length,
+                'password': pwd
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_passwords_generated': len(items),
+            'passwords': generated
         }
 
     def generate_password(self, length: int = 12, use_digits: bool = True, use_special: bool = True) -> str:

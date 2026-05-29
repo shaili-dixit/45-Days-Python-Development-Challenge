@@ -28,13 +28,22 @@ import requests
 # Used for measuring request execution time
 import time
 
+# Import os for environment variables
+import os
+
+# Import load_dotenv from python-dotenv
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 
 # ==========================================================
 # API URL
 # ==========================================================
 
-# Store the API endpoint inside a variable
-url = "https://jsonplaceholder.typicode.com/posts/1"
+# Store the API endpoint inside a variable (loaded from env, with fallback to default)
+url = os.getenv("GET_REQUEST_URL", "https://jsonplaceholder.typicode.com/posts/1")
 
 
 # ==========================================================
@@ -72,14 +81,18 @@ try:
     # Send GET Request
     # ======================================================
 
-    # timeout=5 means wait maximum 5 seconds
+    # timeout=5 means wait maximum 5 seconds (loaded from environment, with fallback to default)
     # If API takes longer than this,
     # request automatically fails
+    try:
+        timeout = float(os.getenv("GET_REQUEST_TIMEOUT", "5"))
+    except ValueError:
+        timeout = 5.0
 
     response = requests.get(
         url,
         headers=headers,
-        timeout=5
+        timeout=timeout
     )
 
 

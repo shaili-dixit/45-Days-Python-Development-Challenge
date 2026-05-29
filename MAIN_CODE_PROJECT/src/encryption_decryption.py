@@ -171,21 +171,39 @@ class EncryptionDecryptionApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'message': 'Hello World!', 'shift': 3},
+            {'message': 'Python 3.10 is cool.', 'shift': 5},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        def caesar(text: str, s: int) -> str:
+            res = []
+            for char in text:
+                if char.isalpha():
+                    base = ord('A') if char.isupper() else ord('a')
+                    res.append(chr((ord(char) - base + s) % 26 + base))
+                else:
+                    res.append(char)
+            return "".join(res)
+        
+        runs = []
+        for item in items:
+            msg = item.get('message', '')
+            shift = item.get('shift', 0)
+            enc = caesar(msg, shift)
+            dec = caesar(enc, -shift)
+            runs.append({
+                'original': msg,
+                'encrypted': enc,
+                'decrypted': dec,
+                'verified': msg == dec
+            })
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'total_messages': len(items),
+            'encryption_results': runs
         }
 
     def caesar_encrypt(self, text: str, shift: int = 3) -> str:

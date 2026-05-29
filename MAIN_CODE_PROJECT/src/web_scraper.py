@@ -174,21 +174,27 @@ class WebScraperApp:
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
+            {'html': '<html><body><h1>Welcome to Python Challenge</h1><a href="https://example.com/day1">Day 1</a><a href="https://example.com/day2">Day 2</a></body></html>'},
         ]
 
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        active = [item for item in items if item.get('active', False)]
-        values = [item.get('value', 0) for item in active]
+        import re
+        links = []
+        headings = []
+        for page in items:
+            html = page.get('html', '')
+            found_links = re.findall(r'href=["\'](https?://[^"\']+)["\']', html)
+            found_headings = re.findall(r'<h1[^>]*>(.*?)</h1>', html)
+            links.extend(found_links)
+            headings.extend(found_headings)
         return {
-            'total_items': len(items),
-            'active_items': len(active),
-            'summary': self.summarize_list(values),
+            'pages_scraped': len(items),
+            'extracted_headings': headings,
+            'extracted_links_count': len(links),
+            'extracted_links': links
         }
 
     def run(self) -> None:
