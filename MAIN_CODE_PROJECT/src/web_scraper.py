@@ -16,9 +16,6 @@ import random
 import statistics
 import time
 
-import html.parser
-import urllib.request
-
 @dataclass
 class WebScraperAppState:
     history: List[str] = field(default_factory=list)
