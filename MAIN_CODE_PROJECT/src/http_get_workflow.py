@@ -8,15 +8,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 import json
-import math
-import os
-<<<<<<< Updated upstream
 import random
-import statistics
-=======
->>>>>>> Stashed changes
 import time
 
 import urllib.error
@@ -137,20 +131,6 @@ class HttpGetWorkflowApp:
             'avg': round(sum(values) / len(values), 4),
         }
 
-    def stats_from_numbers(self, values: List[float]) -> Dict[str, Any]:
-        if not values:
-            return {'mean': 0, 'median': 0, 'mode': None, 'stdev': 0}
-        try:
-            mode_value = statistics.mode(values)
-        except Exception:
-            mode_value = None
-        return {
-            'mean': round(statistics.mean(values), 4),
-            'median': round(statistics.median(values), 4),
-            'mode': mode_value,
-            'stdev': round(statistics.pstdev(values), 4) if len(values) > 1 else 0,
-        }
-
     def history_tail(self, count: int = 5) -> List[str]:
         return self.state.history[-count:]
 
@@ -191,21 +171,15 @@ class HttpGetWorkflowApp:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             payload = response.read().decode('utf-8', errors='replace')
             elapsed = round(time.perf_counter() - started, 4)
+            status_code = getattr(response, 'status', 200)
             try:
                 data = json.loads(payload)
             except Exception:
                 data = {'raw': payload}
-            data['elapsed_seconds'] = elapsed
-            data['status_code'] = getattr(response, 'status', 200)
-            return data
+            return {'data': data, 'status_code': status_code, 'elapsed_seconds': elapsed}
 
-    def display_result(self, data: Dict[str, Any]) -> None:
+    def display_result(self, result: Dict[str, Any]) -> None:
         self.section('HTTP Response')
-<<<<<<< Updated upstream
-        for key in ['status_code', 'elapsed_seconds', 'title', 'raw']:
-            if key in data:
-                print(self.format_kv(key, data[key]))
-=======
         print(self.format_kv('status_code', result.get('status_code')))
         print(self.format_kv('elapsed_seconds', result.get('elapsed_seconds')))
         data = result.get('data', {})
@@ -214,8 +188,13 @@ class HttpGetWorkflowApp:
         else:
             for key, value in data.items():
                 print(self.format_kv(key, value))
->>>>>>> Stashed changes
-
+        print(self.format_kv('status_code', result.get('status_code')))
+        print(self.format_kv('elapsed_seconds', result.get('elapsed_seconds')))
+        data = result.get('data', {})
+        if 'title' in data:
+            print(self.format_kv('title', data['title']))
+        if 'raw' in data:
+            print(self.format_kv('raw', data['raw']))
     def run(self) -> None:
         self.state.runs += 1
         url = 'https://jsonplaceholder.typicode.com/posts/1'

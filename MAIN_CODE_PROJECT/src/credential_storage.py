@@ -11,10 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import hashlib
 import json
-import math
-import os
 import random
-import statistics
 import time
 import hashlib
 
@@ -130,20 +127,6 @@ class CredentialStorageApp:
             'min': min(values),
             'max': max(values),
             'avg': round(sum(values) / len(values), 4),
-        }
-
-    def stats_from_numbers(self, values: List[float]) -> Dict[str, Any]:
-        if not values:
-            return {'mean': 0, 'median': 0, 'mode': None, 'stdev': 0}
-        try:
-            mode_value = statistics.mode(values)
-        except Exception:
-            mode_value = None
-        return {
-            'mean': round(statistics.mean(values), 4),
-            'median': round(statistics.median(values), 4),
-            'mode': mode_value,
-            'stdev': round(statistics.pstdev(values), 4) if len(values) > 1 else 0,
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
