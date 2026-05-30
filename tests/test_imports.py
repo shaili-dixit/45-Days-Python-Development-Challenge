@@ -1,6 +1,11 @@
-"""
+﻿"""
 Basic tests to verify that core modules can be imported
 """
+<<<<<<< Updated upstream
+Basic tests to verify that core modules can be imported
+"""
+=======
+>>>>>>> Stashed changes
 import sys
 from pathlib import Path
 
@@ -48,6 +53,7 @@ class TestProjectStructure:
         assert src_dir.exists(), f"src directory not found at {src_dir}"
 
     def test_src_files_exist(self):
+<<<<<<< Updated upstream
         """Test that key src files exist"""
         project_root = Path(__file__).parent.parent
         src_dir = project_root / "MAIN_CODE_PROJECT" / "src"
@@ -64,3 +70,10 @@ class TestProjectStructure:
             file_path = src_dir / file
             assert file_path.exists(
             ), f"Expected file {file} not found in src directory"
+=======
+        """Test that all src files exist"""
+        project_root = Path(__file__).parent.parent
+        src_dir = project_root / "MAIN_CODE_PROJECT" / "src"
+        src_files = [f for f in src_dir.iterdir() if f.suffix == '.py' and not f.name.startswith('__')]
+        assert len(src_files) >= 50, f"Expected 50+ source files, found {len(src_files)}"
+>>>>>>> Stashed changes
