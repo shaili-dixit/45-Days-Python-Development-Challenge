@@ -1,4 +1,4 @@
-"""Create a Basic Web Scraping Utility for Structured Information Collection
+﻿"""Create a Basic Web Scraping Utility for Structured Information Collection
 
 Generated for the 45-day Python development challenge.
 """
@@ -33,8 +33,6 @@ class WebScraperApp:
         self.state = WebScraperAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

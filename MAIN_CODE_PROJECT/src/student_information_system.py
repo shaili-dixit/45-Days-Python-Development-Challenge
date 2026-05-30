@@ -1,4 +1,4 @@
-"""Implement a Structured Student Information Management System with Search and Sorting Capabilities
+﻿"""Implement a Structured Student Information Management System with Search and Sorting Capabilities
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class StudentInformationSystemApp:
         self.state = StudentInformationSystemAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

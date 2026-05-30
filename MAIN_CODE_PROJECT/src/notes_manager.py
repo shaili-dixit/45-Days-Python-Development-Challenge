@@ -1,4 +1,4 @@
-"""Implement a Multi-Feature Notes Management Utility with Search Capabilities
+﻿"""Implement a Multi-Feature Notes Management Utility with Search Capabilities
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class NotesManagerApp:
         self.state = NotesManagerAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

@@ -1,4 +1,4 @@
-"""Build an Advanced Password Strength Analyzer Using Rule-Based Validation Logic
+﻿"""Build an Advanced Password Strength Analyzer Using Rule-Based Validation Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class PasswordStrengthAnalyzerApp:
         self.state = PasswordStrengthAnalyzerAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

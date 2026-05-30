@@ -1,4 +1,4 @@
-"""Implement a Comprehensive Date and Time Utility with Multiple Formatting Options
+﻿"""Implement a Comprehensive Date and Time Utility with Multiple Formatting Options
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class DatetimeUtilityApp:
         self.state = DatetimeUtilityAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

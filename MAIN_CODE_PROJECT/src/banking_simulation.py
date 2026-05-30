@@ -1,4 +1,4 @@
-"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class BankingSimulationApp:
         self.state = BankingSimulationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

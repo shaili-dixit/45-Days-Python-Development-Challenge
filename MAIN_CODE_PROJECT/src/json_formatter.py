@@ -1,4 +1,4 @@
-"""Build a Dynamic JSON Data Reader and Structured Formatter
+﻿"""Build a Dynamic JSON Data Reader and Structured Formatter
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class JsonFormatterApp:
         self.state = JsonFormatterAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

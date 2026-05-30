@@ -1,4 +1,4 @@
-"""Develop a Duplicate Information Detection Utility Using Efficient Search Logic
+﻿"""Develop a Duplicate Information Detection Utility Using Efficient Search Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class DuplicateDetectorApp:
         self.state = DuplicateDetectorAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

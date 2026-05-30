@@ -1,4 +1,4 @@
-"""Build a Dynamic Progress Tracking Dashboard for Personal Learning Goals
+﻿"""Build a Dynamic Progress Tracking Dashboard for Personal Learning Goals
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class ProgressDashboardApp:
         self.state = ProgressDashboardAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

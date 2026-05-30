@@ -1,4 +1,4 @@
-"""Create an Intelligent Number Guessing Engine with Dynamic Hint Generation System
+﻿"""Create an Intelligent Number Guessing Engine with Dynamic Hint Generation System
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class NumberGuessingEngineApp:
         self.state = NumberGuessingEngineAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

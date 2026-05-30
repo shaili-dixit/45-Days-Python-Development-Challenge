@@ -1,4 +1,4 @@
-"""Implement an Automated News Retrieval Utility Using Public APIs
+﻿"""Implement an Automated News Retrieval Utility Using Public APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -34,8 +34,6 @@ class NewsFetcherApp:
         self.state = NewsFetcherAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

@@ -1,4 +1,4 @@
-"""Create an End-to-End Mini Project Integrating APIs, Data Processing, Storage, and User Interaction Features
+﻿"""Create an End-to-End Mini Project Integrating APIs, Data Processing, Storage, and User Interaction Features
 
 Generated for the 45-day Python development challenge.
 """
@@ -30,8 +30,6 @@ class IntegratedProjectApp:
         self.state = IntegratedProjectAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')

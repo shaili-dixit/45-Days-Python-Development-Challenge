@@ -1,4 +1,4 @@
-"""Implement an Automated Weather Information Retrieval System Using External APIs
+﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -34,8 +34,6 @@ class WeatherInformationApp:
         self.state = WeatherInformationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
