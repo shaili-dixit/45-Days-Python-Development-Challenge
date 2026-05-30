@@ -1,4 +1,4 @@
-"""Build a PDF Information Extraction Utility with Structured Content Parsing
+﻿"""Build a PDF Information Extraction Utility with Structured Content Parsing
 
 Generated for the 45-day Python development challenge.
 """
@@ -339,18 +339,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

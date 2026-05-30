@@ -173,7 +173,7 @@ class UserAuthSimulationApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        attempts = [('admin', 'wrong'), ('admin', 'admin123')]
+        attempts = [('admin', 'wrong'), ('admin', 'wrong2'), ('admin', 'wrong3'), ('admin', 'admin123')]
         locked = False
         failures = 0
         self.section('Authentication Simulation')
@@ -202,18 +202,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
