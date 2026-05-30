@@ -171,19 +171,22 @@ class HttpGetWorkflowApp:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             payload = response.read().decode('utf-8', errors='replace')
             elapsed = round(time.perf_counter() - started, 4)
+            status_code = getattr(response, 'status', 200)
             try:
                 data = json.loads(payload)
             except Exception:
                 data = {'raw': payload}
-            data['elapsed_seconds'] = elapsed
-            data['status_code'] = getattr(response, 'status', 200)
-            return data
+            return {'data': data, 'status_code': status_code, 'elapsed_seconds': elapsed}
 
-    def display_result(self, data: Dict[str, Any]) -> None:
+    def display_result(self, result: Dict[str, Any]) -> None:
         self.section('HTTP Response')
-        for key in ['status_code', 'elapsed_seconds', 'title', 'raw']:
-            if key in data:
-                print(self.format_kv(key, data[key]))
+        print(self.format_kv('status_code', result.get('status_code')))
+        print(self.format_kv('elapsed_seconds', result.get('elapsed_seconds')))
+        data = result.get('data', {})
+        if 'title' in data:
+            print(self.format_kv('title', data['title']))
+        if 'raw' in data:
+            print(self.format_kv('raw', data['raw']))
 
     def run(self) -> None:
         self.state.runs += 1
