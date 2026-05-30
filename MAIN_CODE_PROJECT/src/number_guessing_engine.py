@@ -177,7 +177,7 @@ class NumberGuessingEngineApp:
         ]
 
     def pick_target(self) -> int:
-        return 42
+        return random.randint(1, 100)
 
     def hint(self, guess: int, target: int) -> str:
         if guess < target:
@@ -189,13 +189,25 @@ class NumberGuessingEngineApp:
     def run(self) -> None:
         self.state.runs += 1
         target = self.pick_target()
-        guesses = [10, 50, 42]
+        attempts = 0
+        max_attempts = 10
         self.section('Guessing Game')
-        for guess in guesses:
+        print(f'I have picked a number between 1 and 100. Can you guess it?')
+        while attempts < max_attempts:
+            try:
+                raw = input(f'Attempt {attempts + 1}/{max_attempts} - Enter your guess: ')
+                guess = int(raw.strip())
+            except (ValueError, TypeError):
+                print('Please enter a valid integer.')
+                continue
+            attempts += 1
             answer = self.hint(guess, target)
             print(self.format_kv(f'guess {guess}', answer))
             if answer == 'correct':
+                self.log(f'You got it in {attempts} attempts!')
                 break
+        else:
+            self.log(f'Sorry, you ran out of attempts. The number was {target}.')
         self.display_report()
     def number_guessing_engine_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for number_guessing_engine."""
