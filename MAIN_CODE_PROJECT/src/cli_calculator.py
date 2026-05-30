@@ -1,4 +1,4 @@
-"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
+﻿"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
 
 Generated for the 45-day Python development challenge.
 """
@@ -6,14 +6,12 @@ Generated for the 45-day Python development challenge.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 import json
 import math
-import os
 import random
-import statistics
 import time
 
 @dataclass
@@ -21,7 +19,7 @@ class CliCalculatorAppState:
     history: List[str] = field(default_factory=list)
     records: Dict[str, Any] = field(default_factory=dict)
     flags: Dict[str, bool] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
 
@@ -30,8 +28,6 @@ class CliCalculatorApp:
         self.state = CliCalculatorAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -132,20 +128,6 @@ class CliCalculatorApp:
             'avg': round(sum(values) / len(values), 4),
         }
 
-    def stats_from_numbers(self, values: List[float]) -> Dict[str, Any]:
-        if not values:
-            return {'mean': 0, 'median': 0, 'mode': None, 'stdev': 0}
-        try:
-            mode_value = statistics.mode(values)
-        except Exception:
-            mode_value = None
-        return {
-            'mean': round(statistics.mean(values), 4),
-            'median': round(statistics.median(values), 4),
-            'mode': mode_value,
-            'stdev': round(statistics.pstdev(values), 4) if len(values) > 1 else 0,
-        }
-
     def history_tail(self, count: int = 5) -> List[str]:
         return self.state.history[-count:]
 
@@ -158,7 +140,7 @@ class CliCalculatorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -208,76 +190,6 @@ class CliCalculatorApp:
                 self.state.errors += 1
                 print(self.format_kv(item, f'error: {exc}'))
         self.display_report()
-    def cli_calculator_utility_1(self, value: Any) -> Any:
-        """Utility routine 1 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def cli_calculator_utility_2(self, value: Any) -> Any:
-        """Utility routine 2 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def cli_calculator_utility_3(self, value: Any) -> Any:
-        """Utility routine 3 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def cli_calculator_utility_4(self, value: Any) -> Any:
-        """Utility routine 4 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def cli_calculator_utility_5(self, value: Any) -> Any:
-        """Utility routine 5 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def cli_calculator_utility_6(self, value: Any) -> Any:
-        """Utility routine 6 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def cli_calculator_utility_7(self, value: Any) -> Any:
-        """Utility routine 7 tuned for cli_calculator."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
     def finalize(self) -> None:
         self.export_state()
         self.log('Finalized successfully')

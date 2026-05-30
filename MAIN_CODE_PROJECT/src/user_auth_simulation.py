@@ -1,4 +1,4 @@
-"""Design a Secure User Authentication Simulation with Username and Password Verification
+﻿"""Design a Secure User Authentication Simulation with Username and Password Verification
 
 Generated for the 45-day Python development challenge.
 """
@@ -6,14 +6,12 @@ Generated for the 45-day Python development challenge.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+import hashlib
 import json
-import math
-import os
 import random
-import statistics
 import time
 
 @dataclass
@@ -21,7 +19,7 @@ class UserAuthSimulationAppState:
     history: List[str] = field(default_factory=list)
     records: Dict[str, Any] = field(default_factory=dict)
     flags: Dict[str, bool] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
 
@@ -30,8 +28,6 @@ class UserAuthSimulationApp:
         self.state = UserAuthSimulationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
-        self.seed = 42
-        random.seed(self.seed)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -132,20 +128,6 @@ class UserAuthSimulationApp:
             'avg': round(sum(values) / len(values), 4),
         }
 
-    def stats_from_numbers(self, values: List[float]) -> Dict[str, Any]:
-        if not values:
-            return {'mean': 0, 'median': 0, 'mode': None, 'stdev': 0}
-        try:
-            mode_value = statistics.mode(values)
-        except Exception:
-            mode_value = None
-        return {
-            'mean': round(statistics.mean(values), 4),
-            'median': round(statistics.median(values), 4),
-            'mode': mode_value,
-            'stdev': round(statistics.pstdev(values), 4) if len(values) > 1 else 0,
-        }
-
     def history_tail(self, count: int = 5) -> List[str]:
         return self.state.history[-count:]
 
@@ -158,7 +140,7 @@ class UserAuthSimulationApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -176,9 +158,18 @@ class UserAuthSimulationApp:
             {'name': 'gamma', 'value': 3, 'active': True},
         ]
 
+    def _hash(self, password: str) -> str:
+        return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
     def authenticate(self, username: str, password: str) -> bool:
-        users = {'admin': 'admin123', 'guest': 'guest123'}
-        return users.get(username) == password
+        users = {
+            'admin': self._hash('admin123'),
+            'guest': self._hash('guest123'),
+        }
+        stored = users.get(username)
+        if stored is None:
+            return False
+        return stored == self._hash(password)
 
     def run(self) -> None:
         self.state.runs += 1
@@ -197,76 +188,6 @@ class UserAuthSimulationApp:
                 locked = True
         self.record('locked', locked)
         self.display_report()
-    def user_auth_simulation_utility_1(self, value: Any) -> Any:
-        """Utility routine 1 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def user_auth_simulation_utility_2(self, value: Any) -> Any:
-        """Utility routine 2 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def user_auth_simulation_utility_3(self, value: Any) -> Any:
-        """Utility routine 3 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def user_auth_simulation_utility_4(self, value: Any) -> Any:
-        """Utility routine 4 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def user_auth_simulation_utility_5(self, value: Any) -> Any:
-        """Utility routine 5 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def user_auth_simulation_utility_6(self, value: Any) -> Any:
-        """Utility routine 6 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
-    def user_auth_simulation_utility_7(self, value: Any) -> Any:
-        """Utility routine 7 tuned for user_auth_simulation."""
-        if isinstance(value, str):
-            return self.normalize_text(value)
-        if isinstance(value, (int, float)):
-            return self.clamp(float(value), -1_000_000, 1_000_000)
-        if isinstance(value, list):
-            return [self.normalize_text(str(x)) for x in value]
-        return value
-
     def finalize(self) -> None:
         self.export_state()
         self.log('Finalized successfully')
