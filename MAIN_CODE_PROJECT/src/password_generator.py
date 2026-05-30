@@ -15,6 +15,7 @@ import os
 import random
 import statistics
 import time
+import string
 
 @dataclass
 class PasswordGeneratorAppState:
@@ -158,7 +159,7 @@ class PasswordGeneratorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -201,13 +202,27 @@ class PasswordGeneratorApp:
             'passwords': generated
         }
 
+    def generate_password(self, length: int = 12, use_digits: bool = True, use_special: bool = True) -> str:
+        chars = string.ascii_letters
+        if use_digits:
+            chars += string.digits
+        if use_special:
+            chars += string.punctuation
+        return ''.join(random.choice(chars) for _ in range(length))
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Password Generator')
+        passwords = []
+        for length in [8, 12, 16]:
+            pwd = self.generate_password(length)
+            has_digits = any(c.isdigit() for c in pwd)
+            has_special = any(not c.isalnum() for c in pwd)
+            passwords.append({'password': pwd, 'length': length, 'has_digits': has_digits, 'has_special': has_special})
+            print(self.format_kv(f'Password ({length} chars)', pwd))
+            print(self.format_kv('  Has digits', str(has_digits)))
+            print(self.format_kv('  Has special', str(has_special)))
+        self.record('passwords', passwords)
         self.display_report()
     def password_generator_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for password_generator."""

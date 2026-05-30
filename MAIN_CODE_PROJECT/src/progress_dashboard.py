@@ -158,7 +158,7 @@ class ProgressDashboardApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -203,11 +203,29 @@ class ProgressDashboardApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Progress Dashboard')
+        goals = [
+            {'goal': 'Learn Python', 'progress': 80, 'target': 100},
+            {'goal': 'Build Projects', 'progress': 45, 'target': 100},
+            {'goal': 'Contribute to OSS', 'progress': 20, 'target': 50},
+            {'goal': 'Complete Challenges', 'progress': 35, 'target': 45},
+        ]
+        total_progress = sum(g['progress'] for g in goals)
+        total_target = sum(g['target'] for g in goals)
+        overall = round((total_progress / total_target) * 100, 1)
+        bar_len = 20
+        for g in goals:
+            pct = round((g['progress'] / g['target']) * 100, 1)
+            filled = int((pct / 100) * bar_len)
+            bar = '#' * filled + '-' * (bar_len - filled)
+            status = 'ON TRACK' if pct >= 50 else 'NEEDS ATTENTION'
+            print(f'{g["goal"]:<22} {bar} {pct}%  [{status}]')
+        print()
+        print(self.format_kv('Overall progress', f'{overall}%'))
+        print(self.format_kv('Goals on track', sum(1 for g in goals if (g['progress'] / g['target']) >= 0.5)))
+        print(self.format_kv('Need attention', sum(1 for g in goals if (g['progress'] / g['target']) < 0.5)))
+        self.record('goals', goals)
+        self.record('overall_progress', overall)
         self.display_report()
     def progress_dashboard_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for progress_dashboard."""

@@ -158,7 +158,7 @@ class DuplicateDetectorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -197,11 +197,25 @@ class DuplicateDetectorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
+        self.section('Duplicate Detection')
+        data = [1, 2, 3, 2, 4, 5, 3, 6, 7, 5, 8, 9, 1]
+        seen = set()
+        duplicates = {}
+        for item in data:
+            if item in seen:
+                duplicates[item] = duplicates.get(item, 0) + 1
+            else:
+                seen.add(item)
+        for d in duplicates:
+            duplicates[d] = data.count(d)
+        self.section('Duplicate Analysis')
+        print(self.format_kv('Total items', len(data)))
+        print(self.format_kv('Unique items', len(seen)))
+        print(self.format_kv('Duplicate values', len(duplicates)))
+        for val, count in sorted(duplicates.items()):
+            print(self.format_kv(f'Value {val}', f'appears {count} times'))
+        result = {'total': len(data), 'unique': len(seen), 'duplicates': {str(k): v for k, v in duplicates.items()}}
         self.record('result', result)
-        print(json.dumps(result, indent=2))
         self.display_report()
     def duplicate_detector_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for duplicate_detector."""

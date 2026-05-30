@@ -158,7 +158,7 @@ class JsonFormatterApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -195,11 +195,20 @@ class JsonFormatterApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
+        self.section('JSON Formatting')
+        sample = {'user': {'id': 1, 'name': 'Alice', 'roles': ['admin', 'editor'], 'metadata': {'created': '2026-01-01', 'active': True}}}
+        pretty = json.dumps(sample, indent=2)
+        compact = json.dumps(sample)
+        self.section('Pretty-Printed JSON')
+        print(pretty)
+        self.section('Compact JSON')
+        print(compact)
+        self.section('Comparison')
+        print(self.format_kv('Pretty length', len(pretty)))
+        print(self.format_kv('Compact length', len(compact)))
+        print(self.format_kv('Difference', len(pretty) - len(compact)))
+        result = {'pretty': pretty, 'compact': compact, 'pretty_length': len(pretty), 'compact_length': len(compact)}
         self.record('result', result)
-        print(json.dumps(result, indent=2))
         self.display_report()
     def json_formatter_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for json_formatter."""

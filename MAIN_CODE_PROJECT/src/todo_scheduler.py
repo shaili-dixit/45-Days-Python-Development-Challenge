@@ -158,7 +158,7 @@ class TodoSchedulerApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -193,11 +193,25 @@ class TodoSchedulerApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Todo Scheduler')
+        tasks = [
+            {'task': 'Buy groceries', 'deadline': '2026-06-01', 'priority': 'High', 'done': False},
+            {'task': 'Pay bills', 'deadline': '2026-05-30', 'priority': 'High', 'done': True},
+            {'task': 'Read book', 'deadline': '2026-06-15', 'priority': 'Low', 'done': False},
+        ]
+        sorted_tasks = sorted(tasks, key=lambda t: t['deadline'])
+        print('Tasks sorted by deadline:')
+        print(self.render_table(sorted_tasks))
+        print()
+        today = datetime.now().strftime('%Y-%m-%d')
+        overdue = [t for t in tasks if not t['done'] and t['deadline'] < today]
+        pending = [t for t in tasks if not t['done'] and t['deadline'] >= today]
+        completed = [t for t in tasks if t['done']]
+        print(self.format_kv('Overdue', len(overdue)))
+        print(self.format_kv('Pending', len(pending)))
+        print(self.format_kv('Completed', len(completed)))
+        self.record('tasks', tasks)
+        self.record('summary', {'overdue': len(overdue), 'pending': len(pending), 'completed': len(completed)})
         self.display_report()
     def todo_scheduler_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for todo_scheduler."""

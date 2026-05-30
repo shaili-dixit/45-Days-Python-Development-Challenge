@@ -158,7 +158,7 @@ class NumberGuessingEngineApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -177,7 +177,7 @@ class NumberGuessingEngineApp:
         ]
 
     def pick_target(self) -> int:
-        return 42
+        return random.randint(1, 100)
 
     def hint(self, guess: int, target: int) -> str:
         if guess < target:

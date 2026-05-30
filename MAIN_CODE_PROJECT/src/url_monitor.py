@@ -16,6 +16,9 @@ import random
 import statistics
 import time
 
+import urllib.error
+import urllib.request
+
 @dataclass
 class UrlMonitorAppState:
     history: List[str] = field(default_factory=list)
@@ -158,7 +161,7 @@ class UrlMonitorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -190,11 +193,34 @@ class UrlMonitorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('URL Monitoring')
+        urls = [
+            'https://jsonplaceholder.typicode.com/posts/1',
+            'https://jsonplaceholder.typicode.com/invalid',
+            'https://nonexistent.domain.test'
+        ]
+        results = []
+        for url in urls:
+            start = time.perf_counter()
+            status = 'ERROR'
+            code = 0
+            try:
+                request = urllib.request.Request(url, method='GET', headers={'User-Agent': 'Python45-Dev/1.0'})
+                with urllib.request.urlopen(request, timeout=5) as response:
+                    code = response.getcode()
+                    status = 'UP' if 200 <= code < 400 else 'DOWN'
+            except urllib.error.HTTPError as exc:
+                code = exc.code
+                status = 'UP' if code == 404 else 'DOWN'
+            except (urllib.error.URLError, Exception):
+                status = 'DOWN'
+            elapsed = round(time.perf_counter() - start, 4)
+            results.append({'URL': url, 'Status': status, 'Code': code, 'Time (s)': elapsed})
+        self.section('Monitor Results')
+        print(self.render_table(results))
+        self.record('monitor_results', results)
+        up_count = sum(1 for r in results if r['Status'] == 'UP')
+        self.log(f'{up_count}/{len(results)} URLs are UP')
         self.display_report()
     def url_monitor_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for url_monitor."""

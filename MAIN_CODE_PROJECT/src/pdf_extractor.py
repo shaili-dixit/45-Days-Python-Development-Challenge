@@ -158,7 +158,7 @@ class PdfExtractorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -198,11 +198,24 @@ class PdfExtractorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('PDF Extraction')
+        paragraphs = [
+            'Project Report Q1 2026\nThe company achieved significant growth.',
+            'Financial Summary\nRevenue increased by 25% year-over-year.',
+            'Key Metrics\nCustomer count: 10,000+, Satisfaction: 94%',
+        ]
+        for i, para in enumerate(paragraphs, 1):
+            print(self.format_kv(f'Paragraph {i}', para[:60] + '...'))
+        all_text = '\n\n'.join(paragraphs)
+        words = all_text.split()
+        lines = all_text.split('\n')
+        headers = [l for l in lines if l.endswith(':') or 'Summary' in l or 'Report' in l or 'Metrics' in l]
+        print()
+        print(self.format_kv('Word count', len(words)))
+        print(self.format_kv('Line count', len(lines)))
+        print(self.format_kv('Section headers', len(headers)))
+        report = {'paragraphs': paragraphs, 'word_count': len(words), 'line_count': len(lines), 'headers': headers}
+        self.record('extraction_result', report)
         self.display_report()
     def pdf_extractor_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for pdf_extractor."""

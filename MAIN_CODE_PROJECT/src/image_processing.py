@@ -158,7 +158,7 @@ class ImageProcessingApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -197,11 +197,31 @@ class ImageProcessingApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Image Processing')
+        image = [[random.randint(0, 255) for _ in range(5)] for _ in range(5)]
+        print('Before:')
+        for row in image:
+            print(' '.join(f'{p:3d}' for p in row))
+        bright = [[min(255, p + 10) for p in row] for row in image]
+        inverted = [[255 - p for p in row] for row in image]
+        flat = [p for row in image for p in row]
+        stats = self.summarize_list(flat)
+        print()
+        self.section('After Brightness (+10)')
+        for row in bright:
+            print(' '.join(f'{p:3d}' for p in row))
+        print()
+        self.section('After Invert')
+        for row in inverted:
+            print(' '.join(f'{p:3d}' for p in row))
+        print()
+        print(self.format_kv('Min pixel', stats['min']))
+        print(self.format_kv('Max pixel', stats['max']))
+        print(self.format_kv('Mean pixel', stats['avg']))
+        self.record('original', image)
+        self.record('brightness_adjusted', bright)
+        self.record('inverted', inverted)
+        self.record('statistics', stats)
         self.display_report()
     def image_processing_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for image_processing."""

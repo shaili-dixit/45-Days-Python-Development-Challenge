@@ -158,7 +158,7 @@ class UnitConversionApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -204,13 +204,40 @@ class UnitConversionApp:
             'results': results
         }
 
+    def c_to_f(self, c: float) -> float:
+        return round(c * 9.0 / 5.0 + 32, 2)
+
+    def kg_to_lb(self, kg: float) -> float:
+        return round(kg * 2.20462, 2)
+
+    def m_to_ft(self, m: float) -> float:
+        return round(m * 3.28084, 2)
+
+    def l_to_gal(self, l: float) -> float:
+        return round(l * 0.264172, 2)
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
+        self.section('Unit Conversion')
+        conversions = [('celsius', 0), ('celsius', 100), ('kg', 1), ('m', 10), ('l', 5)]
+        results = []
+        for unit, value in conversions:
+            if unit == 'celsius':
+                converted = self.c_to_f(value)
+                result_unit = 'fahrenheit'
+            elif unit == 'kg':
+                converted = self.kg_to_lb(value)
+                result_unit = 'lb'
+            elif unit == 'm':
+                converted = self.m_to_ft(value)
+                result_unit = 'ft'
+            elif unit == 'l':
+                converted = self.l_to_gal(value)
+                result_unit = 'gal'
+            print(self.format_kv(f'{value} {unit}', f'{converted} {result_unit}'))
+            results.append({'from': f'{value} {unit}', 'to': f'{converted} {result_unit}'})
+        result = {'conversions': results}
         self.record('result', result)
-        print(json.dumps(result, indent=2))
         self.display_report()
     def unit_conversion_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for unit_conversion."""

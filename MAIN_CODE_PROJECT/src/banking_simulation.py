@@ -158,7 +158,7 @@ class BankingSimulationApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -201,13 +201,53 @@ class BankingSimulationApp:
             'statistics': self.summarize_list(amounts)
         }
 
+    def deposit(self, account: Dict[str, Any], amount: float) -> Dict[str, Any]:
+        if amount <= 0:
+            return {'status': 'failed', 'reason': 'Negative deposit not allowed'}
+        account['balance'] += amount
+        tx = {'type': 'deposit', 'amount': amount, 'balance': account['balance']}
+        account['transactions'].append(tx)
+        return {'status': 'success', 'transaction': tx}
+
+    def withdraw(self, account: Dict[str, Any], amount: float) -> Dict[str, Any]:
+        if amount <= 0:
+            return {'status': 'failed', 'reason': 'Negative withdrawal not allowed'}
+        if amount > account['balance']:
+            return {'status': 'failed', 'reason': 'Insufficient funds'}
+        account['balance'] -= amount
+        tx = {'type': 'withdrawal', 'amount': amount, 'balance': account['balance']}
+        account['transactions'].append(tx)
+        return {'status': 'success', 'transaction': tx}
+
+    def get_balance(self, account: Dict[str, Any]) -> float:
+        return account['balance']
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Banking Simulation')
+        account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
+        print(self.format_kv('Account holder', account['holder']))
+        print(self.format_kv('Opening balance', f"${account['balance']:.2f}"))
+        ops = [
+            ('deposit', 500),
+            ('withdraw', 200),
+            ('withdraw', 800),
+            ('deposit', 100),
+        ]
+        for action, amt in ops:
+            if action == 'deposit':
+                result = self.deposit(account, amt)
+            else:
+                result = self.withdraw(account, amt)
+            status = result['status']
+            if status == 'success':
+                tx = result['transaction']
+                print(f"  {tx['type'].title():<12} ${amt:<8.2f} -> Balance: ${tx['balance']:.2f}")
+            else:
+                print(f"  {action.title():<12} ${amt:<8.2f} -> FAILED: {result['reason']}")
+        print()
+        print(self.format_kv('Final balance', f"${account['balance']:.2f}"))
+        self.record('account', account)
         self.display_report()
     def banking_simulation_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for banking_simulation."""

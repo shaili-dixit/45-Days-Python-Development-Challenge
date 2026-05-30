@@ -158,7 +158,7 @@ class StudentInformationSystemApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -201,11 +201,39 @@ class StudentInformationSystemApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Student Information System')
+        students = [
+            {'name': 'Alice', 'grade': 85, 'subjects': {'Math': 85, 'Science': 90, 'English': 80}},
+            {'name': 'Bob', 'grade': 72, 'subjects': {'Math': 70, 'Science': 75, 'English': 72}},
+            {'name': 'Charlie', 'grade': 90, 'subjects': {'Math': 95, 'Science': 88, 'English': 87}},
+        ]
+        print(self.render_table([{'name': s['name'], 'grade': s['grade']} for s in students]))
+        grades = [s['grade'] for s in students]
+        class_avg = round(sum(grades) / len(grades), 2)
+        min_grade = min(grades)
+        max_grade = max(grades)
+        subjects = ['Math', 'Science', 'English']
+        subject_averages = {}
+        for subj in subjects:
+            vals = [s['subjects'][subj] for s in students]
+            subject_averages[subj] = round(sum(vals) / len(vals), 2)
+        needs_improvement = [s for s in students if s['grade'] < 75]
+        self.section('Grade Report')
+        print(self.format_kv('Class average', class_avg))
+        print(self.format_kv('Min grade', min_grade))
+        print(self.format_kv('Max grade', max_grade))
+        print(self.format_kv('Subject averages', subject_averages))
+        print(self.format_kv('Needs improvement (< 75)', len(needs_improvement)))
+        for s in needs_improvement:
+            print(self.format_kv(f'  {s["name"]}', s['grade']))
+        result = {
+            'class_average': class_avg,
+            'min_grade': min_grade,
+            'max_grade': max_grade,
+            'subject_averages': subject_averages,
+            'needs_improvement': [s['name'] for s in needs_improvement],
+        }
+        self.record('student_report', result)
         self.display_report()
     def student_information_system_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for student_information_system."""

@@ -158,7 +158,7 @@ class ResumeGeneratorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -209,11 +209,32 @@ class ResumeGeneratorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Resume Generator')
+        resume = {
+            'name': 'John Doe',
+            'title': 'Python Developer',
+            'skills': ['Python', 'Flask', 'Git', 'SQL'],
+            'experience': [
+                {'company': 'Tech Corp', 'role': 'Junior Dev', 'years': 2},
+                {'company': 'Startup Inc', 'role': 'Developer', 'years': 3},
+            ],
+            'education': {'degree': 'B.Tech CSE', 'year': 2020},
+        }
+        total_years = sum(exp['years'] for exp in resume['experience'])
+        print(f"Name: {resume['name']}")
+        print(f"Title: {resume['title']}")
+        print(f"Skills: {', '.join(resume['skills'])}")
+        print()
+        self.section('Experience')
+        for exp in resume['experience']:
+            print(f"{exp['role']} at {exp['company']} ({exp['years']} yrs)")
+        print()
+        print(self.format_kv('Total experience', f'{total_years} years'))
+        self.section('Education')
+        edu = resume['education']
+        print(f"{edu['degree']} - {edu['year']}")
+        self.record('resume', resume)
+        self.record('total_experience_years', total_years)
         self.display_report()
     def resume_generator_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for resume_generator."""
