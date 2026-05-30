@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+import hashlib
 import json
 import math
 import os
@@ -176,9 +177,18 @@ class UserAuthSimulationApp:
             {'name': 'gamma', 'value': 3, 'active': True},
         ]
 
+    def _hash(self, password: str) -> str:
+        return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
     def authenticate(self, username: str, password: str) -> bool:
-        users = {'admin': 'admin123', 'guest': 'guest123'}
-        return users.get(username) == password
+        users = {
+            'admin': self._hash('admin123'),
+            'guest': self._hash('guest123'),
+        }
+        stored = users.get(username)
+        if stored is None:
+            return False
+        return stored == self._hash(password)
 
     def run(self) -> None:
         self.state.runs += 1
