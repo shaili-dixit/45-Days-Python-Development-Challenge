@@ -183,11 +183,18 @@ class HttpGetWorkflowApp:
         print(self.format_kv('status_code', result.get('status_code')))
         print(self.format_kv('elapsed_seconds', result.get('elapsed_seconds')))
         data = result.get('data', {})
+        if 'raw' in data:
+            print(self.format_kv('raw', data['raw']))
+        else:
+            for key, value in data.items():
+                print(self.format_kv(key, value))
+        print(self.format_kv('status_code', result.get('status_code')))
+        print(self.format_kv('elapsed_seconds', result.get('elapsed_seconds')))
+        data = result.get('data', {})
         if 'title' in data:
             print(self.format_kv('title', data['title']))
         if 'raw' in data:
             print(self.format_kv('raw', data['raw']))
-
     def run(self) -> None:
         self.state.runs += 1
         url = 'https://jsonplaceholder.typicode.com/posts/1'
