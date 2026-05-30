@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 import json
+import random
+import time
 
 @dataclass
 class ImageProcessingAppState:
@@ -48,6 +50,21 @@ class ImageProcessingApp:
 
     def record(self, key: str, value: Any) -> None:
         self.state.records[key] = value
+
+    def toggle(self, key: str, default: bool = False) -> bool:
+        current = self.state.flags.get(key, default)
+        self.state.flags[key] = not current
+        return self.state.flags[key]
+
+    def summarize_list(self, values: List[float]) -> Dict[str, Any]:
+        if not values:
+            return {'count': 0, 'min': 0, 'max': 0, 'avg': 0}
+        return {
+            'count': len(values),
+            'min': min(values),
+            'max': max(values),
+            'avg': round(sum(values) / len(values), 4),
+        }
 
     def history_tail(self, count: int = 5) -> List[str]:
         return self.state.history[-count:]
