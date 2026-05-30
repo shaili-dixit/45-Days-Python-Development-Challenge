@@ -200,11 +200,26 @@ class DatetimeUtilityApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
+        self.section('Date/Time Formatting')
+        now = datetime.now()
+        iso_fmt = now.isoformat()
+        us_fmt = now.strftime('%m/%d/%Y')
+        eu_fmt = now.strftime('%d/%m/%Y')
+        time_fmt = now.strftime('%H:%M:%S')
+        self.section('Current Time Formats')
+        print(self.format_kv('ISO', iso_fmt))
+        print(self.format_kv('US (MM/DD/YYYY)', us_fmt))
+        print(self.format_kv('EU (DD/MM/YYYY)', eu_fmt))
+        print(self.format_kv('Time only', time_fmt))
+        d1 = datetime(2026, 1, 1)
+        d2 = datetime(2026, 5, 29)
+        diff = (d2 - d1).days
+        self.section('Date Difference')
+        print(self.format_kv('Date 1', d1.strftime('%Y-%m-%d')))
+        print(self.format_kv('Date 2', d2.strftime('%Y-%m-%d')))
+        print(self.format_kv('Days between', diff))
+        result = {'iso': iso_fmt, 'us': us_fmt, 'eu': eu_fmt, 'time': time_fmt, 'date_diff_days': diff}
         self.record('result', result)
-        print(json.dumps(result, indent=2))
         self.display_report()
     def datetime_utility_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for datetime_utility."""

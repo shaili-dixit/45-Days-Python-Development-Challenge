@@ -206,11 +206,19 @@ class CurrencyExchangeApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Currency Exchange')
+        rates = {'USD': 1.0, 'EUR': 0.85, 'GBP': 0.73, 'JPY': 110.0, 'INR': 83.0}
+        conversions_100usd = []
+        for currency, rate in rates.items():
+            conversions_100usd.append({'from': 'USD', 'to': currency, 'amount': 100.0, 'result': round(100.0 * rate, 2)})
+        eur_to_usd = round(50.0 / rates['EUR'], 2)
+        print('100 USD to other currencies:')
+        print(self.render_table(conversions_100usd))
+        print()
+        print(self.format_kv('50 EUR to USD', f'${eur_to_usd}'))
+        self.record('rates', rates)
+        self.record('conversions_100usd', conversions_100usd)
+        self.record('eur50_to_usd', eur_to_usd)
         self.display_report()
     def currency_exchange_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for currency_exchange."""

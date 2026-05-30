@@ -199,13 +199,40 @@ class EmailValidatorApp:
             'invalid_emails': invalid
         }
 
+    def validate_email(self, email: str) -> bool:
+        if not email or not isinstance(email, str):
+            return False
+        if ' ' in email:
+            return False
+        if '@' not in email:
+            return False
+        local, _, domain = email.partition('@')
+        if not local:
+            return False
+        if not domain:
+            return False
+        if '.' not in domain:
+            return False
+        return True
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
+        self.section('Email Validation')
+        test_emails = ['user@example.com', 'invalid-email', 'user@.com', 'name@domain.co.uk', '@domain.com', 'user+tag@domain.com', '', None]
+        results = []
+        for email in test_emails:
+            valid = self.validate_email(email)
+            status = 'PASS' if valid else 'FAIL'
+            display = f"'{email}'" if email is not None else 'None'
+            print(self.format_kv(display, status))
+            results.append({'email': str(email) if email else '', 'valid': valid})
+        self.section('Validation Summary')
+        passed = sum(1 for r in results if r['valid'])
+        print(self.format_kv('Passed', passed))
+        print(self.format_kv('Failed', len(results) - passed))
+        print(self.format_kv('Total', len(results)))
+        result = {'results': results, 'passed': passed, 'failed': len(results) - passed, 'total': len(results)}
         self.record('result', result)
-        print(json.dumps(result, indent=2))
         self.display_report()
     def email_validator_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for email_validator."""

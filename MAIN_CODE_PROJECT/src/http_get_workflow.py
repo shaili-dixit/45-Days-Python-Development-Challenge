@@ -206,7 +206,7 @@ class HttpGetWorkflowApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        url = self.build_url('https://jsonplaceholder.typicode.com/posts/1', {})
+        url = 'https://jsonplaceholder.typicode.com/posts/1'
         try:
             data = self.fetch_json(url)
             self.record('last_response', data)

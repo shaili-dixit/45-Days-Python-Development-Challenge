@@ -177,7 +177,7 @@ class NumberGuessingEngineApp:
         ]
 
     def pick_target(self) -> int:
-        return 42
+        return random.randint(1, 100)
 
     def hint(self, guess: int, target: int) -> str:
         if guess < target:

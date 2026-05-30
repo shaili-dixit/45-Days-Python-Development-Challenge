@@ -200,11 +200,35 @@ class LogAnalyzerApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Log Analysis')
+        logs = [
+            '[2026-05-01 10:00:00] INFO: Server started',
+            '[2026-05-01 10:01:00] ERROR: Connection failed to database',
+            '[2026-05-01 10:02:00] WARN: Memory usage high',
+            '[2026-05-01 10:03:00] INFO: Request received',
+            '[2026-05-01 10:04:00] ERROR: Timeout occurred',
+            '[2026-05-01 10:05:00] INFO: Response sent',
+            '[2026-05-01 10:06:00] ERROR: Disk full',
+        ]
+        levels = {'INFO': 0, 'WARN': 0, 'ERROR': 0}
+        errors = []
+        for entry in logs:
+            for level in levels:
+                if level in entry:
+                    levels[level] += 1
+                    if level == 'ERROR':
+                        errors.append(entry)
+                    break
+        print(self.format_kv('INFO count', levels['INFO']))
+        print(self.format_kv('WARN count', levels['WARN']))
+        print(self.format_kv('ERROR count', levels['ERROR']))
+        print()
+        if errors:
+            self.section('ERROR Details')
+            for err in errors:
+                print(f'  {err}')
+        self.record('log_count', levels)
+        self.record('errors', errors)
         self.display_report()
     def log_analyzer_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for log_analyzer."""

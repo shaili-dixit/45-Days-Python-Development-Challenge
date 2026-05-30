@@ -194,13 +194,31 @@ class StopwatchCountdownApp:
             'logs': logs
         }
 
+    def simulate_countdown(self) -> List[Dict[str, Any]]:
+        steps = []
+        for i in range(10, -1, -1):
+            print(self.format_kv('Countdown', i))
+            steps.append({'remaining': i, 'elapsed': 10 - i})
+            time.sleep(0.1)
+        return steps
+
+    def simulate_stopwatch(self) -> List[Dict[str, Any]]:
+        laps = []
+        for tick in [1, 3, 6, 10]:
+            print(self.format_kv('Lap', f'{tick}s'))
+            laps.append({'lap': tick, 'time': tick})
+            time.sleep(0.1)
+        return laps
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Countdown: 10 to 0')
+        countdown_steps = self.simulate_countdown()
+        print()
+        self.section('Stopwatch Laps')
+        lap_times = self.simulate_stopwatch()
+        self.record('countdown', countdown_steps)
+        self.record('laps', lap_times)
         self.display_report()
     def stopwatch_countdown_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for stopwatch_countdown."""

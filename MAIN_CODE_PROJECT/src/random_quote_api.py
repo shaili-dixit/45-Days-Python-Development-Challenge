@@ -193,11 +193,30 @@ class RandomQuoteApiApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Fetching Random Quote')
+        start = time.perf_counter()
+        try:
+            posts_url = 'https://jsonplaceholder.typicode.com/posts'
+            request = urllib.request.Request(posts_url, headers={'User-Agent': 'Python45-Dev/1.0'})
+            with urllib.request.urlopen(request, timeout=10) as response:
+                posts = json.loads(response.read().decode('utf-8', errors='replace'))
+            post = random.choice(posts)
+            comments_url = f'https://jsonplaceholder.typicode.com/posts/{post["id"]}/comments'
+            request2 = urllib.request.Request(comments_url, headers={'User-Agent': 'Python45-Dev/1.0'})
+            with urllib.request.urlopen(request2, timeout=10) as response2:
+                comments = json.loads(response2.read().decode('utf-8', errors='replace'))
+            elapsed = round(time.perf_counter() - start, 4)
+            self.section('Random Quote')
+            print(self.format_kv('Quote', post['title']))
+            print(self.format_kv('Body', post['body']))
+            print(self.format_kv('Comments', len(comments)))
+            self.record('quote', post)
+            self.record('comment_count', len(comments))
+            self.record('response_time', elapsed)
+            self.log(f'Fetched random post {post["id"]} in {elapsed}s')
+        except Exception as exc:
+            self.state.errors += 1
+            self.log(f'Quote fetch failed: {exc}')
         self.display_report()
     def random_quote_api_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for random_quote_api."""

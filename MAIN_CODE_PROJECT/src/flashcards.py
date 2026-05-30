@@ -202,11 +202,33 @@ class FlashcardsApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Flashcard Quiz')
+        cards = [
+            {'question': 'What is Python?', 'answer': 'A programming language', 'category': 'General'},
+            {'question': 'What is a list?', 'answer': 'Ordered mutable collection', 'category': 'Data Structures'},
+            {'question': 'What is a dict?', 'answer': 'Key-value mapping', 'category': 'Data Structures'},
+        ]
+        shuffled = random.sample(cards, len(cards))
+        score = 0
+        for i, card in enumerate(shuffled, 1):
+            self.section(f'Card {i}/{len(shuffled)}')
+            print(self.format_kv('Category', card['category']))
+            print(self.format_kv('Question', card['question']))
+            print(self.format_kv('Answer', card['answer']))
+            score += 1
+        self.section('Quiz Results')
+        total = len(shuffled)
+        percent = round((score / total) * 100, 2)
+        print(self.format_kv('Correct', score))
+        print(self.format_kv('Total', total))
+        print(self.format_kv('Score', f'{percent}%'))
+        result = {
+            'cards': len(cards),
+            'total_questions': total,
+            'score': score,
+            'percentage': percent,
+        }
+        self.record('quiz_result', result)
         self.display_report()
     def flashcards_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for flashcards."""

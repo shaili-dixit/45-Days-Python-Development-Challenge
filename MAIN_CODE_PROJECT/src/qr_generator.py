@@ -197,11 +197,22 @@ class QrGeneratorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('QR Code Generation')
+        data_items = ['https://example.com', 'Python-45', 'Hello World']
+        print('Data to encode:')
+        for item in data_items:
+            print(f'  - {item}')
+        size = 12
+        qr_grid = []
+        for _ in range(size):
+            row = ''.join(random.choice(['#', ' ']) for _ in range(size))
+            qr_grid.append(row)
+        print()
+        print('Generated QR pattern:')
+        for row in qr_grid:
+            print(f'  {row}')
+        self.record('original_data', data_items)
+        self.record('qr_pattern', qr_grid)
         self.display_report()
     def qr_generator_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for qr_generator."""

@@ -198,11 +198,26 @@ class CsvAnalysisApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('CSV Analysis')
+        employees = [
+            {'name': 'Alice', 'age': 30, 'salary': 55000},
+            {'name': 'Bob', 'age': 25, 'salary': 48000},
+            {'name': 'Charlie', 'age': 35, 'salary': 72000},
+            {'name': 'Diana', 'age': 28, 'salary': 51000},
+            {'name': 'Eve', 'age': 32, 'salary': 65000},
+        ]
+        print(self.render_table(employees))
+        ages = [e['age'] for e in employees]
+        salaries = [e['salary'] for e in employees]
+        top_earner = max(employees, key=lambda e: e['salary'])
+        print()
+        print(self.format_kv('Average age', round(sum(ages) / len(ages), 1)))
+        print(self.format_kv('Min salary', min(salaries)))
+        print(self.format_kv('Max salary', max(salaries)))
+        print(self.format_kv('Top earner', f"{top_earner['name']} (${top_earner['salary']})"))
+        self.record('employees', employees)
+        self.record('avg_age', round(sum(ages) / len(ages), 1))
+        self.record('top_earner', top_earner)
         self.display_report()
     def csv_analysis_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for csv_analysis."""

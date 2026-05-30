@@ -206,13 +206,32 @@ class EncryptionDecryptionApp:
             'encryption_results': runs
         }
 
+    def caesar_encrypt(self, text: str, shift: int = 3) -> str:
+        result = []
+        for ch in text:
+            if ch.isalpha():
+                base = ord('A') if ch.isupper() else ord('a')
+                result.append(chr((ord(ch) - base + shift) % 26 + base))
+            else:
+                result.append(ch)
+        return ''.join(result)
+
+    def caesar_decrypt(self, text: str, shift: int = 3) -> str:
+        return self.caesar_encrypt(text, -shift)
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Encryption / Decryption')
+        original = "Hello World"
+        encrypted = self.caesar_encrypt(original)
+        decrypted = self.caesar_decrypt(encrypted)
+        substitution = {chr(ord('a') + i): chr(ord('z') - i) for i in range(26)}
+        sub_encrypted = ''.join(substitution.get(ch.lower(), ch) for ch in original.lower())
+        print(self.format_kv('Original', original))
+        print(self.format_kv('Encrypted (Caesar)', encrypted))
+        print(self.format_kv('Decrypted', decrypted))
+        print(self.format_kv('Substitution', sub_encrypted))
+        self.record('cipher', {'original': original, 'caesar_encrypted': encrypted, 'caesar_decrypted': decrypted, 'substitution': sub_encrypted})
         self.display_report()
     def encryption_decryption_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for encryption_decryption."""

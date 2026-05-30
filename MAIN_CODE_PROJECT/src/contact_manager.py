@@ -207,11 +207,29 @@ class ContactManagerApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Contact Manager')
+        contacts = [
+            {'name': 'Alice', 'phone': '123-456-7890', 'email': 'alice@example.com', 'group': 'Friends'},
+            {'name': 'Bob', 'phone': '234-567-8901', 'email': 'bob@example.com', 'group': 'Work'},
+            {'name': 'Charlie', 'phone': '345-678-9012', 'email': 'charlie@example.com', 'group': 'Friends'},
+        ]
+        print('All Contacts:')
+        print(self.render_table(contacts))
+        groups = {}
+        for c in contacts:
+            grp = c['group']
+            if grp not in groups:
+                groups[grp] = []
+            groups[grp].append(c)
+        self.section('Groups')
+        for grp, members in groups.items():
+            print(f'\nGroup: {grp}')
+            print(self.render_table(members))
+        result = {
+            'total_contacts': len(contacts),
+            'groups': {k: len(v) for k, v in groups.items()},
+        }
+        self.record('contacts', result)
         self.display_report()
     def contact_manager_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for contact_manager."""

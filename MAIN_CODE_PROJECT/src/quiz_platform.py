@@ -204,11 +204,31 @@ class QuizPlatformApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Quiz Platform')
+        questions = [
+            {'q': 'What is 2+2?', 'options': ['3', '4', '5', '6'], 'answer': 1},
+            {'q': 'What is the capital of France?', 'options': ['London', 'Berlin', 'Paris', 'Madrid'], 'answer': 2},
+            {'q': 'Which planet is known as Red Planet?', 'options': ['Venus', 'Mars', 'Jupiter', 'Saturn'], 'answer': 1},
+        ]
+        answers = [1, 2, 1]
+        results = []
+        correct = 0
+        for i, q in enumerate(questions):
+            chosen = answers[i]
+            is_correct = chosen == q['answer']
+            if is_correct:
+                correct += 1
+            print(self.format_kv(f'Q{i+1}', q['q']))
+            print(self.format_kv('  Chosen', q['options'][chosen]))
+            print(self.format_kv('  Correct', q['options'][q['answer']]))
+            print(self.format_kv('  Result', 'Correct' if is_correct else 'Wrong'))
+            results.append({'question': q['q'], 'chosen': q['options'][chosen], 'correct': q['options'][q['answer']], 'is_correct': is_correct})
+        print()
+        percentage = round(correct / len(questions) * 100, 2)
+        print(self.format_kv('Score', f'{correct}/{len(questions)}'))
+        print(self.format_kv('Percentage', f'{percentage}%'))
+        self.record('questions', results)
+        self.record('score', {'correct': correct, 'total': len(questions), 'percentage': percentage})
         self.display_report()
     def quiz_platform_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for quiz_platform."""

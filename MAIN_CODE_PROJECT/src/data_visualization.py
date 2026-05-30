@@ -196,11 +196,20 @@ class DataVisualizationApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('ASCII Bar Chart')
+        data = {'Jan': 30, 'Feb': 55, 'Mar': 80, 'Apr': 45, 'May': 90, 'Jun': 60}
+        max_val = max(data.values())
+        bar_width = 50
+        for label, val in data.items():
+            bar_len = int((val / max_val) * bar_width)
+            bar = '#' * bar_len
+            print(f'{label}: {bar} {val}')
+        chart_lines = [{'label': k, 'value': v, 'bar_length': int((v / max_val) * bar_width)} for k, v in data.items()]
+        print()
+        print(self.format_kv('Max value', max_val))
+        print(self.format_kv('Chart width', bar_width))
+        self.record('chart_data', chart_lines)
+        self.record('max_value', max_val)
         self.display_report()
     def data_visualization_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for data_visualization."""

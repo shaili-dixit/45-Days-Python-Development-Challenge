@@ -198,13 +198,35 @@ class OtpGenerationApp:
             'verification_results': results
         }
 
+    def generate_otp(self, digits: int = 6) -> str:
+        return ''.join(str(random.randint(0, 9)) for _ in range(digits))
+
+    def is_expired(self, created_at: datetime, expiry_seconds: int = 30) -> bool:
+        return (datetime.now() - created_at).total_seconds() > expiry_seconds
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('OTP Generation')
+        now = datetime.now()
+        otps = []
+        otp1 = self.generate_otp()
+        expired_time = now - timedelta(seconds=60)
+        status1 = 'expired' if self.is_expired(expired_time) else 'active'
+        otps.append({'otp': otp1, 'created': str(expired_time), 'status': status1})
+        print(self.format_kv('OTP 1 (expired)', otp1))
+        print(self.format_kv('  Status', status1))
+        otp2 = self.generate_otp(8)
+        active_time = now - timedelta(seconds=10)
+        status2 = 'expired' if self.is_expired(active_time) else 'active'
+        otps.append({'otp': otp2, 'created': str(active_time), 'status': status2})
+        print(self.format_kv('OTP 2 (active)', otp2))
+        print(self.format_kv('  Status', status2))
+        otp3 = self.generate_otp(4)
+        status3 = 'expired' if self.is_expired(now) else 'active'
+        otps.append({'otp': otp3, 'created': str(now), 'status': status3})
+        print(self.format_kv('OTP 3 (just created)', otp3))
+        print(self.format_kv('  Status', status3))
+        self.record('otps', otps)
         self.display_report()
     def otp_generation_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for otp_generation."""
