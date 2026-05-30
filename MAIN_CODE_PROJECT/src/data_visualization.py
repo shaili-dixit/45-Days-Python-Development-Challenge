@@ -189,18 +189,22 @@ class DataVisualizationApp:
             bar_len = int((val / max_val) * 20)
             bar = '#' * bar_len
             chart_lines.append(f'{label:<5} | {bar} ({val})')
+        chart = '\n'.join(chart_lines)
+        chart_path = self.save_text('chart.txt', chart)
+        self.log(f'Chart saved to {chart_path}')
         return {
             'data_points': len(items),
-            'ascii_chart': '\n'.join(chart_lines)
+            'ascii_chart': chart
         }
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
+        self.section('Data Visualization')
         items = self.dataset()
         result = self.process_dataset(items)
         self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Bar Chart')
+        print(result['ascii_chart'])
         self.display_report()
     def data_visualization_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for data_visualization."""
