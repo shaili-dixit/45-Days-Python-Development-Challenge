@@ -185,7 +185,12 @@ class PasswordStrengthAnalyzerApp:
             'special': any(not c.isalnum() for c in password),
         }
         score = sum(rules.values())
-        label = 'weak' if score <= 2 else 'moderate' if score == 3 else 'strong'
+        if score <= 1:
+            label = 'weak'
+        elif score <= 3:
+            label = 'moderate'
+        else:
+            label = 'strong'
         return {'password': password, 'score': score, 'label': label, 'rules': rules}
 
     def run(self) -> None:
