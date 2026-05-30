@@ -158,7 +158,7 @@ class SystemMonitorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -202,11 +202,37 @@ class SystemMonitorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('System Monitoring')
+        snapshots = []
+        for i in range(3):
+            snap = {
+                'timestamp': datetime.now().isoformat(),
+                'cpu_usage': random.randint(20, 90),
+                'memory_usage': random.randint(40, 80),
+                'disk_usage': random.randint(50, 95),
+                'network_in': 1024,
+                'network_out': 512,
+                'uptime_hours': random.randint(1, 720),
+            }
+            snapshots.append(snap)
+            time.sleep(0.1)
+        print(self.render_table(snapshots))
+        trends = {}
+        metrics = ['cpu_usage', 'memory_usage', 'disk_usage']
+        for m in metrics:
+            vals = [s[m] for s in snapshots]
+            if vals[-1] > vals[0]:
+                trends[m] = 'increasing'
+            elif vals[-1] < vals[0]:
+                trends[m] = 'decreasing'
+            else:
+                trends[m] = 'stable'
+        print()
+        self.section('Trends')
+        for k, v in trends.items():
+            print(self.format_kv(k.replace('_', ' ').title(), v))
+        self.record('snapshots', snapshots)
+        self.record('trends', trends)
         self.display_report()
     def system_monitor_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for system_monitor."""

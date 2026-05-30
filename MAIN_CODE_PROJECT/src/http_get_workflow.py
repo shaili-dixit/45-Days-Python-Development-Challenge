@@ -162,7 +162,7 @@ class HttpGetWorkflowApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -206,7 +206,7 @@ class HttpGetWorkflowApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        url = self.build_url('https://jsonplaceholder.typicode.com/posts/1', {})
+        url = 'https://jsonplaceholder.typicode.com/posts/1'
         try:
             data = self.fetch_json(url)
             self.record('last_response', data)

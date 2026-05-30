@@ -158,7 +158,7 @@ class FileOrganizerApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -210,11 +210,25 @@ class FileOrganizerApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('File Organization')
+        files = [
+            {'name': 'report.pdf', 'size': 2048, 'type': 'pdf'},
+            {'name': 'image.jpg', 'size': 1024, 'type': 'jpg'},
+            {'name': 'notes.txt', 'size': 512, 'type': 'txt'},
+            {'name': 'data.csv', 'size': 768, 'type': 'csv'},
+            {'name': 'script.py', 'size': 256, 'type': 'py'},
+        ]
+        groups = {}
+        for f in files:
+            ext = f['type']
+            if ext not in groups:
+                groups[ext] = {'type': ext, 'count': 0, 'total_size': 0}
+            groups[ext]['count'] += 1
+            groups[ext]['total_size'] += f['size']
+        table_data = list(groups.values())
+        print(self.render_table(table_data))
+        self.record('files', files)
+        self.record('grouped', table_data)
         self.display_report()
     def file_organizer_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for file_organizer."""

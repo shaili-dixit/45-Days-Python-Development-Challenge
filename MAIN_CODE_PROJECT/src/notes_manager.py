@@ -158,7 +158,7 @@ class NotesManagerApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -198,11 +198,28 @@ class NotesManagerApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Notes Manager')
+        notes = [
+            {'title': 'Meeting Notes', 'content': 'Discussed Q2 roadmap', 'created': '2026-05-01'},
+            {'title': 'Ideas', 'content': 'Build a Python project tracker', 'created': '2026-05-02'},
+            {'title': 'TODO', 'content': 'Review pull requests', 'created': '2026-05-03'},
+        ]
+        self.section('All Notes')
+        print(self.render_table(notes))
+        keyword = 'Python'
+        search_results = [n for n in notes if keyword.lower() in n['content'].lower()]
+        self.section(f'Search Results for "{keyword}"')
+        if search_results:
+            print(self.render_table(search_results))
+        else:
+            print('No matching notes found.')
+        result = {
+            'total_notes': len(notes),
+            'keyword': keyword,
+            'matches': len(search_results),
+            'search_results': search_results,
+        }
+        self.record('notes', result)
         self.display_report()
     def notes_manager_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for notes_manager."""

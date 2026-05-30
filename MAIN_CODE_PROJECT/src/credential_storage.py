@@ -16,6 +16,7 @@ import os
 import random
 import statistics
 import time
+import hashlib
 
 @dataclass
 class CredentialStorageAppState:
@@ -159,7 +160,7 @@ class CredentialStorageApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -210,13 +211,26 @@ class CredentialStorageApp:
             'verification_tests': verification_results
         }
 
+    def hash_password(self, password: str) -> str:
+        salt = '5a1t'
+        return hashlib.sha256((password + salt).encode()).hexdigest()
+
+    def verify_password(self, password: str, stored_hash: str) -> bool:
+        return self.hash_password(password) == stored_hash
+
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Credential Storage Simulation')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Credential Storage')
+        hashed = self.hash_password('secret123')
+        credentials = {'username': 'admin', 'password_hash': hashed}
+        correct = self.verify_password('secret123', hashed)
+        incorrect = self.verify_password('wrongpass', hashed)
+        print(self.format_kv('Username', credentials['username']))
+        print(self.format_kv('Stored hash', hashed))
+        print(self.format_kv('Verify correct', str(correct)))
+        print(self.format_kv('Verify incorrect', str(incorrect)))
+        self.record('credentials', credentials)
+        self.record('verification', {'correct': correct, 'incorrect': incorrect})
         self.display_report()
     def credential_storage_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for credential_storage."""

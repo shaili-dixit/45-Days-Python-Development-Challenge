@@ -158,7 +158,7 @@ class CountdownReminderApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -204,11 +204,26 @@ class CountdownReminderApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Event Countdown')
+        events = [
+            {'event': 'Project deadline', 'date': '2026-06-15'},
+            {'event': 'Team meeting', 'date': '2026-06-01'},
+            {'event': 'Birthday', 'date': '2026-06-10'},
+        ]
+        today = datetime.now()
+        report_rows = []
+        for ev in events:
+            ev_date = datetime.strptime(ev['date'], '%Y-%m-%d')
+            days_left = (ev_date - today).days
+            if days_left > 7:
+                category = 'Upcoming'
+            elif days_left >= 0:
+                category = 'Soon'
+            else:
+                category = 'Overdue'
+            print(self.format_kv(ev['event'], f'{days_left} days ({category})'))
+            report_rows.append({'event': ev['event'], 'date': ev['date'], 'days_remaining': days_left, 'category': category})
+        self.record('events', report_rows)
         self.display_report()
     def countdown_reminder_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for countdown_reminder."""

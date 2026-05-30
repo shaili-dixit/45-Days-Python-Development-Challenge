@@ -158,7 +158,7 @@ class SearchUtilityApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -202,11 +202,22 @@ class SearchUtilityApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
+        self.section('Smart Search Utility')
+        data = ['apple fruit', 'banana fruit', 'carrot vegetable', 'date fruit', 'elderberry fruit', 'fig fruit', 'grape fruit']
+        search_term_1 = 'fruit'
+        search_term_2 = 'vege'
+        results_1 = [item for item in data if search_term_1 in item.lower()]
+        results_2 = [item for item in data if search_term_2 in item.lower()]
+        self.section(f"Search for '{search_term_1}'")
+        print(self.format_kv('Matches', len(results_1)))
+        if results_1:
+            print(self.render_table([{'item': r} for r in results_1]))
+        self.section(f"Search for '{search_term_2}'")
+        print(self.format_kv('Matches', len(results_2)))
+        if results_2:
+            print(self.render_table([{'item': r} for r in results_2]))
+        result = {'fruit_matches': len(results_1), 'fruit_results': results_1, 'vege_matches': len(results_2), 'vege_results': results_2}
         self.record('result', result)
-        print(json.dumps(result, indent=2))
         self.display_report()
     def search_utility_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for search_utility."""

@@ -158,7 +158,7 @@ class ExpenseTrackerApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -199,11 +199,32 @@ class ExpenseTrackerApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Expense Tracker')
+        expenses = [
+            {'category': 'Food', 'amount': 25.5, 'date': '2026-05-01'},
+            {'category': 'Transport', 'amount': 15.0, 'date': '2026-05-02'},
+            {'category': 'Food', 'amount': 32.0, 'date': '2026-05-03'},
+            {'category': 'Utilities', 'amount': 100.0, 'date': '2026-05-04'},
+        ]
+        print(self.render_table(expenses))
+        amounts = [e['amount'] for e in expenses]
+        total = sum(amounts)
+        average = total / len(amounts)
+        categories = {}
+        for e in expenses:
+            cat = e['category']
+            categories[cat] = categories.get(cat, 0) + e['amount']
+        self.section('Analysis')
+        print(self.format_kv('Total', total))
+        print(self.format_kv('Average', average))
+        print(self.format_kv('Categories', categories))
+        result = {
+            'total': round(total, 2),
+            'average': round(average, 2),
+            'count': len(expenses),
+            'category_totals': {k: round(v, 2) for k, v in categories.items()},
+        }
+        self.record('expense_analysis', result)
         self.display_report()
     def expense_tracker_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for expense_tracker."""

@@ -161,7 +161,7 @@ class WebScraperApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -199,11 +199,34 @@ class WebScraperApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Web Scraping')
+        try:
+            posts_url = 'https://jsonplaceholder.typicode.com/posts'
+            request = urllib.request.Request(posts_url, headers={'User-Agent': 'Python45-Dev/1.0'})
+            with urllib.request.urlopen(request, timeout=10) as response:
+                posts = json.loads(response.read().decode('utf-8', errors='replace'))
+            self.section('Scraped Posts (first 5)')
+            for post in posts[:5]:
+                print(self.format_kv(f'Post {post["id"]}', post['title']))
+            self.section('HTML Parsing Demo')
+            class TextExtractor(html.parser.HTMLParser):
+                def __init__(self):
+                    super().__init__()
+                    self.text = []
+                def handle_data(self, data):
+                    self.text.append(data.strip())
+            html_sample = '<div class="content">Hello World</div>'
+            extractor = TextExtractor()
+            extractor.feed(html_sample)
+            extracted = ' '.join(t for t in extractor.text if t)
+            print(self.format_kv('HTML', html_sample))
+            print(self.format_kv('Extracted', extracted))
+            self.record('posts_scraped', [p['title'] for p in posts[:5]])
+            self.record('html_extracted', extracted)
+            self.log(f'Scraped {len(posts)} posts')
+        except Exception as exc:
+            self.state.errors += 1
+            self.log(f'Scraping failed: {exc}')
         self.display_report()
     def web_scraper_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for web_scraper."""

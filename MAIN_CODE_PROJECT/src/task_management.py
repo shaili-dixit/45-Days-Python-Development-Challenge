@@ -158,7 +158,7 @@ class TaskManagementApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -179,14 +179,34 @@ class TaskManagementApp:
     def create_task(self, title: str, priority: int = 1) -> Dict[str, Any]:
         return {'title': self.normalize_text(title), 'priority': priority, 'done': False}
 
+    def update_task(self, task: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        for key, value in kwargs.items():
+            if key == 'title':
+                task[key] = self.normalize_text(str(value))
+            elif key in ('priority',):
+                task[key] = self.safe_int(value, task.get(key, 1))
+            elif key == 'done':
+                task[key] = bool(value)
+        return task
+
+    def delete_task(self, tasks: List[Dict[str, Any]], index: int) -> Optional[Dict[str, Any]]:
+        if 0 <= index < len(tasks):
+            return tasks.pop(index)
+        return None
+
     def run(self) -> None:
         self.state.runs += 1
         tasks = [self.create_task('Write notes', 2), self.create_task('Push code', 1), self.create_task('Review PR', 3)]
         tasks[0]['done'] = True
+        self.update_task(tasks[1], priority=2)
+        self.update_task(tasks[2], title='Review pull request')
+        removed = self.delete_task(tasks, 0)
         tasks = sorted(tasks, key=lambda x: (x['done'], x['priority']))
         self.record('tasks', tasks)
         self.section('Task List')
         print(self.render_table(tasks))
+        if removed:
+            self.log(f"Deleted task: {removed['title']}")
         self.display_report()
     def task_management_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for task_management."""

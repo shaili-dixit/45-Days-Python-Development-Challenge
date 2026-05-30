@@ -158,7 +158,7 @@ class StatisticsProcessorApp:
             'flags': self.state.flags,
             'history': self.history_tail(10),
         }
-        return self.save_json('state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -191,11 +191,21 @@ class StatisticsProcessorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Processing')
-        items = self.dataset()
-        result = self.process_dataset(items)
-        self.record('result', result)
-        print(json.dumps(result, indent=2))
+        self.section('Statistical Analysis')
+        data = [12, 45, 67, 23, 45, 89, 12, 34, 56, 78, 90, 23, 45, 67, 12]
+        stats = self.stats_from_numbers(data)
+        summary = self.summarize_list(data)
+        stats['min'] = summary['min']
+        stats['max'] = summary['max']
+        stats['range'] = summary['max'] - summary['min']
+        self.section('Stats from stats_from_numbers()')
+        for key, value in stats.items():
+            print(self.format_kv(key, value))
+        self.section('Stats from summarize_list()')
+        for key, value in summary.items():
+            print(self.format_kv(key, value))
+        combined = {**stats, **summary}
+        self.record('result', combined)
         self.display_report()
     def statistics_processor_utility_1(self, value: Any) -> Any:
         """Utility routine 1 tuned for statistics_processor."""
