@@ -184,16 +184,16 @@ class CliCalculatorApp:
 
     def compute(self, a: float, op: str, b: float) -> float:
         operations = {
-            '+': a + b,
-            '-': a - b,
-            '*': a * b,
-            '/': a / b if b != 0 else math.nan,
-            '%': a % b if b != 0 else math.nan,
-            '**': a ** b,
+            '+': lambda: a + b,
+            '-': lambda: a - b,
+            '*': lambda: a * b,
+            '/': lambda: a / b if b != 0 else math.nan,
+            '%': lambda: a % b if b != 0 else math.nan,
+            '**': lambda: a ** b,
         }
         if op not in operations:
             raise ValueError('unsupported operation')
-        return operations[op]
+        return operations[op]()
 
     def run(self) -> None:
         self.state.runs += 1
