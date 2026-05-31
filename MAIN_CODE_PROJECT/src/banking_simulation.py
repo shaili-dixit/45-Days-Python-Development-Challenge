@@ -137,7 +137,7 @@ class BankingSimulationApp:
             'errors': self.state.errors,
             'records': self.state.records,
             'flags': self.state.flags,
-            'history': self.history_tail(10),
+            'history': self.state.history,
         }
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
@@ -244,3 +244,18 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+<<<<<<< Updated upstream
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> Stashed changes

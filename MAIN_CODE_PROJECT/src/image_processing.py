@@ -76,7 +76,7 @@ class ImageProcessingApp:
             'errors': self.state.errors,
             'records': self.state.records,
             'flags': self.state.flags,
-            'history': self.history_tail(10),
+            'history': self.state.history,
         }
         return self.save_json('state.json', payload)
 
@@ -236,3 +236,18 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+<<<<<<< Updated upstream
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> Stashed changes
