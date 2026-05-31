@@ -1,4 +1,4 @@
-﻿"""Implement a Secure Data Encryption and Decryption Utility Using Basic Cryptographic Techniques
+"""Implement a Secure Data Encryption and Decryption Utility Using Basic Cryptographic Techniques
 
 Generated for the 45-day Python development challenge.
 """
@@ -228,18 +228,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

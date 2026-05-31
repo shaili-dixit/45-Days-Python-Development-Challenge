@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Flashcard Learning System with Performance Tracking
+"""Build an Interactive Flashcard Learning System with Performance Tracking
 
 Generated for the 45-day Python development challenge.
 """
@@ -225,18 +225,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

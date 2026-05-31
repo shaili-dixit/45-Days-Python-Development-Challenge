@@ -1,4 +1,4 @@
-﻿"""Build an Advanced Password Strength Analyzer Using Rule-Based Validation Logic
+"""Build an Advanced Password Strength Analyzer Using Rule-Based Validation Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -195,18 +195,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

@@ -1,4 +1,4 @@
-﻿"""Build a Data Collection Utility for Recording and Analyzing Daily Expenses
+"""Build a Data Collection Utility for Recording and Analyzing Daily Expenses
 
 Generated for the 45-day Python development challenge.
 """
@@ -221,18 +221,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

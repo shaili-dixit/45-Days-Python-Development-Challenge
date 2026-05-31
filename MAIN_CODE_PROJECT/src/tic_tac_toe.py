@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Tic Tac Toe Gaming Application with Winner Detection Logic
+"""Build an Interactive Tic Tac Toe Gaming Application with Winner Detection Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -238,18 +238,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

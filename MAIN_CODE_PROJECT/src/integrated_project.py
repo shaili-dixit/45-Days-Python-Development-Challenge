@@ -1,4 +1,4 @@
-﻿"""Create an End-to-End Mini Project Integrating APIs, Data Processing, Storage, and User Interaction Features
+"""Create an End-to-End Mini Project Integrating APIs, Data Processing, Storage, and User Interaction Features
 
 Generated for the 45-day Python development challenge.
 """
@@ -222,18 +222,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

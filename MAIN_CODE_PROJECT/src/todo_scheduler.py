@@ -1,4 +1,4 @@
-﻿"""Create a Smart To-Do Scheduling System with Deadline Prioritization Logic
+"""Create a Smart To-Do Scheduling System with Deadline Prioritization Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -208,18 +208,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

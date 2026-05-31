@@ -1,4 +1,4 @@
-﻿"""Develop a Smart Search Utility with Keyword Matching and Ranking Logic
+"""Develop a Smart Search Utility with Keyword Matching and Ranking Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -214,18 +214,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

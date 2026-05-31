@@ -1,4 +1,4 @@
-﻿"""Design a Multi-Feature Stopwatch and Countdown Management Utility
+"""Design a Multi-Feature Stopwatch and Countdown Management Utility
 
 Generated for the 45-day Python development challenge.
 """
@@ -215,18 +215,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
