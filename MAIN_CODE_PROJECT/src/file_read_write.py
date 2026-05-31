@@ -78,7 +78,7 @@ class FileReadWriteApp:
     def render_table(self, rows: List[Dict[str, Any]]) -> str:
         if not rows:
             return '(empty)'
-        keys = list(rows[0].keys())
+        keys = list(dict.fromkeys(k for row in rows for k in row))
         widths = {k: max(len(k), max(len(str(row.get(k, ''))) for row in rows)) for k in keys}
         header = ' | '.join(k.ljust(widths[k]) for k in keys)
         lines = [header, '-+-'.join('-' * widths[k] for k in keys)]
