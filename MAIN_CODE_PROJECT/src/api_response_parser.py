@@ -157,19 +157,25 @@ class ApiResponseParserApp:
             {'name': 'gamma', 'value': 3, 'active': True},
         ]
 
-    def deep_get(self, payload: Dict[str, Any], path: str) -> Any:
+    def deep_get(self, payload: Dict[str, Any], path: str, default: Any = None) -> Any:
+        # Define a unique sentinel object for missing keys
+        MISSING = object()
         current: Any = payload
         for part in path.split('.'):
             if isinstance(current, dict) and part in current:
                 current = current[part]
             else:
-                return None
+                return default
         return current
 
     def parse_fields(self, payload: Dict[str, Any], fields: List[str]) -> Dict[str, Any]:
         parsed: Dict[str, Any] = {}
         for field in fields:
-            parsed[field] = self.deep_get(payload, field)
+            # Use the sentinel to identify missing paths
+            MISSING = object()
+            val = self.deep_get(payload, field, default=MISSING)
+            if val is not MISSING:
+                parsed[field] = val
         return parsed
 
     def run(self) -> None:
