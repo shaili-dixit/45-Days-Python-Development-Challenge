@@ -149,38 +149,50 @@ class TicTacToeApp:
         print(self.format_kv('Flags', len(self.state.flags)))
         print(self.format_kv('History entries', len(self.state.history)))
         self.log(f'Exported to {self.export_state()}')
-
     def demo_data(self) -> List[Dict[str, Any]]:
-        return [
-            {'board': ['X', 'O', 'X', 'O', 'X', 'O', 'X', '', '']},
-            {'board': ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', '']},
-        ]
 
+        return [
+            {
+            'board': [
+                'X', 'O', 'X',
+                'X', 'O', 'O',
+                'O', 'X', 'X'
+                ]
+            }
+        ]        
+                
     def dataset(self) -> List[Dict[str, Any]]:
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
+
         def check_winner(b: List[str]) -> Optional[str]:
             win_indices = [
-                (0,1,2), (3,4,5), (6,7,8),
-                (0,3,6), (1,4,7), (2,5,8),
-                (0,4,8), (2,4,6)
+                (0, 1, 2), (3, 4, 5), (6, 7, 8),
+                (0, 3, 6), (1, 4, 7), (2, 5, 8),
+                (0, 4, 8), (2, 4, 6)
             ]
+
             for x, y, z in win_indices:
                 if b[x] and b[x] == b[y] == b[z]:
                     return b[x]
-            if all(cell for cell in b):
+
+            if all(cell != '' for cell in b):
                 return 'Draw'
+
             return None
-        
+
         results = []
+
         for game in items:
             board = game.get('board', [''] * 9)
             winner = check_winner(board)
+
             results.append({
                 'board_state': board,
                 'winner_status': winner if winner else 'In Progress'
             })
+
         return {
             'games_analyzed': len(items),
             'results': results
@@ -208,7 +220,13 @@ class TicTacToeApp:
         self.state.runs += 1
         self.section('Tic-Tac-Toe Simulation')
         board = [['' for _ in range(3)] for _ in range(3)]
-        moves = [('X', 0, 0), ('O', 1, 1), ('X', 0, 1), ('O', 2, 2), ('X', 0, 2), ('O', 1, 0), ('X', 2, 0)]
+        moves = [
+            ('X', 0, 0), ('O', 0, 1),
+            ('X', 0, 2), ('O', 1, 1),
+            ('X', 1, 0), ('O', 1, 2),
+            ('X', 2, 1), ('O', 2, 0),
+            ('X', 2, 2)
+        ]
         winner = None
         for player, row, col in moves:
             board[row][col] = player
@@ -219,10 +237,19 @@ class TicTacToeApp:
                 winner = w
                 print(f'Player {w} wins!')
                 break
-        if not winner:
-            print('Game ends in a draw!')
+            if all(cell != '' for row in board for cell in row):
+                print('Game ends in a draw!')
+                break
+            print('Game still in progress!')
+            
         self.record('final_board', board)
-        self.record('winner', winner if winner else 'Draw')
+        if winner:
+            result = winner
+        elif all(cell != '' for row in board for cell in row):
+            result = 'Draw'
+        else:
+            result = 'In Progress'
+        self.record('winner', result)
         self.display_report()
     def finalize(self) -> None:
         self.export_state()
@@ -238,8 +265,6 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
 
@@ -247,9 +272,3 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
-
->>>>>>> Stashed changes
