@@ -13,6 +13,7 @@ import json
 import random
 import time
 
+import ssl
 import urllib.error
 import urllib.request
 
@@ -193,8 +194,9 @@ class UrlMonitorApp:
             status = 'ERROR'
             code = 0
             try:
+                ssl_ctx = ssl.create_default_context()
                 request = urllib.request.Request(url, method='GET', headers={'User-Agent': 'Python45-Dev/1.0'})
-                with urllib.request.urlopen(request, timeout=5) as response:
+                with urllib.request.urlopen(request, timeout=5, context=ssl_ctx) as response:
                     code = response.getcode()
                     status = 'UP' if 200 <= code < 400 else 'DOWN'
             except urllib.error.HTTPError as exc:

@@ -11,7 +11,9 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 import random
+import ssl
 import time
+import urllib.request
 
 import threading
 
@@ -187,8 +189,9 @@ class WebScraperApp:
         self.section('Web Scraping')
         try:
             posts_url = 'https://jsonplaceholder.typicode.com/posts'
+            ssl_ctx = ssl.create_default_context()
             request = urllib.request.Request(posts_url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
+            with urllib.request.urlopen(request, timeout=10, context=ssl_ctx) as response:
                 posts = json.loads(response.read().decode('utf-8', errors='replace'))
             self.section('Scraped Posts (first 5)')
             for post in posts[:5]:

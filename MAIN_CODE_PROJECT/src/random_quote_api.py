@@ -11,7 +11,9 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 import random
+import ssl
 import time
+import urllib.request
 
 import threading
 
@@ -181,13 +183,14 @@ class RandomQuoteApiApp:
         start = time.perf_counter()
         try:
             posts_url = 'https://jsonplaceholder.typicode.com/posts'
+            ssl_ctx = ssl.create_default_context()
             request = urllib.request.Request(posts_url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
+            with urllib.request.urlopen(request, timeout=10, context=ssl_ctx) as response:
                 posts = json.loads(response.read().decode('utf-8', errors='replace'))
             post = random.choice(posts)
             comments_url = f'https://jsonplaceholder.typicode.com/posts/{post["id"]}/comments'
             request2 = urllib.request.Request(comments_url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request2, timeout=10) as response2:
+            with urllib.request.urlopen(request2, timeout=10, context=ssl_ctx) as response2:
                 comments = json.loads(response2.read().decode('utf-8', errors='replace'))
             elapsed = round(time.perf_counter() - start, 4)
             self.section('Random Quote')

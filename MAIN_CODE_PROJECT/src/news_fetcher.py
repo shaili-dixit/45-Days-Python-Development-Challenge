@@ -11,7 +11,9 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 import random
+import ssl
 import time
+import urllib.request
 
 import threading
 
@@ -183,8 +185,9 @@ class NewsFetcherApp:
         start = time.perf_counter()
         try:
             url = 'https://jsonplaceholder.typicode.com/posts'
+            ssl_ctx = ssl.create_default_context()
             request = urllib.request.Request(url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
+            with urllib.request.urlopen(request, timeout=10, context=ssl_ctx) as response:
                 data = json.loads(response.read().decode('utf-8', errors='replace'))
             elapsed = round(time.perf_counter() - start, 4)
             posts = data[:5]
