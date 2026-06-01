@@ -4,7 +4,6 @@ Generated for the 45-day Python development challenge.
 """
 
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -12,8 +11,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
-
-from .output_handler import OutputHandler
+import threading
 
 @dataclass
 class WeatherInformationAppState:
@@ -23,18 +21,20 @@ class WeatherInformationAppState:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
+    _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class WeatherInformationApp:
-    def __init__(self) -> None:
-        self.state = WeatherInformationAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: WeatherInformationAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else WeatherInformationAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
         self.output = OutputHandler(self.output_dir)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        with self.state._lock:
+            self.state.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -113,12 +113,14 @@ class WeatherInformationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        with self.state._lock:
+            self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        with self.state._lock:
+            current = self.state.flags.get(key, default)
+            self.state.flags[key] = not current
+            return self.state.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -160,9 +162,6 @@ class WeatherInformationApp:
             {'city': 'New York', 'temperature': 18.2, 'humidity': 70, 'condition': 'Cloudy'},
         ]
 
-    def dataset(self) -> List[Dict[str, Any]]:
-        return self.demo_data()
-
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
         temps = [item.get('temperature', 0.0) for item in items]
         hums = [item.get('humidity', 0.0) for item in items]
@@ -179,8 +178,9 @@ class WeatherInformationApp:
         }
 
     def run(self) -> None:
-        self.state.runs += 1
-        self.output.section('Weather Data Retrieval')
+        with self.state._lock:
+            self.state.runs += 1
+        self.section('Weather Data Retrieval')
         start = time.perf_counter()
         try:
             url = 'https://jsonplaceholder.typicode.com/users/1'
@@ -208,14 +208,10 @@ class WeatherInformationApp:
             self.record('response_time', elapsed)
             self.output.log(f'Weather data retrieved in {elapsed}s')
         except Exception as exc:
-            self.state.errors += 1
-            self.output.log(f'Weather fetch failed: {exc}')
-        self.output.summary(self.state)
-        self.output.log(f'Exported to {self.export_state()}')
-    def finalize(self) -> None:
-        self.export_state()
-        self.output.log('Finalized successfully')
-
+            with self.state._lock:
+                self.state.errors += 1
+            self.log(f'Weather fetch failed: {exc}')
+        self.display_report()
 def main() -> None:
     app = WeatherInformationApp()
     try:
@@ -226,4 +222,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-

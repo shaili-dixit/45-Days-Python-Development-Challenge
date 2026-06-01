@@ -13,7 +13,11 @@ import json
 import random
 import time
 
+<<<<<<< fix/decouple-io-layer
 from .output_handler import OutputHandler
+=======
+import threading
+>>>>>>> main
 
 @dataclass
 class BankingSimulationAppState:
@@ -23,18 +27,20 @@ class BankingSimulationAppState:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
+    _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class BankingSimulationApp:
-    def __init__(self) -> None:
-        self.state = BankingSimulationAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: BankingSimulationAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else BankingSimulationAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
         self.output = OutputHandler(self.output_dir)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        with self.state._lock:
+            self.state.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -113,12 +119,14 @@ class BankingSimulationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        with self.state._lock:
+            self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        with self.state._lock:
+            current = self.state.flags.get(key, default)
+            self.state.flags[key] = not current
+            return self.state.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -159,9 +167,6 @@ class BankingSimulationApp:
             {'type': 'withdrawal', 'amount': 200.0, 'timestamp': '2026-05-29T10:15:00'},
             {'type': 'deposit', 'amount': 350.0, 'timestamp': '2026-05-29T10:30:00'},
         ]
-
-    def dataset(self) -> List[Dict[str, Any]]:
-        return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
         balance = 0.0
@@ -207,8 +212,14 @@ class BankingSimulationApp:
         return account['balance']
 
     def run(self) -> None:
+<<<<<<< fix/decouple-io-layer
         self.state.runs += 1
         self.output.section('Banking Simulation')
+=======
+        with self.state._lock:
+            self.state.runs += 1
+        self.section('Banking Simulation')
+>>>>>>> main
         account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
         self.output.kv('Account holder', account['holder'])
         self.output.kv('Opening balance', f"${account['balance']:.2f}")
@@ -232,12 +243,16 @@ class BankingSimulationApp:
         self.output.write("\n")
         self.output.kv('Final balance', f"${account['balance']:.2f}")
         self.record('account', account)
+<<<<<<< fix/decouple-io-layer
         self.output.summary(self.state)
         self.output.log(f'Exported to {self.export_state()}')
     def finalize(self) -> None:
         self.export_state()
         self.output.log('Finalized successfully')
 
+=======
+        self.display_report()
+>>>>>>> main
 def main() -> None:
     app = BankingSimulationApp()
     try:
@@ -248,4 +263,7 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+<<<<<<< fix/decouple-io-layer
 
+=======
+>>>>>>> main
