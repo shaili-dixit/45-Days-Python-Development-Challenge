@@ -14,6 +14,8 @@ import json
 import random
 import time
 
+import threading
+
 @dataclass
 class UserAuthSimulationAppState:
     history: List[str] = field(default_factory=list)
@@ -22,6 +24,7 @@ class UserAuthSimulationAppState:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
+    _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class UserAuthSimulationApp:
     def __init__(self) -> None:
@@ -32,7 +35,8 @@ class UserAuthSimulationApp:
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        with self.state._lock:
+            self.state.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -111,12 +115,14 @@ class UserAuthSimulationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        with self.state._lock:
+            self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        with self.state._lock:
+            current = self.state.flags.get(key, default)
+            self.state.flags[key] = not current
+            return self.state.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -172,7 +178,8 @@ class UserAuthSimulationApp:
         return stored == self._hash(password)
 
     def run(self) -> None:
-        self.state.runs += 1
+        with self.state._lock:
+            self.state.runs += 1
         attempts = [('admin', 'wrong'), ('admin', 'admin123')]
         locked = False
         failures = 0
@@ -202,18 +209,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
