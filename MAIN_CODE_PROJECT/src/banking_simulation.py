@@ -1,4 +1,4 @@
-﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,8 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+
+from .output_handler import OutputHandler
 
 @dataclass
 class BankingSimulationAppState:
@@ -27,6 +29,7 @@ class BankingSimulationApp:
         self.state = BankingSimulationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.output = OutputHandler(self.output_dir)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -35,7 +38,7 @@ class BankingSimulationApp:
         print(entry)
 
     def section(self, title: str) -> None:
-        print()
+        self.output.write("\n")
         print('=' * 70)
         print(title)
         print('=' * 70)
@@ -142,13 +145,13 @@ class BankingSimulationApp:
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
-        self.section('Summary')
-        print(self.format_kv('Runs', self.state.runs))
-        print(self.format_kv('Errors', self.state.errors))
-        print(self.format_kv('Records', len(self.state.records)))
-        print(self.format_kv('Flags', len(self.state.flags)))
-        print(self.format_kv('History entries', len(self.state.history)))
-        self.log(f'Exported to {self.export_state()}')
+        self.output.section('Summary')
+        self.output.kv('Runs', self.state.runs)
+        self.output.kv('Errors', self.state.errors)
+        self.output.kv('Records', len(self.state.records))
+        self.output.kv('Flags', len(self.state.flags))
+        self.output.kv('History entries', len(self.state.history))
+        self.output.log(f'Exported to {self.export_state()}')
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
@@ -205,10 +208,10 @@ class BankingSimulationApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Banking Simulation')
+        self.output.section('Banking Simulation')
         account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
-        print(self.format_kv('Account holder', account['holder']))
-        print(self.format_kv('Opening balance', f"${account['balance']:.2f}"))
+        self.output.kv('Account holder', account['holder'])
+        self.output.kv('Opening balance', f"${account['balance']:.2f}")
         ops = [
             ('deposit', 500),
             ('withdraw', 200),
@@ -223,16 +226,17 @@ class BankingSimulationApp:
             status = result['status']
             if status == 'success':
                 tx = result['transaction']
-                print(f"  {tx['type'].title():<12} ${amt:<8.2f} -> Balance: ${tx['balance']:.2f}")
+                self.output.write(f"  {tx['type'].title():<12} ${amt:<8.2f} -> Balance: ${tx['balance']:.2f}\n")
             else:
-                print(f"  {action.title():<12} ${amt:<8.2f} -> FAILED: {result['reason']}")
-        print()
-        print(self.format_kv('Final balance', f"${account['balance']:.2f}"))
+                self.output.write(f"  {action.title():<12} ${amt:<8.2f} -> FAILED: {result['reason']}\n")
+        self.output.write("\n")
+        self.output.kv('Final balance', f"${account['balance']:.2f}")
         self.record('account', account)
-        self.display_report()
+        self.output.summary(self.state)
+        self.output.log(f'Exported to {self.export_state()}')
     def finalize(self) -> None:
         self.export_state()
-        self.log('Finalized successfully')
+        self.output.log('Finalized successfully')
 
 def main() -> None:
     app = BankingSimulationApp()
@@ -244,18 +248,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

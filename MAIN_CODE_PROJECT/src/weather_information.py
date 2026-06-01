@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
+"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,8 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+
+from .output_handler import OutputHandler
 
 @dataclass
 class WeatherInformationAppState:
@@ -27,6 +29,7 @@ class WeatherInformationApp:
         self.state = WeatherInformationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.output = OutputHandler(self.output_dir)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -142,13 +145,13 @@ class WeatherInformationApp:
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
-        self.section('Summary')
-        print(self.format_kv('Runs', self.state.runs))
-        print(self.format_kv('Errors', self.state.errors))
-        print(self.format_kv('Records', len(self.state.records)))
-        print(self.format_kv('Flags', len(self.state.flags)))
-        print(self.format_kv('History entries', len(self.state.history)))
-        self.log(f'Exported to {self.export_state()}')
+        self.output.section('Summary')
+        self.output.kv('Runs', self.state.runs)
+        self.output.kv('Errors', self.state.errors)
+        self.output.kv('Records', len(self.state.records))
+        self.output.kv('Flags', len(self.state.flags))
+        self.output.kv('History entries', len(self.state.history))
+        self.output.log(f'Exported to {self.export_state()}')
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
@@ -177,7 +180,7 @@ class WeatherInformationApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        self.section('Weather Data Retrieval')
+        self.output.section('Weather Data Retrieval')
         start = time.perf_counter()
         try:
             url = 'https://jsonplaceholder.typicode.com/users/1'
@@ -190,27 +193,28 @@ class WeatherInformationApp:
             weather = {'temperature': 72, 'humidity': 55, 'condition': 'Partly Cloudy', 'wind': 12}
             conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Light Rain', 'Clear']
             forecast = [{'day': i + 1, 'temp': 68 + i * 2, 'condition': conditions[i % len(conditions)]} for i in range(5)]
-            self.section('Current Weather')
-            print(self.format_kv('Location', f'{lat}, {lng}'))
-            print(self.format_kv('Temperature', f'{weather["temperature"]}F'))
-            print(self.format_kv('Humidity', f'{weather["humidity"]}%'))
-            print(self.format_kv('Condition', weather['condition']))
-            print(self.format_kv('Wind', f'{weather["wind"]} mph'))
-            self.section('5-Day Forecast')
+            self.output.section('Current Weather')
+            self.output.kv('Location', f'{lat}, {lng}')
+            self.output.kv('Temperature', f'{weather["temperature"]}F')
+            self.output.kv('Humidity', f'{weather["humidity"]}%')
+            self.output.kv('Condition', weather['condition'])
+            self.output.kv('Wind', f'{weather["wind"]} mph')
+            self.output.section('5-Day Forecast')
             for day in forecast:
-                print(self.format_kv(f'Day {day["day"]}', f'{day["temp"]}F - {day["condition"]}'))
+                self.output.kv(f'Day {day["day"]}', f'{day["temp"]}F - {day["condition"]}')
             self.record('geo', geo)
             self.record('current_weather', weather)
             self.record('forecast', forecast)
             self.record('response_time', elapsed)
-            self.log(f'Weather data retrieved in {elapsed}s')
+            self.output.log(f'Weather data retrieved in {elapsed}s')
         except Exception as exc:
             self.state.errors += 1
-            self.log(f'Weather fetch failed: {exc}')
-        self.display_report()
+            self.output.log(f'Weather fetch failed: {exc}')
+        self.output.summary(self.state)
+        self.output.log(f'Exported to {self.export_state()}')
     def finalize(self) -> None:
         self.export_state()
-        self.log('Finalized successfully')
+        self.output.log('Finalized successfully')
 
 def main() -> None:
     app = WeatherInformationApp()
@@ -222,18 +226,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

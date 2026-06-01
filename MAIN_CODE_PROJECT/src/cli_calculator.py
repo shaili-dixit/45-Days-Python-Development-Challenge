@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
+"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
 
 Generated for the 45-day Python development challenge.
 """
@@ -14,6 +14,8 @@ import math
 import random
 import time
 
+from .output_handler import OutputHandler
+
 @dataclass
 class CliCalculatorAppState:
     history: List[str] = field(default_factory=list)
@@ -28,6 +30,7 @@ class CliCalculatorApp:
         self.state = CliCalculatorAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.output = OutputHandler(self.output_dir)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -143,13 +146,13 @@ class CliCalculatorApp:
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
-        self.section('Summary')
-        print(self.format_kv('Runs', self.state.runs))
-        print(self.format_kv('Errors', self.state.errors))
-        print(self.format_kv('Records', len(self.state.records)))
-        print(self.format_kv('Flags', len(self.state.flags)))
-        print(self.format_kv('History entries', len(self.state.history)))
-        self.log(f'Exported to {self.export_state()}')
+        self.output.section('Summary')
+        self.output.kv('Runs', self.state.runs)
+        self.output.kv('Errors', self.state.errors)
+        self.output.kv('Records', len(self.state.records))
+        self.output.kv('Flags', len(self.state.flags))
+        self.output.kv('History entries', len(self.state.history))
+        self.output.log(f'Exported to {self.export_state()}')
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
@@ -180,19 +183,20 @@ class CliCalculatorApp:
     def run(self) -> None:
         self.state.runs += 1
         samples = ['5 + 2', '8 / 0', '4 ** 3', '10 ? 2']
-        self.section('Calculator Runs')
+        self.output.section('Calculator Runs')
         for item in samples:
             try:
                 a, op, b = self.parse_expression(item)
                 result = self.compute(a, op, b)
-                print(self.format_kv(item, result))
+                self.output.kv(item, result)
             except Exception as exc:
                 self.state.errors += 1
-                print(self.format_kv(item, f'error: {exc}'))
-        self.display_report()
+                self.output.kv(item, f'error: {exc}')
+        self.output.summary(self.state)
+        self.output.log(f'Exported to {self.export_state()}')
     def finalize(self) -> None:
         self.export_state()
-        self.log('Finalized successfully')
+        self.output.log('Finalized successfully')
 
 def main() -> None:
     app = CliCalculatorApp()
@@ -204,18 +208,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
