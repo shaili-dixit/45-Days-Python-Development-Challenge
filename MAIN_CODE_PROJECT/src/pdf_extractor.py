@@ -15,6 +15,14 @@ import time
 
 import threading
 
+# Maximum PDF file size accepted for parsing (10 MB).
+# Files larger than this are rejected to prevent memory exhaustion DoS.
+MAX_PDF_SIZE_BYTES: int = 10 * 1024 * 1024  # 10 MB
+
+# Maximum bytes accumulated per PDF stream block during parsing.
+# Caps memory used by a single stream to prevent unbounded growth.
+MAX_STREAM_BYTES: int = 2 * 1024 * 1024  # 2 MB
+
 @dataclass
 class PdfExtractorAppState:
     history: List[str] = field(default_factory=list)
@@ -199,6 +207,13 @@ class PdfExtractorApp:
         path.write_text(content, encoding='latin-1')
 
     def extract_text_from_pdf(self, path: Path) -> str:
+        file_size = path.stat().st_size
+        if file_size > MAX_PDF_SIZE_BYTES:
+            raise ValueError(
+                f'PDF file too large: {file_size} bytes exceeds the '
+                f'{MAX_PDF_SIZE_BYTES}-byte limit. Parsing rejected to '
+                f'prevent memory exhaustion.'
+            )
         raw = path.read_bytes()
         text_parts = []
         in_stream = False
@@ -215,7 +230,10 @@ class PdfExtractorApp:
                     for match in re.finditer(r'\(([^)]*)\)\s*Tj', stream_text):
                         text_parts.append(match.group(1))
                 else:
-                    stream_content += line + b'\n'
+                    # Enforce per-stream memory cap to prevent a single
+                    # malformed or crafted stream from exhausting memory.
+                    if len(stream_content) < MAX_STREAM_BYTES:
+                        stream_content += line + b'\n'
         return '\n'.join(text_parts)
 
     def demo_data(self) -> List[Dict[str, Any]]:
@@ -236,10 +254,21 @@ class PdfExtractorApp:
             if not path.exists():
                 extracted.append({'path': str(path), 'error': 'file not found', 'text': '', 'word_count': 0})
                 continue
+            file_size = path.stat().st_size
+            if file_size > MAX_PDF_SIZE_BYTES:
+                extracted.append({
+                    'path': str(path),
+                    'file_size': file_size,
+                    'error': f'file too large ({file_size} bytes); limit is {MAX_PDF_SIZE_BYTES} bytes',
+                    'text': '',
+                    'word_count': 0,
+                })
+                self.log(f'Rejected oversized PDF: {path} ({file_size} bytes)')
+                continue
             text = self.extract_text_from_pdf(path)
             extracted.append({
                 'path': str(path),
-                'file_size': path.stat().st_size,
+                'file_size': file_size,
                 'text_length': len(text),
                 'word_count': len(text.split()),
                 'text_preview': text[:200],

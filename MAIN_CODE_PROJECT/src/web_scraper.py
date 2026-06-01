@@ -11,9 +11,15 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 import random
+import ssl
 import time
+import urllib.request
 
 import threading
+
+# Maximum HTTP response body size accepted during scraping (5 MB).
+# Responses larger than this are rejected to prevent memory exhaustion DoS.
+MAX_RESPONSE_BYTES: int = 5 * 1024 * 1024  # 5 MB
 
 @dataclass
 class WebScraperAppState:
@@ -187,13 +193,39 @@ class WebScraperApp:
         self.section('Web Scraping')
         try:
             posts_url = 'https://jsonplaceholder.typicode.com/posts'
+            ssl_ctx = ssl.create_default_context()
             request = urllib.request.Request(posts_url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
-                posts = json.loads(response.read().decode('utf-8', errors='replace'))
+            with urllib.request.urlopen(request, timeout=10, context=ssl_ctx) as response:
+                # Reject responses that advertise a body larger than the limit.
+                content_length = response.headers.get('Content-Length')
+                if content_length is not None and int(content_length) > MAX_RESPONSE_BYTES:
+                    raise ValueError(
+                        f'Response Content-Length ({content_length} bytes) exceeds '
+                        f'the {MAX_RESPONSE_BYTES}-byte limit. Download rejected.'
+                    )
+                # Read in chunks up to the hard cap to bound memory usage even
+                # when Content-Length is absent or untrustworthy.
+                chunks: List[bytes] = []
+                total_read = 0
+                chunk_size = 65536  # 64 KB per read
+                while True:
+                    chunk = response.read(chunk_size)
+                    if not chunk:
+                        break
+                    total_read += len(chunk)
+                    if total_read > MAX_RESPONSE_BYTES:
+                        raise ValueError(
+                            f'Response body exceeded the {MAX_RESPONSE_BYTES}-byte '
+                            f'limit after {total_read} bytes. Download aborted.'
+                        )
+                    chunks.append(chunk)
+                raw_body = b''.join(chunks).decode('utf-8', errors='replace')
+            posts = json.loads(raw_body)
             self.section('Scraped Posts (first 5)')
             for post in posts[:5]:
                 print(self.format_kv(f'Post {post["id"]}', post['title']))
             self.section('HTML Parsing Demo')
+            import html.parser
             class TextExtractor(html.parser.HTMLParser):
                 def __init__(self):
                     super().__init__()
