@@ -26,9 +26,9 @@ class QrGeneratorAppState:
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class QrGeneratorApp:
-    def __init__(self) -> None:
-        self.state = QrGeneratorAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: QrGeneratorAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else QrGeneratorAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
         self.seed = 42
         random.seed(self.seed)

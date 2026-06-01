@@ -27,9 +27,9 @@ class CsvAnalysisAppState:
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class CsvAnalysisApp:
-    def __init__(self) -> None:
-        self.state = CsvAnalysisAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: CsvAnalysisAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else CsvAnalysisAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:

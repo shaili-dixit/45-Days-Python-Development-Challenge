@@ -27,9 +27,9 @@ class StatisticsProcessorAppState:
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class StatisticsProcessorApp:
-    def __init__(self) -> None:
-        self.state = StatisticsProcessorAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: StatisticsProcessorAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else StatisticsProcessorAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
