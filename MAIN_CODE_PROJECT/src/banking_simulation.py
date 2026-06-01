@@ -1,4 +1,4 @@
-﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+from .config import AppConfig
 
 @dataclass
 class BankingSimulationAppState:
@@ -25,8 +26,19 @@ class BankingSimulationAppState:
 class BankingSimulationApp:
     def __init__(self) -> None:
         self.state = BankingSimulationAppState()
-        self.output_dir = Path('outputs')
+        self.cfg = AppConfig()
+        self.output_dir = self.cfg.output_dir
         self.output_dir.mkdir(exist_ok=True)
+
+    def _parse_banking_ops(self) -> list[tuple[str, float]]:
+        result: list[tuple[str, float]] = []
+        for part in self.cfg.banking_transaction_ops:
+            action, _, amt = part.partition(':')
+            try:
+                result.append((action.strip(), float(amt)))
+            except ValueError:
+                pass
+        return result
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -127,7 +139,9 @@ class BankingSimulationApp:
             'avg': round(sum(values) / len(values), 4),
         }
 
-    def history_tail(self, count: int = 5) -> List[str]:
+    def history_tail(self, count: int | None = None) -> List[str]:
+        if count is None:
+            count = self.cfg.history_tail_default
         return self.state.history[-count:]
 
     def export_state(self) -> Path:
@@ -139,7 +153,7 @@ class BankingSimulationApp:
             'flags': self.state.flags,
             'history': self.state.history,
         }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}{self.cfg.state_file_suffix}', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -206,15 +220,10 @@ class BankingSimulationApp:
     def run(self) -> None:
         self.state.runs += 1
         self.section('Banking Simulation')
-        account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
+        account = {'holder': self.cfg.banking_account_holder, 'balance': self.cfg.banking_initial_balance, 'transactions': []}
         print(self.format_kv('Account holder', account['holder']))
         print(self.format_kv('Opening balance', f"${account['balance']:.2f}"))
-        ops = [
-            ('deposit', 500),
-            ('withdraw', 200),
-            ('withdraw', 800),
-            ('deposit', 100),
-        ]
+        ops = self._parse_banking_ops()
         for action, amt in ops:
             if action == 'deposit':
                 result = self.deposit(account, amt)
@@ -244,18 +253,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
+"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
 
 Generated for the 45-day Python development challenge.
 """
@@ -13,6 +13,7 @@ import json
 import math
 import random
 import time
+from .config import AppConfig
 
 @dataclass
 class CliCalculatorAppState:
@@ -26,7 +27,8 @@ class CliCalculatorAppState:
 class CliCalculatorApp:
     def __init__(self) -> None:
         self.state = CliCalculatorAppState()
-        self.output_dir = Path('outputs')
+        self.cfg = AppConfig()
+        self.output_dir = self.cfg.output_dir
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
@@ -128,7 +130,9 @@ class CliCalculatorApp:
             'avg': round(sum(values) / len(values), 4),
         }
 
-    def history_tail(self, count: int = 5) -> List[str]:
+    def history_tail(self, count: int | None = None) -> List[str]:
+        if count is None:
+            count = self.cfg.history_tail_default
         return self.state.history[-count:]
 
     def export_state(self) -> Path:
@@ -140,7 +144,7 @@ class CliCalculatorApp:
             'flags': self.state.flags,
             'history': self.state.history,
         }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}{self.cfg.state_file_suffix}', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -179,7 +183,7 @@ class CliCalculatorApp:
 
     def run(self) -> None:
         self.state.runs += 1
-        samples = ['5 + 2', '8 / 0', '4 ** 3', '10 ? 2']
+        samples = self.cfg.calc_samples
         self.section('Calculator Runs')
         for item in samples:
             try:
@@ -204,18 +208,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

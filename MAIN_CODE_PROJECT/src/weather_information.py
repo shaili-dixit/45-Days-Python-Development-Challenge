@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
+"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+from .config import AppConfig
 
 @dataclass
 class WeatherInformationAppState:
@@ -25,7 +26,8 @@ class WeatherInformationAppState:
 class WeatherInformationApp:
     def __init__(self) -> None:
         self.state = WeatherInformationAppState()
-        self.output_dir = Path('outputs')
+        self.cfg = AppConfig()
+        self.output_dir = self.cfg.output_dir
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
@@ -127,7 +129,9 @@ class WeatherInformationApp:
             'avg': round(sum(values) / len(values), 4),
         }
 
-    def history_tail(self, count: int = 5) -> List[str]:
+    def history_tail(self, count: int | None = None) -> List[str]:
+        if count is None:
+            count = self.cfg.history_tail_default
         return self.state.history[-count:]
 
     def export_state(self) -> Path:
@@ -139,7 +143,7 @@ class WeatherInformationApp:
             'flags': self.state.flags,
             'history': self.state.history,
         }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}{self.cfg.state_file_suffix}', payload)
 
     def display_report(self) -> None:
         self.section('Summary')
@@ -167,7 +171,7 @@ class WeatherInformationApp:
         for item in items:
             c = item.get('condition', 'Unknown')
             conditions[c] = conditions.get(c, 0) + 1
-        
+
         return {
             'cities_reported': len(items),
             'temperature_stats': self.summarize_list(temps),
@@ -180,16 +184,16 @@ class WeatherInformationApp:
         self.section('Weather Data Retrieval')
         start = time.perf_counter()
         try:
-            url = 'https://jsonplaceholder.typicode.com/users/1'
-            request = urllib.request.Request(url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
+            url = self.cfg.weather_api_url
+            request = urllib.request.Request(url, headers={'User-Agent': self.cfg.weather_user_agent})
+            with urllib.request.urlopen(request, timeout=self.cfg.weather_timeout) as response:
                 user = json.loads(response.read().decode('utf-8', errors='replace'))
             elapsed = round(time.perf_counter() - start, 4)
             geo = user.get('address', {}).get('geo', {})
             lat, lng = geo.get('lat', '0'), geo.get('lng', '0')
-            weather = {'temperature': 72, 'humidity': 55, 'condition': 'Partly Cloudy', 'wind': 12}
-            conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Light Rain', 'Clear']
-            forecast = [{'day': i + 1, 'temp': 68 + i * 2, 'condition': conditions[i % len(conditions)]} for i in range(5)]
+            weather = {'temperature': self.cfg.weather_fallback_temp, 'humidity': self.cfg.weather_fallback_humidity, 'condition': self.cfg.weather_fallback_condition, 'wind': self.cfg.weather_fallback_wind}
+            conditions = self.cfg.weather_conditions
+            forecast = [{'day': i + 1, 'temp': self.cfg.weather_forecast_base_temp + i * self.cfg.weather_forecast_temp_inc, 'condition': conditions[i % len(conditions)]} for i in range(self.cfg.weather_forecast_days)]
             self.section('Current Weather')
             print(self.format_kv('Location', f'{lat}, {lng}'))
             print(self.format_kv('Temperature', f'{weather["temperature"]}F'))
@@ -222,18 +226,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
