@@ -23,9 +23,9 @@ class ImageProcessingAppState:
     errors: int = 0
 
 class ImageProcessingApp:
-    def __init__(self) -> None:
-        self.state = ImageProcessingAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: ImageProcessingAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else ImageProcessingAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
@@ -236,18 +236,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

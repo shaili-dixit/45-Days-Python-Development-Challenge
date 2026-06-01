@@ -23,9 +23,9 @@ class BankingSimulationAppState:
     errors: int = 0
 
 class BankingSimulationApp:
-    def __init__(self) -> None:
-        self.state = BankingSimulationAppState()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: BankingSimulationAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else BankingSimulationAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
@@ -244,18 +244,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
