@@ -175,9 +175,9 @@ class WeatherInformationApp:
         self.section('Weather Data Retrieval')
         start = time.perf_counter()
         try:
-            url = 'https://jsonplaceholder.typicode.com/users/1'
-            request = urllib.request.Request(url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
+            url = self.cfg.weather_api_url
+            request = urllib.request.Request(url, headers={'User-Agent': self.cfg.weather_user_agent})
+            with urllib.request.urlopen(request, timeout=self.cfg.weather_timeout) as response:
                 user = json.loads(response.read().decode('utf-8', errors='replace'))
             elapsed = round(time.perf_counter() - start, 4)
             geo = user.get('address', {}).get('geo', {})

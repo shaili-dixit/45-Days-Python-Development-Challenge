@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+from .config import AppConfig
 
 import threading
 
@@ -31,6 +32,16 @@ class BankingSimulationApp:
         self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
         self.output = OutputHandler(self.output_dir)
+
+    def _parse_banking_ops(self) -> list[tuple[str, float]]:
+        result: list[tuple[str, float]] = []
+        for part in self.cfg.banking_transaction_ops:
+            action, _, amt = part.partition(':')
+            try:
+                result.append((action.strip(), float(amt)))
+            except ValueError:
+                pass
+        return result
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
