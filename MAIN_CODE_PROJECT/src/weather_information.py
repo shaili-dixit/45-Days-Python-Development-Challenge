@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
+"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+import threading
 
 @dataclass
 class WeatherInformationAppState:
@@ -27,6 +28,7 @@ class WeatherInformationApp:
         self.state = WeatherInformationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._lock = threading.Lock()
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -110,12 +112,14 @@ class WeatherInformationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        with self._lock:
+            self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        with self._lock:
+            current = self.state.flags.get(key, default)
+            self.state.flags[key] = not current
+            return self.state.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -167,7 +171,7 @@ class WeatherInformationApp:
         for item in items:
             c = item.get('condition', 'Unknown')
             conditions[c] = conditions.get(c, 0) + 1
-        
+
         return {
             'cities_reported': len(items),
             'temperature_stats': self.summarize_list(temps),
@@ -222,18 +226,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

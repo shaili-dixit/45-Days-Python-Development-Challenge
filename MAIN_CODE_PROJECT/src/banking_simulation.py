@@ -1,4 +1,4 @@
-﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+import threading
 
 @dataclass
 class BankingSimulationAppState:
@@ -27,6 +28,7 @@ class BankingSimulationApp:
         self.state = BankingSimulationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._lock = threading.Lock()
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -110,12 +112,14 @@ class BankingSimulationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        with self._lock:
+            self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        with self._lock:
+            current = self.state.flags.get(key, default)
+            self.state.flags[key] = not current
+            return self.state.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -244,18 +248,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
