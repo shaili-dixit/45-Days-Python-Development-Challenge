@@ -1,4 +1,4 @@
-﻿"""Design a Secure User Authentication Simulation with Username and Password Verification
+"""Design a Secure User Authentication Simulation with Username and Password Verification
 
 Generated for the 45-day Python development challenge.
 """
@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-import hashlib
+from .password_hasher import hash_password, verify_password
 import json
 import random
 import time
@@ -158,18 +158,24 @@ class UserAuthSimulationApp:
             {'name': 'gamma', 'value': 3, 'active': True},
         ]
 
-    def _hash(self, password: str) -> str:
-        return hashlib.sha256(password.encode('utf-8')).hexdigest()
+    _users: dict | None = None
+
+    @classmethod
+    def _get_users(cls) -> dict:
+        if cls._users is None:
+            from .password_hasher import hash_password
+            cls._users = {
+                'admin': hash_password('admin123'),
+                'guest': hash_password('guest123'),
+            }
+        return cls._users
 
     def authenticate(self, username: str, password: str) -> bool:
-        users = {
-            'admin': self._hash('admin123'),
-            'guest': self._hash('guest123'),
-        }
-        stored = users.get(username)
+        stored = self._get_users().get(username)
         if stored is None:
             return False
-        return stored == self._hash(password)
+        from .password_hasher import verify_password
+        return verify_password(password, stored)
 
     def run(self) -> None:
         self.state.runs += 1
@@ -202,18 +208,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

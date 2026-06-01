@@ -1,4 +1,4 @@
-﻿"""Create a Secure Credential Storage Simulation Using Hashing Mechanisms
+"""Create a Secure Credential Storage Simulation Using Hashing Mechanisms
 
 Generated for the 45-day Python development challenge.
 """
@@ -9,11 +9,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-import hashlib
 import json
 import random
 import time
-import hashlib
+from .password_hasher import hash_password, verify_password
 
 @dataclass
 class CredentialStorageAppState:
@@ -158,14 +157,11 @@ class CredentialStorageApp:
             {'username': 'admin'},
         ]
 
-    def hash_password(self, password: str) -> str:
-        return hashlib.sha256(password.encode('utf-8')).hexdigest()
-
     def store_credential(self, username: str, password: str) -> Dict[str, Any]:
-        return {'username': username, 'password_hash': self.hash_password(password)}
+        return {'username': username, 'password_hash': hash_password(password)}
 
     def verify_credential(self, stored: Dict[str, Any], password: str) -> bool:
-        return stored.get('password_hash') == self.hash_password(password)
+        return verify_password(password, stored.get('password_hash', ''))
 
     def dataset(self) -> List[Dict[str, Any]]:
         return [
@@ -192,20 +188,13 @@ class CredentialStorageApp:
             'verification_tests': verification_results
         }
 
-    def hash_password(self, password: str) -> str:
-        salt = '5a1t'
-        return hashlib.sha256((password + salt).encode()).hexdigest()
-
-    def verify_password(self, password: str, stored_hash: str) -> bool:
-        return self.hash_password(password) == stored_hash
-
     def run(self) -> None:
         self.state.runs += 1
         self.section('Credential Storage')
-        hashed = self.hash_password('secret123')
+        hashed = hash_password('secret123')
         credentials = {'username': 'admin', 'password_hash': hashed}
-        correct = self.verify_password('secret123', hashed)
-        incorrect = self.verify_password('wrongpass', hashed)
+        correct = verify_password('secret123', hashed)
+        incorrect = verify_password('wrongpass', hashed)
         print(self.format_kv('Username', credentials['username']))
         print(self.format_kv('Stored hash', hashed))
         print(self.format_kv('Verify correct', str(correct)))
@@ -227,18 +216,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
