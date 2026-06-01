@@ -14,18 +14,30 @@ import math
 import random
 import time
 
-from .state_manager import StateManager
+import threading
+
+@dataclass
+class CliCalculatorAppState:
+    history: List[str] = field(default_factory=list)
+    records: Dict[str, Any] = field(default_factory=dict)
+    flags: Dict[str, bool] = field(default_factory=dict)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    runs: int = 0
+    errors: int = 0
+    _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class CliCalculatorApp:
-    def __init__(self) -> None:
-        self.state = StateManager()
-        self.output_dir = Path('outputs')
+    def __init__(self, state: CliCalculatorAppState | None = None, output_dir: Path | None = None) -> None:
+        self.state = state if state is not None else CliCalculatorAppState()
+        self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.output = OutputHandler(self.output_dir)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.transient.history.append(entry)
+        with self.state._lock:
+            self.state.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -104,12 +116,14 @@ class CliCalculatorApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.persistent.records[key] = value
+        with self.state._lock:
+            self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.transient.flags.get(key, default)
-        self.state.transient.flags[key] = not current
-        return self.state.transient.flags[key]
+        with self.state._lock:
+            current = self.state.flags.get(key, default)
+            self.state.flags[key] = not current
+            return self.state.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -128,13 +142,13 @@ class CliCalculatorApp:
         return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
-        self.section('Summary')
-        print(self.format_kv('Runs', self.state.transient.runs))
-        print(self.format_kv('Errors', self.state.transient.errors))
-        print(self.format_kv('Records', len(self.state.persistent.records)))
-        print(self.format_kv('Flags', len(self.state.transient.flags)))
-        print(self.format_kv('History entries', len(self.state.transient.history)))
-        self.log(f'Exported to {self.export_state()}')
+        self.output.section('Summary')
+        self.output.kv('Runs', self.state.runs)
+        self.output.kv('Errors', self.state.errors)
+        self.output.kv('Records', len(self.state.records))
+        self.output.kv('Flags', len(self.state.flags))
+        self.output.kv('History entries', len(self.state.history))
+        self.output.log(f'Exported to {self.export_state()}')
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
@@ -163,22 +177,24 @@ class CliCalculatorApp:
         return operations[op]()
 
     def run(self) -> None:
-        self.state.transient.runs += 1
+        with self.state._lock:
+            self.state.runs += 1
         samples = ['5 + 2', '8 / 0', '4 ** 3', '10 ? 2']
-        self.section('Calculator Runs')
+        self.output.section('Calculator Runs')
         for item in samples:
             try:
                 a, op, b = self.parse_expression(item)
                 result = self.compute(a, op, b)
-                print(self.format_kv(item, result))
+                self.output.kv(item, result)
             except Exception as exc:
-                self.state.transient.errors += 1
-                print(self.format_kv(item, f'error: {exc}'))
-        self.display_report()
     def finalize(self) -> None:
         self.export_state()
-        self.log('Finalized successfully')
+        self.output.log('Finalized successfully')
 
+                with self.state._lock:
+                    self.state.errors += 1
+                print(self.format_kv(item, f'error: {exc}'))
+        self.display_report()
 def main() -> None:
     app = CliCalculatorApp()
     try:
@@ -189,4 +205,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
