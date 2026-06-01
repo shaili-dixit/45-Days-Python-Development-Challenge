@@ -13,6 +13,7 @@ import json
 import math
 import random
 import time
+from .config import AppConfig
 
 import threading
 
@@ -136,18 +137,10 @@ class CliCalculatorApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.output.section('Summary')
@@ -195,6 +188,10 @@ class CliCalculatorApp:
                 result = self.compute(a, op, b)
                 self.output.kv(item, result)
             except Exception as exc:
+    def finalize(self) -> None:
+        self.export_state()
+        self.output.log('Finalized successfully')
+
                 with self.state._lock:
                     self.state.errors += 1
                 print(self.format_kv(item, f'error: {exc}'))
@@ -209,4 +206,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-    main

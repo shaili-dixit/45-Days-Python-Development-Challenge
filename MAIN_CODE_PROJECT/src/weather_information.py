@@ -133,18 +133,10 @@ class WeatherInformationApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.output.section('Summary')
@@ -169,7 +161,7 @@ class WeatherInformationApp:
         for item in items:
             c = item.get('condition', 'Unknown')
             conditions[c] = conditions.get(c, 0) + 1
-        
+
         return {
             'cities_reported': len(items),
             'temperature_stats': self.summarize_list(temps),
@@ -183,9 +175,9 @@ class WeatherInformationApp:
         self.section('Weather Data Retrieval')
         start = time.perf_counter()
         try:
-            url = 'https://jsonplaceholder.typicode.com/users/1'
-            request = urllib.request.Request(url, headers={'User-Agent': 'Python45-Dev/1.0'})
-            with urllib.request.urlopen(request, timeout=10) as response:
+            url = self.cfg.weather_api_url
+            request = urllib.request.Request(url, headers={'User-Agent': self.cfg.weather_user_agent})
+            with urllib.request.urlopen(request, timeout=self.cfg.weather_timeout) as response:
                 user = json.loads(response.read().decode('utf-8', errors='replace'))
             elapsed = round(time.perf_counter() - start, 4)
             geo = user.get('address', {}).get('geo', {})

@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+from .config import AppConfig
 
 import threading
 
@@ -31,6 +32,16 @@ class BankingSimulationApp:
         self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
         self.output = OutputHandler(self.output_dir)
+
+    def _parse_banking_ops(self) -> list[tuple[str, float]]:
+        result: list[tuple[str, float]] = []
+        for part in self.cfg.banking_transaction_ops:
+            action, _, amt = part.partition(':')
+            try:
+                result.append((action.strip(), float(amt)))
+            except ValueError:
+                pass
+        return result
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -135,18 +146,10 @@ class BankingSimulationApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.output.section('Summary')
@@ -245,4 +248,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-    main
