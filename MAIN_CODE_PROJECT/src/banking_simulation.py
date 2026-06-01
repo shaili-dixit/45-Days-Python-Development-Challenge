@@ -1,4 +1,4 @@
-﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -203,8 +203,14 @@ class BankingSimulationApp:
     def get_balance(self, account: Dict[str, Any]) -> float:
         return account['balance']
 
+    def reset(self) -> None:
+        self.state.records.clear()
+        self.state.flags.clear()
+        self.state.errors = 0
+
     def run(self) -> None:
         self.state.runs += 1
+        self.reset()
         self.section('Banking Simulation')
         account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
         print(self.format_kv('Account holder', account['holder']))
@@ -244,18 +250,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

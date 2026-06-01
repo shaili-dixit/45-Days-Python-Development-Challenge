@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
+"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
 
 Generated for the 45-day Python development challenge.
 """
@@ -177,8 +177,14 @@ class CliCalculatorApp:
             raise ValueError('unsupported operation')
         return operations[op]()
 
+    def reset(self) -> None:
+        self.state.records.clear()
+        self.state.flags.clear()
+        self.state.errors = 0
+
     def run(self) -> None:
         self.state.runs += 1
+        self.reset()
         samples = ['5 + 2', '8 / 0', '4 ** 3', '10 ? 2']
         self.section('Calculator Runs')
         for item in samples:
@@ -204,18 +210,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
