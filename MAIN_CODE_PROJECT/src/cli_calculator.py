@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
+"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
 
 Generated for the 45-day Python development challenge.
 """
@@ -13,6 +13,7 @@ import json
 import math
 import random
 import time
+import threading
 
 @dataclass
 class CliCalculatorAppState:
@@ -28,11 +29,13 @@ class CliCalculatorApp:
         self.state = CliCalculatorAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._lock = threading.Lock()
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        with self._lock:
+            self.state.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -204,18 +207,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

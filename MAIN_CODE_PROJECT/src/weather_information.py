@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
+"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,7 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+import threading
 
 @dataclass
 class WeatherInformationAppState:
@@ -27,11 +28,13 @@ class WeatherInformationApp:
         self.state = WeatherInformationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._lock = threading.Lock()
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        with self._lock:
+            self.state.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -167,7 +170,7 @@ class WeatherInformationApp:
         for item in items:
             c = item.get('condition', 'Unknown')
             conditions[c] = conditions.get(c, 0) + 1
-        
+
         return {
             'cities_reported': len(items),
             'temperature_stats': self.summarize_list(temps),
@@ -222,18 +225,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
