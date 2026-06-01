@@ -163,9 +163,6 @@ class BankingSimulationApp:
             {'type': 'deposit', 'amount': 350.0, 'timestamp': '2026-05-29T10:30:00'},
         ]
 
-    def dataset(self) -> List[Dict[str, Any]]:
-        return self.demo_data()
-
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
         balance = 0.0
         deposits = 0
@@ -237,10 +234,6 @@ class BankingSimulationApp:
         print(self.format_kv('Final balance', f"${account['balance']:.2f}"))
         self.record('account', account)
         self.display_report()
-    def finalize(self) -> None:
-        self.export_state()
-        self.log('Finalized successfully')
-
 def main() -> None:
     app = BankingSimulationApp()
     try:

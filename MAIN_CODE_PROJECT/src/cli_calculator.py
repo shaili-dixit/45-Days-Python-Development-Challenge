@@ -198,10 +198,6 @@ class CliCalculatorApp:
                     self.state.errors += 1
                 print(self.format_kv(item, f'error: {exc}'))
         self.display_report()
-    def finalize(self) -> None:
-        self.export_state()
-        self.log('Finalized successfully')
-
 def main() -> None:
     app = CliCalculatorApp()
     try:

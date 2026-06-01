@@ -163,9 +163,6 @@ class WeatherInformationApp:
             {'city': 'New York', 'temperature': 18.2, 'humidity': 70, 'condition': 'Cloudy'},
         ]
 
-    def dataset(self) -> List[Dict[str, Any]]:
-        return self.demo_data()
-
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
         temps = [item.get('temperature', 0.0) for item in items]
         hums = [item.get('humidity', 0.0) for item in items]
@@ -216,10 +213,6 @@ class WeatherInformationApp:
                 self.state.errors += 1
             self.log(f'Weather fetch failed: {exc}')
         self.display_report()
-    def finalize(self) -> None:
-        self.export_state()
-        self.log('Finalized successfully')
-
 def main() -> None:
     app = WeatherInformationApp()
     try:
