@@ -7,15 +7,15 @@ import json
 
 
 class BaseApp(ABC):
-    """All App modules should inherit from this ABC.
+    """All *App modules should inherit from this ABC.
 
-    Subclasses must set:
-      - self.state - an AppState dataclass instance
-      - self.output_dir - a Path to the output directory
+    Subclasses must provide:
+      - ``self.state`` — an AppState dataclass instance
+      - ``self.output_dir`` — a ``Path`` to the output directory
 
-    Subclasses must implement:
-      - run()
-      - demo_data()
+    Abstract methods that every module must implement:
+      - :meth:`run`
+      - :meth:`demo_data`
     """
 
     @abstractmethod
@@ -27,21 +27,23 @@ class BaseApp(ABC):
         """Return sample/demo data for the module."""
 
     def dataset(self) -> List[Dict[str, Any]]:
+        """Return the working dataset (default: delegates to demo_data)."""
         return self.demo_data()
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Process *items* and return summary statistics (override for custom behavior)."""
         return {
             'count': len(items),
-            'statistics': self.summarize_list(
-                [v for item in items for v in item.values() if isinstance(v, (int, float))]
-            ),
+            'statistics': self.summarize_list([v for item in items for v in item.values() if isinstance(v, (int, float))]),
         }
 
     def finalize(self) -> None:
+        """Export state and log completion."""
         self.export_state()
         self.log('Finalized successfully')
 
     def export_state(self) -> Path:
+        """Serialize the full ``self.state`` to a JSON file."""
         payload = {
             'created_at': self.state.created_at,
             'runs': self.state.runs,
@@ -53,6 +55,7 @@ class BaseApp(ABC):
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)
 
     def display_report(self) -> None:
+        """Print a summary of the current state."""
         self.section('Summary')
         print(self.format_kv('Runs', self.state.runs))
         print(self.format_kv('Errors', self.state.errors))
@@ -62,32 +65,39 @@ class BaseApp(ABC):
         self.log(f'Exported to {self.export_state()}')
 
     def log(self, message: str) -> None:
+        """Timestamp *message*, append to history, and print."""
         stamp = __import__('datetime').datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
         self.state.history.append(entry)
         print(entry)
 
     def record(self, key: str, value: Any) -> None:
+        """Store *value* under *key* in records."""
         self.state.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
+        """Flip a boolean flag and return the new value."""
         current = self.state.flags.get(key, default)
         self.state.flags[key] = not current
         return self.state.flags[key]
 
     def history_tail(self, count: int = 5) -> List[str]:
+        """Return the last *count* history entries."""
         return self.state.history[-count:]
 
     def section(self, title: str) -> None:
+        """Print a section header."""
         print()
         print('=' * 70)
         print(title)
         print('=' * 70)
 
     def format_kv(self, key: str, value: Any) -> str:
+        """Right-align key and print value."""
         return f'{key:<20} : {value}'
 
     def render_table(self, rows: List[Dict[str, Any]]) -> str:
+        """Render a list of dicts as a monospaced table."""
         if not rows:
             return '(empty)'
         keys = list(dict.fromkeys(k for row in rows for k in row))
