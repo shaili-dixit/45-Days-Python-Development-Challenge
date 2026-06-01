@@ -1,4 +1,4 @@
-﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -13,25 +13,18 @@ import json
 import random
 import time
 
-@dataclass
-class BankingSimulationAppState:
-    history: List[str] = field(default_factory=list)
-    records: Dict[str, Any] = field(default_factory=dict)
-    flags: Dict[str, bool] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    runs: int = 0
-    errors: int = 0
+from .state_manager import StateManager
 
 class BankingSimulationApp:
     def __init__(self) -> None:
-        self.state = BankingSimulationAppState()
+        self.state = StateManager()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        self.state.transient.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -110,12 +103,12 @@ class BankingSimulationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        self.state.persistent.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        current = self.state.transient.flags.get(key, default)
+        self.state.transient.flags[key] = not current
+        return self.state.transient.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -128,26 +121,18 @@ class BankingSimulationApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.section('Summary')
-        print(self.format_kv('Runs', self.state.runs))
-        print(self.format_kv('Errors', self.state.errors))
-        print(self.format_kv('Records', len(self.state.records)))
-        print(self.format_kv('Flags', len(self.state.flags)))
-        print(self.format_kv('History entries', len(self.state.history)))
+        print(self.format_kv('Runs', self.state.transient.runs))
+        print(self.format_kv('Errors', self.state.transient.errors))
+        print(self.format_kv('Records', len(self.state.persistent.records)))
+        print(self.format_kv('Flags', len(self.state.transient.flags)))
+        print(self.format_kv('History entries', len(self.state.transient.history)))
         self.log(f'Exported to {self.export_state()}')
 
     def demo_data(self) -> List[Dict[str, Any]]:
@@ -204,7 +189,7 @@ class BankingSimulationApp:
         return account['balance']
 
     def run(self) -> None:
-        self.state.runs += 1
+        self.state.transient.runs += 1
         self.section('Banking Simulation')
         account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
         print(self.format_kv('Account holder', account['holder']))
@@ -244,18 +229,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

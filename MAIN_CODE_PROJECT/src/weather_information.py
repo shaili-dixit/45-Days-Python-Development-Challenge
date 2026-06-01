@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
+"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -13,25 +13,18 @@ import json
 import random
 import time
 
-@dataclass
-class WeatherInformationAppState:
-    history: List[str] = field(default_factory=list)
-    records: Dict[str, Any] = field(default_factory=dict)
-    flags: Dict[str, bool] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    runs: int = 0
-    errors: int = 0
+from .state_manager import StateManager
 
 class WeatherInformationApp:
     def __init__(self) -> None:
-        self.state = WeatherInformationAppState()
+        self.state = StateManager()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
-        self.state.history.append(entry)
+        self.state.transient.history.append(entry)
         print(entry)
 
     def section(self, title: str) -> None:
@@ -110,12 +103,12 @@ class WeatherInformationApp:
         return path.read_text(encoding='utf-8')
 
     def record(self, key: str, value: Any) -> None:
-        self.state.records[key] = value
+        self.state.persistent.records[key] = value
 
     def toggle(self, key: str, default: bool = False) -> bool:
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
+        current = self.state.transient.flags.get(key, default)
+        self.state.transient.flags[key] = not current
+        return self.state.transient.flags[key]
 
     def summarize_list(self, values: List[float]) -> Dict[str, Any]:
         if not values:
@@ -128,26 +121,18 @@ class WeatherInformationApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.section('Summary')
-        print(self.format_kv('Runs', self.state.runs))
-        print(self.format_kv('Errors', self.state.errors))
-        print(self.format_kv('Records', len(self.state.records)))
-        print(self.format_kv('Flags', len(self.state.flags)))
-        print(self.format_kv('History entries', len(self.state.history)))
+        print(self.format_kv('Runs', self.state.transient.runs))
+        print(self.format_kv('Errors', self.state.transient.errors))
+        print(self.format_kv('Records', len(self.state.persistent.records)))
+        print(self.format_kv('Flags', len(self.state.transient.flags)))
+        print(self.format_kv('History entries', len(self.state.transient.history)))
         self.log(f'Exported to {self.export_state()}')
 
     def demo_data(self) -> List[Dict[str, Any]]:
@@ -167,7 +152,7 @@ class WeatherInformationApp:
         for item in items:
             c = item.get('condition', 'Unknown')
             conditions[c] = conditions.get(c, 0) + 1
-        
+
         return {
             'cities_reported': len(items),
             'temperature_stats': self.summarize_list(temps),
@@ -176,7 +161,7 @@ class WeatherInformationApp:
         }
 
     def run(self) -> None:
-        self.state.runs += 1
+        self.state.transient.runs += 1
         self.section('Weather Data Retrieval')
         start = time.perf_counter()
         try:
@@ -205,7 +190,7 @@ class WeatherInformationApp:
             self.record('response_time', elapsed)
             self.log(f'Weather data retrieved in {elapsed}s')
         except Exception as exc:
-            self.state.errors += 1
+            self.state.transient.errors += 1
             self.log(f'Weather fetch failed: {exc}')
         self.display_report()
     def finalize(self) -> None:
@@ -222,18 +207,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
