@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, FrozenSet, List
 import json
 
 
@@ -16,7 +16,28 @@ class BaseApp(ABC):
     Abstract methods that every module must implement:
       - :meth:`run`
       - :meth:`demo_data`
+
+    Export filtering
+    ----------------
+    ``export_state()`` serialises only a safe subset of the application state.
+    Internal runtime fields (``_lock``, ``flags``) are never written to disk.
+    Subclasses that store sensitive values in ``records`` (e.g. password hashes,
+    credentials, generated secrets) should declare those key names in the class-
+    level ``_SENSITIVE_RECORD_KEYS`` frozenset so they are automatically
+    excluded from every export.
     """
+
+    # Keys in ``self.state.records`` that must never be written to disk.
+    # Override in subclasses to add module-specific sensitive field names.
+    _SENSITIVE_RECORD_KEYS: FrozenSet[str] = frozenset()
+
+    def _filter_records(self) -> Dict[str, Any]:
+        """Return a copy of ``records`` with all sensitive keys removed."""
+        return {
+            k: v
+            for k, v in self.state.records.items()
+            if k not in self._SENSITIVE_RECORD_KEYS
+        }
 
     @abstractmethod
     def run(self) -> None:
@@ -43,13 +64,21 @@ class BaseApp(ABC):
         self.log('Finalized successfully')
 
     def export_state(self) -> Path:
-        """Serialize the full ``self.state`` to a JSON file."""
+        """Serialize a filtered subset of ``self.state`` to a JSON file.
+
+        Only public, non-sensitive fields are written:
+          - ``created_at``, ``runs``, ``errors``, ``history`` — always included
+          - ``records`` — included after stripping keys listed in
+            ``_SENSITIVE_RECORD_KEYS``
+
+        Internal runtime fields (``flags``, ``_lock``) are intentionally
+        excluded to prevent leaking implementation details to disk.
+        """
         payload = {
             'created_at': self.state.created_at,
             'runs': self.state.runs,
             'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
+            'records': self._filter_records(),
             'history': self.state.history,
         }
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)

@@ -32,6 +32,13 @@ class PasswordGeneratorApp:
         self.output_dir = output_dir if output_dir is not None else Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
 
+    # 'passwords' contains generated plaintext passwords; must not be persisted.
+    _SENSITIVE_RECORD_KEYS: frozenset = frozenset({'passwords'})
+
+    def _filter_records(self) -> dict:
+        """Return records with sensitive keys removed."""
+        return {k: v for k, v in self.state.records.items() if k not in self._SENSITIVE_RECORD_KEYS}
+
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
@@ -138,12 +145,13 @@ class PasswordGeneratorApp:
         return self.state.history[-count:]
 
     def export_state(self) -> Path:
+        # Exclude 'passwords': generated plaintext passwords must not be
+        # persisted to disk as they are sensitive secrets.
         payload = {
             'created_at': self.state.created_at,
             'runs': self.state.runs,
             'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
+            'records': self._filter_records(),
             'history': self.state.history,
         }
         return self.save_json(f'{self.__class__.__name__}_state.json', payload)
