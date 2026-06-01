@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Weather Information Retrieval System Using External APIs
+"""Implement an Automated Weather Information Retrieval System Using External APIs
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,8 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+import logging
+from .log_setup import setup_logger
 
 @dataclass
 class WeatherInformationAppState:
@@ -27,12 +29,13 @@ class WeatherInformationApp:
         self.state = WeatherInformationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.logger = setup_logger(self.__class__.__name__)
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
         self.state.history.append(entry)
-        print(entry)
+        self.logger.info(message)
 
     def section(self, title: str) -> None:
         print()
@@ -167,7 +170,7 @@ class WeatherInformationApp:
         for item in items:
             c = item.get('condition', 'Unknown')
             conditions[c] = conditions.get(c, 0) + 1
-        
+
         return {
             'cities_reported': len(items),
             'temperature_stats': self.summarize_list(temps),
@@ -206,6 +209,7 @@ class WeatherInformationApp:
             self.log(f'Weather data retrieved in {elapsed}s')
         except Exception as exc:
             self.state.errors += 1
+            self.logger.exception('Weather fetch failed')
             self.log(f'Weather fetch failed: {exc}')
         self.display_report()
     def finalize(self) -> None:
@@ -222,18 +226,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
