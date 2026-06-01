@@ -1,4 +1,4 @@
-﻿"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
+"""Build an Interactive Command-Line Calculator with Advanced Arithmetic Operations and Input Validation
 
 Generated for the 45-day Python development challenge.
 """
@@ -13,6 +13,8 @@ import json
 import math
 import random
 import time
+import os
+import threading
 
 @dataclass
 class CliCalculatorAppState:
@@ -28,6 +30,7 @@ class CliCalculatorApp:
         self.state = CliCalculatorAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._lock = threading.Lock()
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -89,7 +92,10 @@ class CliCalculatorApp:
 
     def save_json(self, name: str, payload: Dict[str, Any]) -> Path:
         path = self.output_dir / name
-        path.write_text(json.dumps(payload, indent=2, default=str), encoding='utf-8')
+        tmp = path.with_suffix('.tmp')
+        with self._lock:
+            tmp.write_text(json.dumps(payload, indent=2, default=str), encoding='utf-8')
+            os.replace(str(tmp), str(path))
         return path
 
     def load_json(self, path: Path) -> Dict[str, Any]:
@@ -102,7 +108,10 @@ class CliCalculatorApp:
 
     def save_text(self, name: str, content: str) -> Path:
         path = self.output_dir / name
-        path.write_text(content, encoding='utf-8')
+        tmp = path.with_suffix('.tmp')
+        with self._lock:
+            tmp.write_text(content, encoding='utf-8')
+            os.replace(str(tmp), str(path))
         return path
 
     def load_text(self, path: Path) -> str:
@@ -204,18 +213,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

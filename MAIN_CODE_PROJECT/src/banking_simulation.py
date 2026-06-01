@@ -1,4 +1,4 @@
-﻿"""Develop an Interactive Banking Transaction Simulation with Balance Management System
+"""Develop an Interactive Banking Transaction Simulation with Balance Management System
 
 Generated for the 45-day Python development challenge.
 """
@@ -12,6 +12,8 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+import os
+import threading
 
 @dataclass
 class BankingSimulationAppState:
@@ -27,6 +29,7 @@ class BankingSimulationApp:
         self.state = BankingSimulationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._lock = threading.Lock()
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -88,7 +91,10 @@ class BankingSimulationApp:
 
     def save_json(self, name: str, payload: Dict[str, Any]) -> Path:
         path = self.output_dir / name
-        path.write_text(json.dumps(payload, indent=2, default=str), encoding='utf-8')
+        tmp = path.with_suffix('.tmp')
+        with self._lock:
+            tmp.write_text(json.dumps(payload, indent=2, default=str), encoding='utf-8')
+            os.replace(str(tmp), str(path))
         return path
 
     def load_json(self, path: Path) -> Dict[str, Any]:
@@ -101,7 +107,10 @@ class BankingSimulationApp:
 
     def save_text(self, name: str, content: str) -> Path:
         path = self.output_dir / name
-        path.write_text(content, encoding='utf-8')
+        tmp = path.with_suffix('.tmp')
+        with self._lock:
+            tmp.write_text(content, encoding='utf-8')
+            os.replace(str(tmp), str(path))
         return path
 
     def load_text(self, path: Path) -> str:
@@ -244,18 +253,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
