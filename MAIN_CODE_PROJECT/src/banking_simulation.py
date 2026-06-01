@@ -13,11 +13,7 @@ import json
 import random
 import time
 
-<<<<<<< fix/decouple-io-layer
-from .output_handler import OutputHandler
-=======
 import threading
->>>>>>> main
 
 @dataclass
 class BankingSimulationAppState:
@@ -139,18 +135,10 @@ class BankingSimulationApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.output.section('Summary')
@@ -212,14 +200,9 @@ class BankingSimulationApp:
         return account['balance']
 
     def run(self) -> None:
-<<<<<<< fix/decouple-io-layer
-        self.state.runs += 1
-        self.output.section('Banking Simulation')
-=======
         with self.state._lock:
             self.state.runs += 1
         self.section('Banking Simulation')
->>>>>>> main
         account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
         self.output.kv('Account holder', account['holder'])
         self.output.kv('Opening balance', f"${account['balance']:.2f}")
@@ -243,16 +226,7 @@ class BankingSimulationApp:
         self.output.write("\n")
         self.output.kv('Final balance', f"${account['balance']:.2f}")
         self.record('account', account)
-<<<<<<< fix/decouple-io-layer
-        self.output.summary(self.state)
-        self.output.log(f'Exported to {self.export_state()}')
-    def finalize(self) -> None:
-        self.export_state()
-        self.output.log('Finalized successfully')
-
-=======
         self.display_report()
->>>>>>> main
 def main() -> None:
     app = BankingSimulationApp()
     try:
@@ -263,7 +237,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< fix/decouple-io-layer
-
-=======
->>>>>>> main

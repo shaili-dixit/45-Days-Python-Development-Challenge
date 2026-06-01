@@ -14,11 +14,7 @@ import math
 import random
 import time
 
-<<<<<<< fix/decouple-io-layer
-from .output_handler import OutputHandler
-=======
 import threading
->>>>>>> main
 
 @dataclass
 class CliCalculatorAppState:
@@ -140,18 +136,10 @@ class CliCalculatorApp:
         }
 
     def history_tail(self, count: int = 5) -> List[str]:
-        return self.state.history[-count:]
+        return self.state.transient.history[-count:]
 
     def export_state(self) -> Path:
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
+        return self.save_json(f'{self.__class__.__name__}_state.json', self.state.export())
 
     def display_report(self) -> None:
         self.output.section('Summary')
@@ -199,21 +187,14 @@ class CliCalculatorApp:
                 result = self.compute(a, op, b)
                 self.output.kv(item, result)
             except Exception as exc:
-<<<<<<< fix/decouple-io-layer
-                self.state.errors += 1
-                self.output.kv(item, f'error: {exc}')
-        self.output.summary(self.state)
-        self.output.log(f'Exported to {self.export_state()}')
     def finalize(self) -> None:
         self.export_state()
         self.output.log('Finalized successfully')
 
-=======
                 with self.state._lock:
                     self.state.errors += 1
                 print(self.format_kv(item, f'error: {exc}'))
         self.display_report()
->>>>>>> main
 def main() -> None:
     app = CliCalculatorApp()
     try:
@@ -224,7 +205,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< fix/decouple-io-layer
-
-=======
->>>>>>> main
