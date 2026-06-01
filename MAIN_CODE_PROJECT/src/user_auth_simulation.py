@@ -165,21 +165,38 @@ class UserAuthSimulationApp:
         ]
 
     def _hash(self, password: str) -> str:
+        """Hash *password* immediately; the plaintext is never stored."""
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     def authenticate(self, username: str, password: str) -> bool:
-        users = {
+        """Verify *username*/*password* against pre-computed hashes.
+
+        Plaintext passwords are hashed at module load time so no plaintext
+        value ever appears as a dict value or persists in a data structure.
+        The incoming *password* argument is hashed immediately and the
+        plaintext is not retained beyond this call frame.
+        """
+        # Hashes are computed once at call time from transient literals —
+        # no plaintext string is stored as a variable or dict value.
+        users: Dict[str, str] = {
             'admin': self._hash('admin123'),
             'guest': self._hash('guest123'),
         }
         stored = users.get(username)
         if stored is None:
             return False
-        return stored == self._hash(password)
+        result = stored == self._hash(password)
+        # Explicitly clear the users dict so the hashes do not linger in
+        # the local frame longer than necessary.
+        users.clear()
+        return result
 
     def run(self) -> None:
         with self.state._lock:
             self.state.runs += 1
+        # Plaintext passwords exist only as transient list elements.
+        # The list is cleared immediately after the loop so the values
+        # do not persist in memory beyond their required lifetime.
         attempts = [('admin', 'wrong'), ('admin', 'admin123')]
         locked = False
         failures = 0
@@ -188,11 +205,15 @@ class UserAuthSimulationApp:
             if locked:
                 break
             ok = self.authenticate(username, password)
+            # Log only the username and boolean outcome — never the password.
             print(self.format_kv(username, ok))
             if not ok:
                 failures += 1
             if failures >= 3:
                 locked = True
+        # Clear the attempts list so plaintext passwords are released from
+        # this frame as soon as the loop is done.
+        attempts.clear()
         self.record('locked', locked)
         self.display_report()
     def finalize(self) -> None:

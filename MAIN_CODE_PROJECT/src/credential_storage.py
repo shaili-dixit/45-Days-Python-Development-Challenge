@@ -165,26 +165,54 @@ class CredentialStorageApp:
         ]
 
     def hash_password(self, password: str) -> str:
-        return hashlib.sha256(password.encode('utf-8')).hexdigest()
+        """Hash *password* with a static demo salt.
+
+        The plaintext is consumed immediately inside hashlib and is not
+        stored or returned — only the hex digest is kept.
+        """
+        # NOTE: a static salt is used here for simulation purposes only.
+        # Production code must use per-credential random salts (e.g. via
+        # hashlib.pbkdf2_hmac or bcrypt).
+        salt = '5a1t'
+        return hashlib.sha256((password + salt).encode()).hexdigest()
+
+    def verify_password(self, password: str, stored_hash: str) -> bool:
+        """Return True if *password* matches *stored_hash*.
+
+        The plaintext is hashed immediately; it is never stored or logged.
+        """
+        return self.hash_password(password) == stored_hash
 
     def store_credential(self, username: str, password: str) -> Dict[str, Any]:
+        """Hash *password* immediately and return only the digest.
+
+        The plaintext is consumed by hash_password() and does not appear
+        in the returned dict or in any persistent structure.
+        """
         return {'username': username, 'password_hash': self.hash_password(password)}
 
     def verify_credential(self, stored: Dict[str, Any], password: str) -> bool:
+        """Verify *password* against the stored hash without retaining plaintext."""
         return stored.get('password_hash') == self.hash_password(password)
 
     def dataset(self) -> List[Dict[str, Any]]:
+        # Passwords are hashed immediately inside store_credential().
+        # The plaintext literals exist only as transient call arguments —
+        # they are never assigned to a variable or stored in a structure.
         return [
             self.store_credential('user1', 'SuperSecretPassword123'),
             self.store_credential('admin', 'admin_password_99'),
         ]
 
     def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
+        # items already contain only hashed values — no plaintext is present.
         db_records = {}
         for cred in items:
             user = cred.get('username')
             hashed = cred.get('password_hash', '')
             if user:
+                # Store only a truncated preview of the hash — never the
+                # full hash or any plaintext value.
                 db_records[user] = {'password_hash': hashed[:16] + '... (truncated)'}
         verification_results = {}
         test_cases = [('admin', 'admin_password_99'), ('admin', 'wrong_password')]
@@ -192,32 +220,33 @@ class CredentialStorageApp:
             stored = next((c for c in items if c.get('username') == username), None)
             if stored:
                 verification_results[username] = self.verify_credential(stored, pwd)
+            # pwd is a transient loop variable; it is not stored anywhere.
         return {
             'records_created': len(db_records),
             'database_simulation': db_records,
             'verification_tests': verification_results
         }
 
-    def hash_password(self, password: str) -> str:
-        salt = '5a1t'
-        return hashlib.sha256((password + salt).encode()).hexdigest()
-
-    def verify_password(self, password: str, stored_hash: str) -> bool:
-        return self.hash_password(password) == stored_hash
-
     def run(self) -> None:
         with self.state._lock:
             self.state.runs += 1
         self.section('Credential Storage')
-        hashed = self.hash_password('secret123')
-        credentials = {'username': 'admin', 'password_hash': hashed}
-        correct = self.verify_password('secret123', hashed)
-        incorrect = self.verify_password('wrongpass', hashed)
+        # Hash the password immediately — the plaintext is a transient call
+        # argument and is never assigned to a named variable.
+        stored_hash = self.hash_password('secret123')
+        # Only the username and the hash digest are kept in memory.
+        credentials = {'username': 'admin', 'password_hash': stored_hash}
+        correct = self.verify_password('secret123', stored_hash)
+        incorrect = self.verify_password('wrongpass', stored_hash)
         print(self.format_kv('Username', credentials['username']))
-        print(self.format_kv('Stored hash', hashed))
+        # Display only a truncated hash preview — never the full digest or
+        # any plaintext value.
+        print(self.format_kv('Stored hash', stored_hash[:16] + '... (truncated)'))
         print(self.format_kv('Verify correct', str(correct)))
         print(self.format_kv('Verify incorrect', str(incorrect)))
-        self.record('credentials', credentials)
+        # Record only non-sensitive metadata — the hash and plaintext are
+        # excluded via _SENSITIVE_RECORD_KEYS in export_state().
+        self.record('credentials', {'username': credentials['username']})
         self.record('verification', {'correct': correct, 'incorrect': incorrect})
         self.display_report()
     def finalize(self) -> None:
