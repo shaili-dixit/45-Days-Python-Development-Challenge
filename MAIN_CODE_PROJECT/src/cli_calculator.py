@@ -13,6 +13,9 @@ import json
 import math
 import random
 import time
+from .config import AppConfig
+
+import threading
 
 from .base_app import BaseApp
 
@@ -24,12 +27,14 @@ class CliCalculatorAppState:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
+    _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class CliCalculatorApp(BaseApp):
     def __init__(self) -> None:
         self.state = CliCalculatorAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.output = OutputHandler(self.output_dir)
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
@@ -58,14 +63,15 @@ class CliCalculatorApp(BaseApp):
         return operations[op]()
 
     def run(self) -> None:
-        self.state.runs += 1
+        with self.state._lock:
+            self.state.runs += 1
         samples = ['5 + 2', '8 / 0', '4 ** 3', '10 ? 2']
-        self.section('Calculator Runs')
+        self.output.section('Calculator Runs')
         for item in samples:
             try:
                 a, op, b = self.parse_expression(item)
                 result = self.compute(a, op, b)
-                print(self.format_kv(item, result))
+                self.output.kv(item, result)
             except Exception as exc:
                 self.state.errors += 1
                 print(self.format_kv(item, f'error: {exc}'))

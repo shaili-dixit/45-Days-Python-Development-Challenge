@@ -12,6 +12,9 @@ from typing import Any, Dict, List
 import json
 import random
 import time
+from .config import AppConfig
+
+import threading
 
 from .base_app import BaseApp
 
@@ -23,12 +26,24 @@ class BankingSimulationAppState:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     runs: int = 0
     errors: int = 0
+    _lock: threading.Lock = field(default_factory=threading.Lock)
 
 class BankingSimulationApp(BaseApp):
     def __init__(self) -> None:
         self.state = BankingSimulationAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self.output = OutputHandler(self.output_dir)
+
+    def _parse_banking_ops(self) -> list[tuple[str, float]]:
+        result: list[tuple[str, float]] = []
+        for part in self.cfg.banking_transaction_ops:
+            action, _, amt = part.partition(':')
+            try:
+                result.append((action.strip(), float(amt)))
+            except ValueError:
+                pass
+        return result
 
     def demo_data(self) -> List[Dict[str, Any]]:
         return [
@@ -81,11 +96,12 @@ class BankingSimulationApp(BaseApp):
         return account['balance']
 
     def run(self) -> None:
-        self.state.runs += 1
+        with self.state._lock:
+            self.state.runs += 1
         self.section('Banking Simulation')
         account = {'holder': 'John Doe', 'balance': 1000.0, 'transactions': []}
-        print(self.format_kv('Account holder', account['holder']))
-        print(self.format_kv('Opening balance', f"${account['balance']:.2f}"))
+        self.output.kv('Account holder', account['holder'])
+        self.output.kv('Opening balance', f"${account['balance']:.2f}")
         ops = [
             ('deposit', 500),
             ('withdraw', 200),
@@ -100,11 +116,11 @@ class BankingSimulationApp(BaseApp):
             status = result['status']
             if status == 'success':
                 tx = result['transaction']
-                print(f"  {tx['type'].title():<12} ${amt:<8.2f} -> Balance: ${tx['balance']:.2f}")
+                self.output.write(f"  {tx['type'].title():<12} ${amt:<8.2f} -> Balance: ${tx['balance']:.2f}\n")
             else:
-                print(f"  {action.title():<12} ${amt:<8.2f} -> FAILED: {result['reason']}")
-        print()
-        print(self.format_kv('Final balance', f"${account['balance']:.2f}"))
+                self.output.write(f"  {action.title():<12} ${amt:<8.2f} -> FAILED: {result['reason']}\n")
+        self.output.write("\n")
+        self.output.kv('Final balance', f"${account['balance']:.2f}")
         self.record('account', account)
         self.display_report()
 def main() -> None:
