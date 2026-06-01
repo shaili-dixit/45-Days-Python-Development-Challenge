@@ -1,4 +1,4 @@
-﻿"""Create an Automated File Organization System with Category Detection Logic
+"""Create an Automated File Organization System with Category Detection Logic
 
 Generated for the 45-day Python development challenge.
 """
@@ -225,18 +225,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

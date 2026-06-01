@@ -1,4 +1,4 @@
-﻿"""Create a Basic Web Scraping Utility for Structured Information Collection
+"""Create a Basic Web Scraping Utility for Structured Information Collection
 
 Generated for the 45-day Python development challenge.
 """
@@ -220,18 +220,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

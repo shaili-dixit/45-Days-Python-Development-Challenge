@@ -1,4 +1,4 @@
-﻿"""Implement a Text-Based Personal Task Management Utility with CRUD Operations
+"""Implement a Text-Based Personal Task Management Utility with CRUD Operations
 
 Generated for the 45-day Python development challenge.
 """
@@ -6,12 +6,10 @@ Generated for the 45-day Python development challenge.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import json
-import random
-import time
 
 @dataclass
 class TaskManagementAppState:
@@ -27,6 +25,8 @@ class TaskManagementApp:
         self.state = TaskManagementAppState()
         self.output_dir = Path('outputs')
         self.output_dir.mkdir(exist_ok=True)
+        self._tasks: Dict[str, Any] = {}
+        self._next_id: int = 1
 
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
@@ -158,9 +158,14 @@ class TaskManagementApp:
         ]
 
     def create_task(self, title: str, priority: int = 1) -> Dict[str, Any]:
-        return {'title': self.normalize_text(title), 'priority': priority, 'done': False}
+        task_id = str(self._next_id)
+        self._next_id += 1
+        task = {'id': task_id, 'title': self.normalize_text(title), 'priority': priority, 'done': False}
+        self._tasks[task_id] = task
+        return task
 
-    def update_task(self, task: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+    def update_task(self, task_id: str, **kwargs: Any) -> Dict[str, Any]:
+        task = self._tasks[task_id]
         for key, value in kwargs.items():
             if key == 'title':
                 task[key] = self.normalize_text(str(value))
@@ -170,24 +175,21 @@ class TaskManagementApp:
                 task[key] = bool(value)
         return task
 
-    def delete_task(self, tasks: List[Dict[str, Any]], index: int) -> Optional[Dict[str, Any]]:
-        if 0 <= index < len(tasks):
-            return tasks.pop(index)
-        return None
+    def delete_task(self, task_id: str) -> bool:
+        return self._tasks.pop(task_id, None) is not None
 
     def run(self) -> None:
         self.state.runs += 1
         tasks = [self.create_task('Write notes', 2), self.create_task('Push code', 1), self.create_task('Review PR', 3)]
-        tasks[0]['done'] = True
-        self.update_task(tasks[1], priority=2)
-        self.update_task(tasks[2], title='Review pull request')
-        removed = self.delete_task(tasks, 0)
-        tasks = sorted(tasks, key=lambda x: (x['done'], x['priority']))
+        self.update_task(tasks[0]['id'], done=True)
+        self.update_task(tasks[1]['id'], priority=2)
+        self.update_task(tasks[2]['id'], title='Review pull request')
+        self.delete_task(tasks[0]['id'])
+        tasks = sorted(self._tasks.values(), key=lambda x: (x['done'], x['priority']))
         self.record('tasks', tasks)
         self.section('Task List')
         print(self.render_table(tasks))
-        if removed:
-            self.log(f"Deleted task: {removed['title']}")
+        self.log('Task list updated')
         self.display_report()
     def finalize(self) -> None:
         self.export_state()
@@ -203,18 +205,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

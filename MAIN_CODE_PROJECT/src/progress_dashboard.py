@@ -1,4 +1,4 @@
-﻿"""Build a Dynamic Progress Tracking Dashboard for Personal Learning Goals
+"""Build a Dynamic Progress Tracking Dashboard for Personal Learning Goals
 
 Generated for the 45-day Python development challenge.
 """
@@ -222,18 +222,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

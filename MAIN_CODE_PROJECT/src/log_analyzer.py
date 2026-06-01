@@ -1,4 +1,4 @@
-﻿"""Implement an Automated Log Analysis Utility with Error Pattern Detection
+"""Implement an Automated Log Analysis Utility with Error Pattern Detection
 
 Generated for the 45-day Python development challenge.
 """
@@ -225,18 +225,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

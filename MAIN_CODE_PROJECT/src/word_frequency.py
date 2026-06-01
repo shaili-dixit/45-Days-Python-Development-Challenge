@@ -1,4 +1,4 @@
-﻿"""Develop a Comprehensive Word Frequency Analysis Engine for Text Processing
+"""Develop a Comprehensive Word Frequency Analysis Engine for Text Processing
 
 Generated for the 45-day Python development challenge.
 """
@@ -205,18 +205,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

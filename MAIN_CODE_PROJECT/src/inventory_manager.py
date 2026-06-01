@@ -1,4 +1,4 @@
-﻿"""Build a Dynamic Inventory Management Utility with Quantity Tracking Features
+"""Build a Dynamic Inventory Management Utility with Quantity Tracking Features
 
 Generated for the 45-day Python development challenge.
 """
@@ -218,18 +218,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

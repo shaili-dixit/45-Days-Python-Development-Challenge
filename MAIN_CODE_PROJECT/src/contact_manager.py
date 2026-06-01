@@ -1,4 +1,4 @@
-﻿"""Create a Dynamic Contact Management System with Persistent Data Storage Support
+"""Create a Dynamic Contact Management System with Persistent Data Storage Support
 
 Generated for the 45-day Python development challenge.
 """
@@ -226,18 +226,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

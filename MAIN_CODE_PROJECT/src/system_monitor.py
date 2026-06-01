@@ -1,4 +1,4 @@
-﻿"""Build a System Resource Monitoring Tool for CPU and Memory Usage Analysis
+"""Build a System Resource Monitoring Tool for CPU and Memory Usage Analysis
 
 Generated for the 45-day Python development challenge.
 """
@@ -229,18 +229,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

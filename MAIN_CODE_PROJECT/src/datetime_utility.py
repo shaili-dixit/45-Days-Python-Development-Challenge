@@ -1,4 +1,4 @@
-﻿"""Implement a Comprehensive Date and Time Utility with Multiple Formatting Options
+"""Implement a Comprehensive Date and Time Utility with Multiple Formatting Options
 
 Generated for the 45-day Python development challenge.
 """
@@ -216,18 +216,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

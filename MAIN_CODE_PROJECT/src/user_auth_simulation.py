@@ -1,4 +1,4 @@
-﻿"""Design a Secure User Authentication Simulation with Username and Password Verification
+"""Design a Secure User Authentication Simulation with Username and Password Verification
 
 Generated for the 45-day Python development challenge.
 """
@@ -202,18 +202,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

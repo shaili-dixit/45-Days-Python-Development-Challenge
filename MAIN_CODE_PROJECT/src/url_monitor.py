@@ -1,4 +1,4 @@
-﻿"""Implement a URL Validation and Website Status Monitoring Utility
+"""Implement a URL Validation and Website Status Monitoring Utility
 
 Generated for the 45-day Python development challenge.
 """
@@ -217,18 +217,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

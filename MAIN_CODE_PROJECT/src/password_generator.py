@@ -1,4 +1,4 @@
-﻿"""Design a Random Password Generator with Custom Security Configuration Support
+"""Design a Random Password Generator with Custom Security Configuration Support
 
 Generated for the 45-day Python development challenge.
 """
@@ -219,18 +219,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
 
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
