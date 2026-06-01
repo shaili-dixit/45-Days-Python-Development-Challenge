@@ -1,4 +1,4 @@
-﻿"""Create a Secure Credential Storage Simulation Using Hashing Mechanisms
+"""Create a Secure Credential Storage Simulation Using Hashing Mechanisms
 
 Generated for the 45-day Python development challenge.
 """
@@ -10,10 +10,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import hashlib
+import os
 import json
 import random
 import time
-import hashlib
 
 @dataclass
 class CredentialStorageAppState:
@@ -159,13 +159,14 @@ class CredentialStorageApp:
         ]
 
     def hash_password(self, password: str) -> str:
-        return hashlib.sha256(password.encode('utf-8')).hexdigest()
+        salt = os.urandom(16).hex()
+        return salt + ':' + hashlib.sha256((password + salt).encode()).hexdigest()
 
     def store_credential(self, username: str, password: str) -> Dict[str, Any]:
         return {'username': username, 'password_hash': self.hash_password(password)}
 
     def verify_credential(self, stored: Dict[str, Any], password: str) -> bool:
-        return stored.get('password_hash') == self.hash_password(password)
+        return self.verify_password(password, stored.get('password_hash', ''))
 
     def dataset(self) -> List[Dict[str, Any]]:
         return [
@@ -192,12 +193,12 @@ class CredentialStorageApp:
             'verification_tests': verification_results
         }
 
-    def hash_password(self, password: str) -> str:
-        salt = '5a1t'
-        return hashlib.sha256((password + salt).encode()).hexdigest()
-
-    def verify_password(self, password: str, stored_hash: str) -> bool:
-        return self.hash_password(password) == stored_hash
+    def verify_password(self, password: str, stored: str) -> bool:
+        try:
+            salt, hash_val = stored.split(':')
+            return hash_val == hashlib.sha256((password + salt).encode()).hexdigest()
+        except (ValueError, AttributeError):
+            return False
 
     def run(self) -> None:
         self.state.runs += 1
@@ -227,18 +228,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes

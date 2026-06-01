@@ -1,4 +1,4 @@
-﻿"""Design a Secure User Authentication Simulation with Username and Password Verification
+"""Design a Secure User Authentication Simulation with Username and Password Verification
 
 Generated for the 45-day Python development challenge.
 """
@@ -10,6 +10,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import hashlib
+import os
 import json
 import random
 import time
@@ -158,18 +159,35 @@ class UserAuthSimulationApp:
             {'name': 'gamma', 'value': 3, 'active': True},
         ]
 
-    def _hash(self, password: str) -> str:
-        return hashlib.sha256(password.encode('utf-8')).hexdigest()
+    _users: dict | None = None
+
+    @staticmethod
+    def _hash(password: str) -> str:
+        salt = os.urandom(16).hex()
+        return salt + ':' + hashlib.sha256((password + salt).encode()).hexdigest()
+
+    @staticmethod
+    def _verify(password: str, stored: str) -> bool:
+        try:
+            salt, hash_val = stored.split(':')
+            return hash_val == hashlib.sha256((password + salt).encode()).hexdigest()
+        except (ValueError, AttributeError):
+            return False
+
+    @classmethod
+    def _get_users(cls) -> dict:
+        if cls._users is None:
+            cls._users = {
+                'admin': cls._hash('admin123'),
+                'guest': cls._hash('guest123'),
+            }
+        return cls._users
 
     def authenticate(self, username: str, password: str) -> bool:
-        users = {
-            'admin': self._hash('admin123'),
-            'guest': self._hash('guest123'),
-        }
-        stored = users.get(username)
+        stored = self._get_users().get(username)
         if stored is None:
             return False
-        return stored == self._hash(password)
+        return self._verify(password, stored)
 
     def run(self) -> None:
         self.state.runs += 1
@@ -202,18 +220,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-<<<<<<< Updated upstream
-=======
 
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
