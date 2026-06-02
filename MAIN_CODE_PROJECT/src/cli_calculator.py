@@ -6,9 +6,8 @@ from base_app import BaseApp, BaseAppState
 from typing import Any, Dict, List, Optional, Tuple
 import json
 import time
-from .config import AppConfig
-
-import threading
+import logging
+from .log_setup import setup_logger
 
 class CliCalculatorApp(BaseApp):
     def parse_expression(self, text: str) -> Tuple[float, str, float]:
@@ -128,3 +127,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+

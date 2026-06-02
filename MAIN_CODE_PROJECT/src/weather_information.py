@@ -6,7 +6,8 @@ from base_app import BaseApp, BaseAppState
 from typing import Any, Dict, List, Optional, Tuple
 import json
 import time
-import threading
+import logging
+from .log_setup import setup_logger
 
 import urllib.error
 import urllib.parse
@@ -101,3 +102,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
