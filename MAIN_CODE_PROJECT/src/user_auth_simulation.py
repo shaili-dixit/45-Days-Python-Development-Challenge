@@ -22,11 +22,15 @@ class UserAuthSimulationApp(BaseApp):
             if locked:
                 break
             ok = self.authenticate(username, password)
+            # Log only the username and boolean outcome — never the password.
             print(self.format_kv(username, ok))
             if not ok:
                 failures += 1
             if failures >= 3:
                 locked = True
+        # Clear the attempts list so plaintext passwords are released from
+        # this frame as soon as the loop is done.
+        attempts.clear()
         self.record('locked', locked)
         self.display_report()
     def user_auth_simulation_utility_1(self, value: Any) -> Any:
