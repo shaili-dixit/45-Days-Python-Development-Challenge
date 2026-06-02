@@ -1,4 +1,4 @@
-"""Develop a QR Code Generation and Information Encoding Utility
+﻿"""Develop a QR Code Generation and Information Encoding Utility
 
 Generated for the 45-day Python development challenge.
 """

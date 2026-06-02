@@ -1,4 +1,4 @@
-"""Develop a Structured Data Visualization Workflow for Analytical Representation
+﻿"""Develop a Structured Data Visualization Workflow for Analytical Representation
 
 Generated for the 45-day Python development challenge.
 """

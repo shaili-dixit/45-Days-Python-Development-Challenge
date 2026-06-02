@@ -13,9 +13,8 @@ class UserAuthSimulationApp(BaseApp):
         return users.get(username) == password
 
     def run(self) -> None:
-        with self.state._lock:
-            self.state.runs += 1
-        attempts = [('admin', 'wrong'), ('admin', 'admin123')]
+        self.state.runs += 1
+        attempts = [('admin', 'wrong'), ('admin', 'wrong2'), ('admin', 'wrong3'), ('admin', 'admin123')]
         locked = False
         failures = 0
         self.section('Authentication Simulation')

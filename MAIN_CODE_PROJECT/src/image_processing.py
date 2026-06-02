@@ -1,4 +1,4 @@
-"""Develop a Dynamic Image Downloading and Processing Workflow
+﻿"""Develop a Dynamic Image Downloading and Processing Workflow
 
 Generated for the 45-day Python development challenge.
 """
