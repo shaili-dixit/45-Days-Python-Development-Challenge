@@ -9,7 +9,11 @@ import time
 
 class TaskManagementApp(BaseApp):
     def create_task(self, title: str, priority: int = 1) -> Dict[str, Any]:
-        return {'title': self.normalize_text(title), 'priority': priority, 'done': False}
+        task_id = str(self._next_id)
+        self._next_id += 1
+        task = {'id': task_id, 'title': self.normalize_text(title), 'priority': priority, 'done': False}
+        self._tasks[task_id] = task
+        return task
 
     def run(self) -> None:
         with self.state._lock:
@@ -101,3 +105,5 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+

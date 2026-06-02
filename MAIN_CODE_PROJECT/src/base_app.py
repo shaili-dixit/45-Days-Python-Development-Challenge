@@ -30,6 +30,8 @@ class BaseApp:
         self.seed = 42
         random.seed(self.seed)
 
+    # ── Logging / state mutation helpers ───────────────────────────────
+
     def log(self, message: str) -> None:
         stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
@@ -87,6 +89,8 @@ class BaseApp:
         for row in rows:
             lines.append(' | '.join(str(row.get(k, '')).ljust(widths[k]) for k in keys))
         return '\n'.join(lines)
+
+    # ── File I/O helpers ────────────────────────────────────────────────
 
     def save_json(self, name: str, payload: Dict[str, Any]) -> Path:
         path = self.output_dir / name
