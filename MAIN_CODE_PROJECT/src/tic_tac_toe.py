@@ -10,25 +10,31 @@ import time
 class TicTacToeApp(BaseApp):
         def check_winner(b: List[str]) -> Optional[str]:
             win_indices = [
-                (0,1,2), (3,4,5), (6,7,8),
-                (0,3,6), (1,4,7), (2,5,8),
-                (0,4,8), (2,4,6)
+                (0, 1, 2), (3, 4, 5), (6, 7, 8),
+                (0, 3, 6), (1, 4, 7), (2, 5, 8),
+                (0, 4, 8), (2, 4, 6)
             ]
+
             for x, y, z in win_indices:
                 if b[x] and b[x] == b[y] == b[z]:
                     return b[x]
-            if all(cell for cell in b):
+
+            if all(cell != '' for cell in b):
                 return 'Draw'
+
             return None
-        
+
         results = []
+
         for game in items:
             board = game.get('board', [''] * 9)
             winner = check_winner(board)
+
             results.append({
                 'board_state': board,
                 'winner_status': winner if winner else 'In Progress'
             })
+
         return {
             'games_analyzed': len(items),
             'results': results
