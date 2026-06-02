@@ -1,112 +1,48 @@
-"""Abstract base class enforcing the module interface contract."""
+from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 import json
+import math
+import os
+import random
+import statistics
+import time
 
 
-class BaseApp(ABC):
-    """All *App modules should inherit from this ABC.
+@dataclass
+class BaseAppState:
+    history: List[str] = field(default_factory=list)
+    records: Dict[str, Any] = field(default_factory=dict)
+    flags: Dict[str, bool] = field(default_factory=dict)
+    created_at: datetime = field(default_factory=datetime.utcnow)
+    runs: int = 0
+    errors: int = 0
 
-    Subclasses must provide:
-      - ``self.state`` — an AppState dataclass instance
-      - ``self.output_dir`` — a ``Path`` to the output directory
 
-    Abstract methods that every module must implement:
-      - :meth:`run`
-      - :meth:`demo_data`
-    """
+class BaseApp:
+    def __init__(self) -> None:
+        self.state = BaseAppState()
+        self.output_dir = Path('outputs')
+        self.output_dir.mkdir(exist_ok=True)
+        self.seed = 42
+        random.seed(self.seed)
 
-    @abstractmethod
-    def run(self) -> None:
-        """Execute the module's core workflow."""
-
-    @abstractmethod
-    def demo_data(self) -> List[Dict[str, Any]]:
-        """Return sample/demo data for the module."""
-
-    def dataset(self) -> List[Dict[str, Any]]:
-        """Return the working dataset (default: delegates to demo_data)."""
-        return self.demo_data()
-
-    def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Process *items* and return summary statistics (override for custom behavior)."""
-        return {
-            'count': len(items),
-            'statistics': self.summarize_list([v for item in items for v in item.values() if isinstance(v, (int, float))]),
-        }
-
-    def finalize(self) -> None:
-        """Export state and log completion."""
-        self.export_state()
-        self.log('Finalized successfully')
-
-    def export_state(self) -> Path:
-        """Serialize the full ``self.state`` to a JSON file."""
-        payload = {
-            'created_at': self.state.created_at,
-            'runs': self.state.runs,
-            'errors': self.state.errors,
-            'records': self.state.records,
-            'flags': self.state.flags,
-            'history': self.state.history,
-        }
-        return self.save_json(f'{self.__class__.__name__}_state.json', payload)
-
-    def display_report(self) -> None:
-        """Print a summary of the current state."""
-        self.section('Summary')
-        print(self.format_kv('Runs', self.state.runs))
-        print(self.format_kv('Errors', self.state.errors))
-        print(self.format_kv('Records', len(self.state.records)))
-        print(self.format_kv('Flags', len(self.state.flags)))
-        print(self.format_kv('History entries', len(self.state.history)))
-        self.log(f'Exported to {self.export_state()}')
+    # ── Logging / state mutation helpers ───────────────────────────────
 
     def log(self, message: str) -> None:
-        """Timestamp *message*, append to history, and print."""
-        stamp = __import__('datetime').datetime.now().strftime('%H:%M:%S')
+        stamp = datetime.now().strftime('%H:%M:%S')
         entry = f'[{stamp}] {message}'
         self.state.history.append(entry)
         print(entry)
 
-    def record(self, key: str, value: Any) -> None:
-        """Store *value* under *key* in records."""
-        self.state.records[key] = value
-
-    def toggle(self, key: str, default: bool = False) -> bool:
-        """Flip a boolean flag and return the new value."""
-        current = self.state.flags.get(key, default)
-        self.state.flags[key] = not current
-        return self.state.flags[key]
-
-    def history_tail(self, count: int = 5) -> List[str]:
-        """Return the last *count* history entries."""
-        return self.state.history[-count:]
-
     def section(self, title: str) -> None:
-        """Print a section header."""
         print()
         print('=' * 70)
         print(title)
         print('=' * 70)
-
-    def format_kv(self, key: str, value: Any) -> str:
-        """Right-align key and print value."""
-        return f'{key:<20} : {value}'
-
-    def render_table(self, rows: List[Dict[str, Any]]) -> str:
-        """Render a list of dicts as a monospaced table."""
-        if not rows:
-            return '(empty)'
-        keys = list(dict.fromkeys(k for row in rows for k in row))
-        widths = {k: max(len(k), max(len(str(row.get(k, ''))) for row in rows)) for k in keys}
-        header = ' | '.join(k.ljust(widths[k]) for k in keys)
-        lines = [header, '-+-'.join('-' * widths[k] for k in keys)]
-        for row in rows:
-            lines.append(' | '.join(str(row.get(k, '')).ljust(widths[k]) for k in keys))
-        return '\n'.join(lines)
 
     def non_empty(self, value: Any) -> bool:
         return bool(str(value).strip())
@@ -140,15 +76,21 @@ class BaseApp(ABC):
         size = max(1, size)
         return [items[i:i + size] for i in range(0, len(items), size)]
 
-    def summarize_list(self, values: List[float]) -> Dict[str, Any]:
-        if not values:
-            return {'count': 0, 'min': 0, 'max': 0, 'avg': 0}
-        return {
-            'count': len(values),
-            'min': min(values),
-            'max': max(values),
-            'avg': round(sum(values) / len(values), 4),
-        }
+    def format_kv(self, key: str, value: Any) -> str:
+        return f'{key:<20} : {value}'
+
+    def render_table(self, rows: List[Dict[str, Any]]) -> str:
+        if not rows:
+            return '(empty)'
+        keys = list(rows[0].keys())
+        widths = {k: max(len(k), max(len(str(row.get(k, ''))) for row in rows)) for k in keys}
+        header = ' | '.join(k.ljust(widths[k]) for k in keys)
+        lines = [header, '-+-'.join('-' * widths[k] for k in keys)]
+        for row in rows:
+            lines.append(' | '.join(str(row.get(k, '')).ljust(widths[k]) for k in keys))
+        return '\n'.join(lines)
+
+    # ── File I/O helpers ────────────────────────────────────────────────
 
     def save_json(self, name: str, payload: Dict[str, Any]) -> Path:
         path = self.output_dir / name
@@ -172,3 +114,81 @@ class BaseApp(ABC):
         if not path.exists():
             return ''
         return path.read_text(encoding='utf-8')
+
+    def record(self, key: str, value: Any) -> None:
+        self.state.records[key] = value
+
+    def toggle(self, key: str, default: bool = False) -> bool:
+        current = self.state.flags.get(key, default)
+        self.state.flags[key] = not current
+        return self.state.flags[key]
+
+    def summarize_list(self, values: List[float]) -> Dict[str, Any]:
+        if not values:
+            return {'count': 0, 'min': 0, 'max': 0, 'avg': 0}
+        return {
+            'count': len(values),
+            'min': min(values),
+            'max': max(values),
+            'avg': round(sum(values) / len(values), 4),
+        }
+
+    def stats_from_numbers(self, values: List[float]) -> Dict[str, Any]:
+        if not values:
+            return {'mean': 0, 'median': 0, 'mode': None, 'stdev': 0}
+        try:
+            mode_value = statistics.mode(values)
+        except Exception:
+            mode_value = None
+        return {
+            'mean': round(statistics.mean(values), 4),
+            'median': round(statistics.median(values), 4),
+            'mode': mode_value,
+            'stdev': round(statistics.pstdev(values), 4) if len(values) > 1 else 0,
+        }
+
+    def history_tail(self, count: int = 5) -> List[str]:
+        return self.state.history[-count:]
+
+    def export_state(self) -> Path:
+        payload = {
+            'created_at': self.state.created_at,
+            'runs': self.state.runs,
+            'errors': self.state.errors,
+            'records': self.state.records,
+            'flags': self.state.flags,
+            'history': self.history_tail(10),
+        }
+        return self.save_json('state.json', payload)
+
+    def display_report(self) -> None:
+        self.section('Summary')
+        print(self.format_kv('Runs', self.state.runs))
+        print(self.format_kv('Errors', self.state.errors))
+        print(self.format_kv('Records', len(self.state.records)))
+        print(self.format_kv('Flags', len(self.state.flags)))
+        print(self.format_kv('History entries', len(self.state.history)))
+        self.log(f'Exported to {self.export_state()}')
+
+    def demo_data(self) -> List[Dict[str, Any]]:
+        return [
+            {'name': 'alpha', 'value': 1, 'active': True},
+            {'name': 'beta', 'value': 2, 'active': False},
+            {'name': 'gamma', 'value': 3, 'active': True},
+        ]
+
+    def dataset(self) -> List[Dict[str, Any]]:
+        return self.demo_data()
+
+    def process_dataset(self, items: List[Dict[str, Any]]) -> Dict[str, Any]:
+        active = [item for item in items if item.get('active', False)]
+        values = [item.get('value', 0) for item in active]
+        return {
+            'total_items': len(items),
+            'active_items': len(active),
+            'summary': self.summarize_list(values),
+        }
+
+    def finalize(self) -> None:
+        self.export_state()
+        self.log('Finalized successfully')
