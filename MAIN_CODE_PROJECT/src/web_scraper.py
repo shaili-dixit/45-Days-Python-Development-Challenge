@@ -6,6 +6,7 @@ from base_app import BaseApp, BaseAppState
 from typing import Any, Dict, List, Optional, Tuple
 import json
 import time
+import urllib.request
 
 import html.parser
 import urllib.request

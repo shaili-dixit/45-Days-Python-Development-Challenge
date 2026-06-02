@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import json
 import time
 
+import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -18,8 +19,9 @@ class HttpGetWorkflowApp(BaseApp):
 
     def fetch_json(self, url: str, timeout: int = 10) -> Dict[str, Any]:
         started = time.perf_counter()
+        ssl_ctx = ssl.create_default_context()
         request = urllib.request.Request(url, headers={'User-Agent': 'Python45-Dev/1.0'})
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        with urllib.request.urlopen(request, timeout=timeout, context=ssl_ctx) as response:
             payload = response.read().decode('utf-8', errors='replace')
             elapsed = round(time.perf_counter() - started, 4)
             try:
