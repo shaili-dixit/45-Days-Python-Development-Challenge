@@ -2,47 +2,15 @@
 
 Generated for the 45-day Python development challenge.
 """
-
-from __future__ import annotations
-
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from base_app import BaseApp, BaseAppState
+from typing import Any, Dict, List, Optional, Tuple
 import json
-import math
-import random
 import time
 from .config import AppConfig
 
 import threading
 
-from .base_app import BaseApp
-
-@dataclass
-class CliCalculatorAppState:
-    history: List[str] = field(default_factory=list)
-    records: Dict[str, Any] = field(default_factory=dict)
-    flags: Dict[str, bool] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    runs: int = 0
-    errors: int = 0
-    _lock: threading.Lock = field(default_factory=threading.Lock)
-
 class CliCalculatorApp(BaseApp):
-    def __init__(self) -> None:
-        self.state = CliCalculatorAppState()
-        self.output_dir = Path('outputs')
-        self.output_dir.mkdir(exist_ok=True)
-        self.output = OutputHandler(self.output_dir)
-
-    def demo_data(self) -> List[Dict[str, Any]]:
-        return [
-            {'name': 'alpha', 'value': 1, 'active': True},
-            {'name': 'beta', 'value': 2, 'active': False},
-            {'name': 'gamma', 'value': 3, 'active': True},
-        ]
-
     def parse_expression(self, text: str) -> Tuple[float, str, float]:
         parts = text.split()
         if len(parts) != 3:
@@ -51,16 +19,16 @@ class CliCalculatorApp(BaseApp):
 
     def compute(self, a: float, op: str, b: float) -> float:
         operations = {
-            '+': lambda: a + b,
-            '-': lambda: a - b,
-            '*': lambda: a * b,
-            '/': lambda: a / b if b != 0 else math.nan,
-            '%': lambda: a % b if b != 0 else math.nan,
-            '**': lambda: a ** b,
+            '+': a + b,
+            '-': a - b,
+            '*': a * b,
+            '/': a / b if b != 0 else math.nan,
+            '%': a % b if b != 0 else math.nan,
+            '**': a ** b,
         }
         if op not in operations:
             raise ValueError('unsupported operation')
-        return operations[op]()
+        return operations[op]
 
     def run(self) -> None:
         with self.state._lock:
@@ -74,6 +42,80 @@ class CliCalculatorApp(BaseApp):
                 self.output.kv(item, result)
             except Exception as exc:
                 self.state.errors += 1
+                print(self.format_kv(item, f'error: {exc}'))
+        self.display_report()
+    def cli_calculator_utility_1(self, value: Any) -> Any:
+        """Utility routine 1 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+    def cli_calculator_utility_2(self, value: Any) -> Any:
+        """Utility routine 2 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+    def cli_calculator_utility_3(self, value: Any) -> Any:
+        """Utility routine 3 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+    def cli_calculator_utility_4(self, value: Any) -> Any:
+        """Utility routine 4 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+    def cli_calculator_utility_5(self, value: Any) -> Any:
+        """Utility routine 5 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+    def cli_calculator_utility_6(self, value: Any) -> Any:
+        """Utility routine 6 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+    def cli_calculator_utility_7(self, value: Any) -> Any:
+        """Utility routine 7 tuned for cli_calculator."""
+        if isinstance(value, str):
+            return self.normalize_text(value)
+        if isinstance(value, (int, float)):
+            return self.clamp(float(value), -1_000_000, 1_000_000)
+        if isinstance(value, list):
+            return [self.normalize_text(str(x)) for x in value]
+        return value
+
+                with self.state._lock:
+                    self.state.errors += 1
                 print(self.format_kv(item, f'error: {exc}'))
         self.display_report()
 def main() -> None:
