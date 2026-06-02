@@ -29,9 +29,14 @@ class CliCalculatorApp(BaseApp):
             raise ValueError('unsupported operation')
         return operations[op]
 
+    def reset(self) -> None:
+        self.state.records.clear()
+        self.state.flags.clear()
+        self.state.errors = 0
+
     def run(self) -> None:
-        with self.state._lock:
-            self.state.runs += 1
+        self.state.runs += 1
+        self.reset()
         samples = ['5 + 2', '8 / 0', '4 ** 3', '10 ? 2']
         self.output.section('Calculator Runs')
         for item in samples:
