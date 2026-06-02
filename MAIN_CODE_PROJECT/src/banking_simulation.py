@@ -6,7 +6,8 @@ from base_app import BaseApp, BaseAppState
 from typing import Any, Dict, List, Optional, Tuple
 import json
 import time
-import threading
+import logging
+from .log_setup import setup_logger
 
 class BankingSimulationApp(BaseApp):
     def run(self) -> None:
